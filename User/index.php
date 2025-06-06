@@ -30,8 +30,6 @@
         <?php include('./layouts/product-tabs/product-tabs.php') ?>
         <?php include('./layouts/services/services.php') ?> 
         <?php include('./layouts/news/news.php') ?> 
-        <?php include('./layouts/membership/membership.php') ?>   
-        <?php include('./layouts/events/events.php') ?> 
         <?php include('./layouts/contact/contact.php') ?>  
     </main>
 

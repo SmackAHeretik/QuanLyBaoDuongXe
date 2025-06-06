@@ -112,6 +112,7 @@ if (session_status() === PHP_SESSION_NONE) {
                             <li><a class="dropdown-item" href="logout.php">Đăng xuất</a></li>
                         </ul>
                     </div>
+                    <a class="btn custom-btn custom-border-btn ms-2" href="appointment.php">Đặt lịch hẹn</a>
                 <?php else: ?>
                     <a class="btn custom-btn custom-border-btn" href="login.php">Đăng nhập</a>
                 <?php endif; ?>
@@ -119,3 +120,4 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </div>
 </nav>
+                    

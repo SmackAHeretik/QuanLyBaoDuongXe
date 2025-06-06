@@ -1,70 +1,71 @@
 <?php
-session_start();
-include '../model/userModel.php';
-include '../utils/ConnectDb.php';
-
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+require_once '../model/userModel.php';
 
 $userModel = new UserModel();
 
 // Đăng ký
 if (isset($_POST['register'])) {
-    $TenKH = $_POST['TenKH'] ?? '';
-    $Email = $_POST['Email'] ?? '';
-    $MatKhau = $_POST['MatKhau'] ?? '';
-    $SDT = $_POST['SDT'] ?? '';
+    $TenKH = htmlspecialchars($_POST['TenKH'] ?? '');
+    $Email = htmlspecialchars($_POST['Email'] ?? '');
+    $MatKhau = htmlspecialchars($_POST['MatKhau'] ?? '');
+    $SDT = htmlspecialchars($_POST['SDT'] ?? '');
 
-    if ($userModel->existsByTenKH($TenKH)) {
-        echo "<script>alert('Tên khách hàng đã tồn tại!'); window.location.href='../login.php';</script>";
+    try {
+        if ($userModel->existsByTenKH($TenKH)) {
+            echo "<script>alert('Tên khách hàng đã tồn tại!'); window.location.href='../login.php';</script>";
+            exit();
+        }
+
+        if ($userModel->existsByEmail($Email)) {
+            echo "<script>alert('Email đã tồn tại!'); window.location.href='../login.php';</script>";
+            exit();
+        }
+
+        // Mã hóa mật khẩu trước khi lưu
+        $MatKhauHash = password_hash($MatKhau, PASSWORD_DEFAULT);
+        $userModel->insert($TenKH, $Email, $MatKhauHash, $SDT);
+
+        echo "<script>alert('Đăng ký thành công!'); window.location.href='../login.php';</script>";
+        exit();
+    } catch (Exception $e) {
+        error_log($e->getMessage(), 3, 'errors.log');
+        echo "<script>alert('Có lỗi xảy ra, vui lòng thử lại sau!'); window.location.href='../login.php';</script>";
         exit();
     }
-
-    if ($userModel->existsByEmail($Email)) {
-        echo "<script>alert('Email đã tồn tại!'); window.location.href='../login.php';</script>";
-        exit();
-    }
-
-    $MatKhauHash = password_hash($MatKhau, PASSWORD_DEFAULT);
-    $userModel->insert($TenKH, $Email, $MatKhauHash, $SDT);
-
-    echo "<script>alert('Đăng ký thành công!'); window.location.href='../login.php';</script>";
-    exit();
 }
 
 // Đăng nhập
 else if (isset($_POST['login'])) {
-    $Email = $_POST['Email'] ?? '';
-    $MatKhau = $_POST['MatKhau'] ?? '';
+    $Email = htmlspecialchars($_POST['Email'] ?? '');
+    $MatKhau = htmlspecialchars($_POST['MatKhau'] ?? '');
 
-    $result = $userModel->findByEmail($Email);
-    if ($result && password_verify($MatKhau, $result['MatKhau'])) {
-        $_SESSION['MaKH'] = $result['MaKH'];
-        $_SESSION['TenKH'] = $result['TenKH'];
-        $_SESSION['Email'] = $result['Email'];
-        $_SESSION['SDT'] = $result['SDT'];
-        header("Location: ../index.php");
+    try {
+        $result = $userModel->findByEmail($Email);
+        if ($result) {
+            // Sử dụng password_verify để kiểm tra mật khẩu
+            if (password_verify($MatKhau, $result['MatKhau'])) {
+                // Khởi tạo session nếu chưa có
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+
+                // Thiết lập session
+                $_SESSION['TenKH'] = $result['TenKH'];
+
+                echo "<script>alert('Đăng nhập thành công!'); window.location.href='../index.php';</script>";
+                exit();
+            } else {
+                echo "<script>alert('Mật khẩu không đúng!'); window.location.href='../login.php';</script>";
+                exit();
+            }
+        } else {
+            echo "<script>alert('Email không tồn tại!'); window.location.href='../login.php';</script>";
+            exit();
+        }
+    } catch (Exception $e) {
+        error_log($e->getMessage(), 3, 'errors.log');
+        echo "<script>alert('Có lỗi xảy ra, vui lòng thử lại sau!'); window.location.href='../login.php';</script>";
         exit();
-    } else {
-        echo "<script>alert('Email hoặc mật khẩu không đúng!'); window.location.href='../login.php';</script>";
-        exit();
-    }
-}
-
-// Cập nhật thông tin
-else if (isset($_POST['update'])) {
-    $MaKH = $_SESSION['MaKH'];
-    $TenKH = $_POST['TenKH'] ?? '';
-    $Email = $_POST['Email'] ?? '';
-    $SDT = $_POST['SDT'] ?? '';
-
-    if ($userModel->update($MaKH, $TenKH, $Email, $SDT)) {
-        $_SESSION['TenKH'] = $TenKH;
-        $_SESSION['Email'] = $Email;
-        $_SESSION['SDT'] = $SDT;
-        echo "<script>alert('Cập nhật thông tin thành công!'); window.location.href='../profile.php';</script>";
-    } else {
-        echo "<script>alert('Cập nhật thất bại!'); window.location.href='../profile.php';</script>";
     }
 }
 ?>
