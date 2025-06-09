@@ -45,7 +45,7 @@
                                         <h4 class="mb-4 pb-lg-2">Membership Fees</h4>
                                         <div class="table-responsive">
                                         <form action="./controller/user_controller.php" method="POST" class="custom-form membership-form shadow-lg" role="form">
-                                                <h4 class="text-white mb-4">Member Login</h4>
+                                                <h4 class="text-white mb-4">Đăng Nhập</h4>
 
                                                 <div class="form-floating">
                                                 <input type="email" name="Email" id="Email" class="form-control" placeholder="Email" required>

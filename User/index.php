@@ -1,3 +1,19 @@
+<?php
+$controllerName = isset($_GET['controller']) ? $_GET['controller'] : 'TrangChu';
+$actionName = isset($_GET['action']) ? $_GET['action'] : 'index';
+
+require_once 'controller/' . $controllerName . 'Controller.php';
+$fullControllerName = $controllerName . 'Controller';
+$controller = new $fullControllerName();
+
+// Nếu là AJAX (action trả JSON), chỉ gọi action, KHÔNG include layout
+if ($controllerName === 'LichHen' && $actionName === 'nhanvienRon') {
+    $controller->$actionName();
+    exit;
+}
+
+// Còn lại là các action hiển thị giao diện
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -30,7 +46,6 @@
         <?php include('./layouts/product-tabs/product-tabs.php') ?>
         <?php include('./layouts/services/services.php') ?> 
         <?php include('./layouts/news/news.php') ?> 
-        <?php include('./layouts/contact/contact.php') ?>  
     </main>
 
     <?php include('./layouts/footer/footer.php') ?>  

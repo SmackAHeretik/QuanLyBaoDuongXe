@@ -29,14 +29,13 @@ if (session_status() === PHP_SESSION_NONE) {
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link click-scroll" href="#section_2">Về chúng tôi</a>
+                    <a class="nav-link" href="about.php">Về chúng tôi</a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link click-scroll" href="#section_3">Dịch vụ</a>
                 </li>
 
-                <!-- Mega Menu -->
                 <li class="nav-item dropdown position-static"
                     onmouseover="showMegaMenu()"
                     onmouseleave="hideMegaMenu()">
@@ -101,9 +100,10 @@ if (session_status() === PHP_SESSION_NONE) {
                 </li>
             </ul>
 
-            <div class="d-none d-lg-block ms-lg-3">
+            <!-- Nút bên phải -->
+            <div class="d-none d-lg-flex align-items-center ms-lg-3">
                 <?php if (isset($_SESSION['TenKH'])): ?>
-                    <div class="dropdown">
+                    <div class="dropdown me-2">
                         <button class="btn custom-btn custom-border-btn dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
                             <?php echo htmlspecialchars($_SESSION['TenKH']); ?>
                         </button>
@@ -112,7 +112,7 @@ if (session_status() === PHP_SESSION_NONE) {
                             <li><a class="dropdown-item" href="logout.php">Đăng xuất</a></li>
                         </ul>
                     </div>
-                    <a class="btn custom-btn custom-border-btn ms-2" href="appointment.php">Đặt lịch hẹn</a>
+                    <a class="btn custom-btn custom-border-btn" href="datlich.php">Đặt lịch hẹn</a>
                 <?php else: ?>
                     <a class="btn custom-btn custom-border-btn" href="login.php">Đăng nhập</a>
                 <?php endif; ?>
@@ -120,4 +120,3 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </div>
 </nav>
-                    

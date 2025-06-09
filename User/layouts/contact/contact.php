@@ -1,70 +1,64 @@
 <section class="contact-section section-padding" id="section_5">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-5 col-12">
-                            <form action="#" method="post" class="custom-form contact-form" role="form">
-                                <h2 class="mb-4 pb-2">Contact Tiya</h2>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-12">
-                                        <div class="form-floating">
-                                            <input type="text" name="full-name" id="full-name" class="form-control" placeholder="Full Name" required="">
-                                            
-                                            <label for="floatingInput">Full Name</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-md-6 col-12"> 
-                                        <div class="form-floating">
-                                            <input type="email" name="email" id="email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="Email address" required="">
-                                            
-                                            <label for="floatingInput">Email address</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-12 col-12">
-                                        <div class="form-floating">
-                                            <textarea class="form-control" id="message" name="message" placeholder="Describe message here"></textarea>
-                                            
-                                            <label for="floatingTextarea">Message</label>
-                                        </div>
-
-                                        <button type="submit" class="form-control">Submit Form</button>
-                                    </div>
-                                </div>
-                            </form>
+    <div class="container">
+        <div class="row">
+            <form action="#" method="post" class="custom-form contact-form" role="form">
+                <h2 class="mb-4 pb-2">Đặt Lịch Hẹn</h2>
+                <div class="row">
+                    <div class="col-lg-12 col-12 mb-3">
+                        <div class="form-floating">
+                            <input type="datetime-local" name="ngayhen" id="ngayhen" class="form-control" required="">
+                            <label for="ngayhen">Chọn ngày và giờ hẹn</label>
                         </div>
-
-                        <div class="col-lg-6 col-12">
-                            <div class="contact-info mt-5">
-                                <div class="contact-info-item">
-                                    <div class="contact-info-body">
-                                        <strong>London, United Kingdom</strong>
-
-                                        <p class="mt-2 mb-1">
-                                            <a href="tel: 010-020-0340" class="contact-link">
-                                                (020) 
-                                                010-020-0340
-                                            </a>
-                                        </p>
-
-                                        <p class="mb-0">
-                                            <a href="mailto:info@company.com" class="contact-link">
-                                                info@company.com
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="contact-info-footer">
-                                        <a href="#">Directions</a>
-                                    </div>
-                                </div>
-
-                                <img src="images/WorldMap.svg" class="img-fluid" alt="">
-                            </div>
+                    </div>
+                    <div class="col-lg-12 col-12 mb-3">
+                        <div class="form-floating">
+                            <select class="form-select" name="manv" id="manv" required="">
+                                <option value="" selected disabled>Chọn nhân viên</option>
+                            </select>
+                            <label for="manv">Nhân viên</label>
                         </div>
-
+                    </div>
+                    <div class="col-lg-12 col-12 mb-3">
+                        <div class="form-floating">
+                            <textarea class="form-control" id="message" name="message" placeholder="Nhập lý do hẹn"
+                                required=""></textarea>
+                            <label for="message">Lý do hẹn</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-12">
+                        <button type="submit" class="form-control">Đặt lịch</button>
                     </div>
                 </div>
-            </section>
+            </form>
+        </div>
+        <script>
+            document.getElementById('ngayhen').addEventListener('change', function () {
+                var datetime = this.value;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'index.php?controller=LichHen&action=nhanvienRon', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var nhanviens = JSON.parse(xhr.responseText);
+                        var select = document.getElementById('manv');
+                        select.innerHTML = '<option value="" selected disabled>Chọn nhân viên</option>';
+                        if (nhanviens.length === 0) {
+                            var opt = document.createElement('option');
+                            opt.value = "any";
+                            opt.textContent = "Ai cũng được";
+                            select.appendChild(opt);
+                        } else {
+                            nhanviens.forEach(function (nv) {
+                                var opt = document.createElement('option');
+                                opt.value = nv.MaNV;
+                                opt.textContent = nv.TenNV;
+                                select.appendChild(opt);
+                            });
+                        }
+                    }
+                };
+                xhr.send('datetime=' + encodeURIComponent(datetime));
+            });
+        </script>
+    </div>
+</section>

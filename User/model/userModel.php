@@ -1,5 +1,5 @@
 <?php
-require_once '../utils/ConnectDb.php';
+require_once __DIR__ . '/../utils/ConnectDb.php';
 
 class UserModel {
     private $TenKH;
@@ -78,14 +78,53 @@ class UserModel {
         return $result;
     }
 
+    // Tìm khách hàng theo ID
+    public function findById($MaKH) {
+        $dbConn = new ConnectDb("localhost:3306", "root", "", "quanlybaoduongxe");
+        $conn = $dbConn->connect();
+
+        $sql = "SELECT * FROM khachhang WHERE MaKH = :MaKH";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':MaKH', $MaKH);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$result) {
+            return false;
+        }
+        return $result;
+    }
+    public function findByName($TenKH) {
+        $dbConn = new ConnectDb("localhost:3306", "root", "", "quanlybaoduongxe");
+        $conn = $dbConn->connect();
+    
+        $sql = "SELECT * FROM khachhang WHERE TenKH = :TenKH";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':TenKH', $TenKH);
+        $stmt->execute();
+    
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$result) {
+            return false;
+        }
+        return $result;
+    }
     // Cập nhật thông tin khách hàng
-    public function update($MaKH, $TenKH, $Email, $SDT, $DiaChi) {
+    public function update($MaKH, $TenKH, $Email, $SDT, $DiaChi, $MatKhau = null) {
         try {
             $dbConn = new ConnectDb("localhost:3306", "root", "", "quanlybaoduongxe");
             $conn = $dbConn->connect();
 
-            $sql = "UPDATE khachhang SET TenKH = :TenKH, Email = :Email, SDT = :SDT, DiaChi = :DiaChi WHERE MaKH = :MaKH";
-            $stmt = $conn->prepare($sql);
+            if ($MatKhau) {
+                $hashedPassword = password_hash($MatKhau, PASSWORD_DEFAULT);
+                $sql = "UPDATE khachhang SET TenKH = :TenKH, Email = :Email, SDT = :SDT, DiaChi = :DiaChi, MatKhau = :MatKhau WHERE MaKH = :MaKH";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':MatKhau', $hashedPassword);
+            } else {
+                $sql = "UPDATE khachhang SET TenKH = :TenKH, Email = :Email, SDT = :SDT, DiaChi = :DiaChi WHERE MaKH = :MaKH";
+                $stmt = $conn->prepare($sql);
+            }
+
             $stmt->bindParam(':TenKH', $TenKH);
             $stmt->bindParam(':Email', $Email);
             $stmt->bindParam(':SDT', $SDT);

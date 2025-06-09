@@ -640,6 +640,10 @@ strong {
 .navbar-toggler .navbar-toggler-icon::after {
   top: 8px;
 }
+/* Căn giữa các button trong navbar phải */
+.navbar .navbar-collapse {
+  align-items: center;
+}
 
 
 /*---------------------------------------
