@@ -27,10 +27,8 @@
         <?php include('./layouts/navbar/navbar.php') ?>
         <?php include('./layouts/hero/hero.php') ?>   
         <?php include('./layouts/about/about.php') ?> 
-        <?php include('./layouts/product-tabs/product-tabs.php') ?>
         <?php include('./layouts/services/services.php') ?> 
         <?php include('./layouts/news/news.php') ?> 
-        <?php include('./layouts/contact/contact.php') ?>  
     </main>
 
     <?php include('./layouts/footer/footer.php') ?>  

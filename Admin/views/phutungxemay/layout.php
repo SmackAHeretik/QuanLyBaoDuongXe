@@ -70,7 +70,7 @@
               <a href="element.html" class="dropdown-item">Other Elements</a>
             </div>
           </div>
-          <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Widgets</a>
+          <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Quản lý Nhân Viên</a>
           <a href="form.php" class="nav-item nav-link active"><i class="fa fa-keyboard me-2"></i>Forms</a>
           <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a>
           <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
@@ -147,7 +147,7 @@
             <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
               <a href="#" class="dropdown-item">My Profile</a>
               <a href="#" class="dropdown-item">Settings</a>
-              <a href="#" class="dropdown-item">Log Out</a>
+              <a href="logout.php" class="dropdown-item">Log Out</a>
             </div>
           </div>
         </div>

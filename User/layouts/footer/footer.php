@@ -13,19 +13,18 @@
                     </div>
 
                     <div class="col-lg-3 col-12">
-                        <h5 class="site-footer-title mb-4">Join Us</h5>
+                        <h5 class="site-footer-title mb-4">Hãy đến với cửa hàng của chúng tôi</h5>
 
                         <p class="d-flex border-bottom pb-3 mb-3 me-lg-3">
-                            <span>Mon-Fri</span>
-                            6:00 AM - 6:00 PM
+                            <span>Thứ 2 - 7</span>
+                            8:00 Sáng - 20:00 Tối
                         </p>
-
-                        <p class="d-flex me-lg-3">
-                            <span>Sat-Sun</span>
-                            6:30 AM - 8:30 PM
-                        </p>
+                        <p class="d-flex border-bottom pb-3 mb-3 me-lg-3">
+                            <span>Mon - Sat</span>
+                            8:00 AM - 20:00 PM
+                        
                         <br>
-                        <p class="copyright-text">Copyright © 2048 Tiya Golf Club</p>
+                        <p class="copyright-text">Copyright © 2025 67 Performance</p>
                     </div>
 
                         <div class="col-lg-2 col-12 ms-auto">
@@ -42,8 +41,6 @@
                                     <a href="#" class="social-icon-link bi-whatsapp"></a>
                                 </li>
                             </ul>
-                            <p class="copyright-text">Design: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
-                            
                         </div>
 
                 </div>
