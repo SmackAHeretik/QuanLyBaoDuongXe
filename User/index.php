@@ -32,6 +32,7 @@ if ($controllerName === 'LichHen' && $actionName === 'nhanvienRon') {
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-icons.css" rel="stylesheet">
     <link href="css/templatemo-tiya-golf-club.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
@@ -46,6 +47,7 @@ if ($controllerName === 'LichHen' && $actionName === 'nhanvienRon') {
         <?php include('./layouts/product-tabs/product-tabs.php') ?>
         <?php include('./layouts/services/services.php') ?> 
         <?php include('./layouts/news/news.php') ?> 
+        <?php include('./layouts/button/button.php') ?> 
     </main>
 
     <?php include('./layouts/footer/footer.php') ?>  

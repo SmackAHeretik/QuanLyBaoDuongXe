@@ -1,18 +1,30 @@
 <section class="contact-section section-padding" id="section_5">
     <div class="container">
         <div class="row">
-            <form action="#" method="post" class="custom-form contact-form" role="form">
+            <form action="datlich.php" method="post" class="custom-form contact-form" role="form">
                 <h2 class="mb-4 pb-2">Đặt Lịch Hẹn</h2>
                 <div class="row">
                     <div class="col-lg-12 col-12 mb-3">
                         <div class="form-floating">
-                            <input type="datetime-local" name="ngayhen" id="ngayhen" class="form-control" required="">
-                            <label for="ngayhen">Chọn ngày và giờ hẹn</label>
+                            <select class="form-select" name="loaixe" id="loaixe" required>
+                                <option value="" selected disabled>Chọn loại xe</option>
+                                <option value="Xe số">Xe số</option>
+                                <option value="Xe tay ga">Xe tay ga</option>
+                            </select>
+                            <label for="loaixe">Loại xe</label>
                         </div>
                     </div>
                     <div class="col-lg-12 col-12 mb-3">
                         <div class="form-floating">
-                            <select class="form-select" name="manv" id="manv" required="">
+                            <input type="datetime-local" name="thoigianhen" id="thoigianhen" class="form-control" 
+                                min="<?php echo date('Y-m-d'); ?>T08:00" max="<?php echo date('Y-m-d', strtotime('+30 days')); ?>T20:00" required>
+                            <label for="thoigianhen">Chọn ngày & giờ hẹn (Thứ 2 - Thứ 7, 08:00 - 20:00)</label>
+                            <div id="thoigianhen-error" style="color:red;font-size:13px;display:none"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-12 mb-3">
+                        <div class="form-floating">
+                            <select class="form-select" name="manv" id="manv" required>
                                 <option value="" selected disabled>Chọn nhân viên</option>
                             </select>
                             <label for="manv">Nhân viên</label>
@@ -30,12 +42,49 @@
                     </div>
                 </div>
             </form>
+            <?php if (!empty($error)): ?>
+                <div class="alert alert-danger mt-2"><?php echo $error; ?></div>
+            <?php endif; ?>
         </div>
         <script>
-            document.getElementById('ngayhen').addEventListener('change', function () {
-                var datetime = this.value;
+            // Khóa chọn ngày quá khứ, chủ nhật, ngoài giờ, hiện lỗi nhỏ dưới input
+            document.getElementById('thoigianhen').addEventListener('input', function () {
+                var input = this.value;
+                var errorDiv = document.getElementById('thoigianhen-error');
+                errorDiv.style.display = 'none';
+                if (!input) return;
+                var dt = new Date(input);
+                var now = new Date();
+                // Không cho chọn ngày quá khứ
+                if (dt < now) {
+                    this.value = '';
+                    errorDiv.textContent = 'Không được chọn ngày giờ trong quá khứ!';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                // Không cho chọn Chủ nhật
+                if (dt.getDay() === 0) {
+                    this.value = '';
+                    errorDiv.textContent = 'Chỉ được chọn từ Thứ 2 đến Thứ 7!';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                // Không cho chọn ngoài khung giờ
+                var hour = dt.getHours();
+                var minute = dt.getMinutes();
+                if (hour < 8 || (hour === 20 && minute > 0) || hour > 20) {
+                    this.value = '';
+                    errorDiv.textContent = 'Chỉ được chọn giờ từ 08:00 đến 20:00!';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+            });
+
+            // Gọi AJAX khi thay đổi ngày giờ để lấy nhân viên rảnh
+            document.getElementById('thoigianhen').addEventListener('change', function () {
+                var datetime = this.value.replace('T', ' ');
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'index.php?controller=LichHen&action=nhanvienRon', true);
+                xhr.open('POST', 'datlich.php?controller=LichHen&action=nhanvienRon', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.onload = function () {
                     if (xhr.status === 200) {

@@ -109,6 +109,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="profile.php">Cập nhật tài khoản</a></li>
+                            <li><a class="dropdown-item" href="lichhen.php">Danh sách lịch hẹn</a></li>
                             <li><a class="dropdown-item" href="logout.php">Đăng xuất</a></li>
                         </ul>
                     </div>

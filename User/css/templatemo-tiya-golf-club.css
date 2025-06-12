@@ -1444,6 +1444,69 @@ strong {
   top: 100%;
 }
 
+.floating-buttons {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.floating-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 140px;
+    padding: 10px;
+    text-align: left;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px 0 0 5px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.floating-btn i {
+    font-size: 18px;
+}
+
+/* Màu riêng cho từng nút */
+.floating-btn.zalo {
+    background-color: #0180f3;
+}
+
+.floating-btn.zalo:hover {
+    background-color: #0265c9;
+}
+
+.floating-btn.phone {
+    background-color: #28a745;
+}
+
+.floating-btn.phone:hover {
+    background-color: #1e7e34;
+}
+
+.floating-btn.mail {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.floating-btn.mail:hover {
+    background-color: #e0a800;
+}
+
+.floating-btn.map {
+    background-color: #dc3545;
+}
+
+.floating-btn.map:hover {
+    background-color: #a71d2a;
+}
 
 
 
