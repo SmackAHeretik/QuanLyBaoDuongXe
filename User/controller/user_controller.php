@@ -51,7 +51,7 @@ else if (isset($_POST['login'])) {
 
                 // Thiết lập session
                 $_SESSION['TenKH'] = $result['TenKH'];
-
+                $_SESSION['MaKH'] = $result['MaKH'];
                 echo "<script>alert('Đăng nhập thành công!'); window.location.href='../index.php';</script>";
                 exit();
             } else {

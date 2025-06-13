@@ -16,8 +16,9 @@
                     </div>
                     <div class="col-lg-12 col-12 mb-3">
                         <div class="form-floating">
-                            <input type="datetime-local" name="thoigianhen" id="thoigianhen" class="form-control" 
-                                min="<?php echo date('Y-m-d'); ?>T08:00" max="<?php echo date('Y-m-d', strtotime('+30 days')); ?>T20:00" required>
+                            <input type="datetime-local" name="thoigianhen" id="thoigianhen" class="form-control"
+                                min="<?php echo date('Y-m-d'); ?>T08:00"
+                                max="<?php echo date('Y-m-d', strtotime('+30 days')); ?>T20:00" required>
                             <label for="thoigianhen">Chọn ngày & giờ hẹn (Thứ 2 - Thứ 7, 08:00 - 20:00)</label>
                             <div id="thoigianhen-error" style="color:red;font-size:13px;display:none"></div>
                         </div>
@@ -55,8 +56,8 @@
                 if (!input) return;
                 var dt = new Date(input);
                 var now = new Date();
-                // Không cho chọn ngày quá khứ
-                if (dt < now) {
+                // Không cho chọn ngày quá khứ (so sánh đến từng phút)
+                if (dt.getTime() < now.getTime() - 60000) {
                     this.value = '';
                     errorDiv.textContent = 'Không được chọn ngày giờ trong quá khứ!';
                     errorDiv.style.display = 'block';

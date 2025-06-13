@@ -1,6 +1,7 @@
 <?php
-
 session_start();
+
+date_default_timezone_set('Asia/Ho_Chi_Minh'); // Đảm bảo múi giờ đúng
 
 $controllerName = isset($_GET['controller']) ? $_GET['controller'] : 'LichHen';
 $actionName = isset($_GET['action']) ? $_GET['action'] : 'datLichForm';
@@ -9,15 +10,15 @@ require_once 'controller/' . $controllerName . 'Controller.php';
 $fullControllerName = $controllerName . 'Controller';
 $controller = new $fullControllerName();
 
-// Nếu là AJAX (action trả JSON), chỉ gọi action, KHÔNG include layout
+// AJAX lấy nhân viên rảnh
 if ($actionName === 'nhanvienRon') {
     $controller->$actionName();
     exit;
 }
 
-// Nếu là POST (submit đặt lịch), chỉ xử lý và exit, KHÔNG render HTML bên dưới
+// POST submit đặt lịch
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller->datLich();
+    $controller->luuLichHen();
     exit;
 }
 
@@ -26,6 +27,7 @@ $error = isset($GLOBALS['error']) ? $GLOBALS['error'] : '';
 ?>
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -34,19 +36,21 @@ $error = isset($GLOBALS['error']) ? $GLOBALS['error'] : '';
     <title>67 Performance</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap"
+        rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-icons.css" rel="stylesheet">
     <link href="css/templatemo-tiya-golf-club.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
 </head>
+
 <body>
     <main>
         <?php include('./layouts/navbar/navbar.php') ?>
-        <?php include('./layouts/hero/hero.php') ?>   
-        <?php include('./layouts/contact/contact.php') ?>  
+        <?php include('./layouts/hero/hero.php') ?>
+        <?php include('./layouts/contact/contact.php') ?>
     </main>
-    <?php include('./layouts/footer/footer.php') ?>  
+    <?php include('./layouts/footer/footer.php') ?>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/jquery.sticky.js"></script>
@@ -78,4 +82,5 @@ $error = isset($GLOBALS['error']) ? $GLOBALS['error'] : '';
     </script>
     <script src="js/custom.js"></script>
 </body>
+
 </html>

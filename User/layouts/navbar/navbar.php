@@ -36,8 +36,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     <a class="nav-link click-scroll" href="#section_3">Dịch vụ</a>
                 </li>
 
-                <li class="nav-item dropdown position-static"
-                    onmouseover="showMegaMenu()"
+                <li class="nav-item dropdown position-static" onmouseover="showMegaMenu()"
                     onmouseleave="hideMegaMenu()">
                     <a class="nav-link dropdown-toggle" href="#" id="productMegaMenu">Sản phẩm</a>
                     <div class="dropdown-menu w-100 mt-0 border-0 shadow mega-menu" id="megaMenu">
@@ -104,12 +103,13 @@ if (session_status() === PHP_SESSION_NONE) {
             <div class="d-none d-lg-flex align-items-center ms-lg-3">
                 <?php if (isset($_SESSION['TenKH'])): ?>
                     <div class="dropdown me-2">
-                        <button class="btn custom-btn custom-border-btn dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                        <button class="btn custom-btn custom-border-btn dropdown-toggle" type="button" id="userDropdown"
+                            data-bs-toggle="dropdown">
                             <?php echo htmlspecialchars($_SESSION['TenKH']); ?>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="profile.php">Cập nhật tài khoản</a></li>
-                            <li><a class="dropdown-item" href="lichhen.php">Danh sách lịch hẹn</a></li>
+                            <li><a class="dropdown-item" href="lichhen_cuatoi.php">Danh sách lịch hẹn</a></li>
                             <li><a class="dropdown-item" href="logout.php">Đăng xuất</a></li>
                         </ul>
                     </div>
