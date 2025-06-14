@@ -13,7 +13,6 @@ class PhuTungXeMayController
     $this->nsxModel = new NhaSanXuatModel();
   }
 
-  // Hiển thị danh sách phụ tùng
   public function list()
   {
     $data = $this->model->getAll();
@@ -26,14 +25,12 @@ class PhuTungXeMayController
     include __DIR__ . '/../views/phutungxemay/layout.php';
   }
 
-  // Hiển thị form thêm & xử lý thêm mới
   public function add()
   {
     $error = "";
     $listNSX = $this->nsxModel->getAll();
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      // Gán giá trị cho tất cả biến từ POST, tránh lỗi unassigned
       $TenSP = $_POST['TenSP'] ?? '';
       $SoSeriesSP = $_POST['SoSeriesSP'] ?? '';
       $MieuTaSP = $_POST['MieuTaSP'] ?? '';
@@ -43,34 +40,21 @@ class PhuTungXeMayController
       $nhasanxuat_MaNSX = $_POST['nhasanxuat_MaNSX'] ?? '';
       $SoLanBaoHanhToiDa = $_POST['SoLanBaoHanhToiDa'] ?? '';
       $DonGia = $_POST['DonGia'] ?? 0;
+      $ThoiGianBaoHanhDinhKy = $_POST['ThoiGianBaoHanhDinhKy'] ?? '';
+      $TrangThai = isset($_POST['TrangThai']) ? intval($_POST['TrangThai']) : 1;
 
-      // Xử lý ngày bảo hành định kỳ
-      $ngay = $_POST['ngay'] ?? '';
-      $thang = $_POST['thang'] ?? '';
-      $nam = $_POST['nam'] ?? '';
-      $count = 0;
-      if ($ngay)
-        $count++;
-      if ($thang)
-        $count++;
-      if ($nam)
-        $count++;
-      if ($count < 1) {
-        $error = "Phải nhập ít nhất 1 trong các trường Ngày, Tháng, Năm cho Thời gian bảo hành định kỳ!";
-      } else {
-        $ThoiGianBaoHanhDinhKy = sprintf('%04d-%02d-%02d', $nam ? $nam : 0, $thang ? $thang : 1, $ngay ? $ngay : 1);
+      if (empty($ThoiGianBaoHanhDinhKy)) {
+        $error = "Vui lòng nhập thời gian bảo hành định kỳ!";
       }
-
       if ($DonGia <= 0) {
         $error = "Đơn giá phải lớn hơn 0!";
       }
 
-      // Xử lý upload hình ảnh
       $HinhAnh = '';
       if (isset($_FILES['HinhAnh']) && $_FILES['HinhAnh']['error'] == 0 && is_uploaded_file($_FILES['HinhAnh']['tmp_name'])) {
         $fileTmpPath = $_FILES['HinhAnh']['tmp_name'];
         $fileName = $_FILES['HinhAnh']['name'];
-        $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $fileName); // tránh trùng tên và ký tự lạ
+        $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $fileName);
         $dest_path = __DIR__ . '/../uploads/' . $fileName;
         if (!is_dir(__DIR__ . '/../uploads')) {
           mkdir(__DIR__ . '/../uploads', 0777, true);
@@ -94,7 +78,8 @@ class PhuTungXeMayController
           'loaiphutung' => $loaiphutung,
           'nhasanxuat_MaNSX' => $nhasanxuat_MaNSX,
           'SoLanBaoHanhToiDa' => $SoLanBaoHanhToiDa,
-          'HinhAnh' => $HinhAnh
+          'HinhAnh' => $HinhAnh,
+          'TrangThai' => $TrangThai
         ];
         $result = $this->model->add($data);
 
@@ -112,7 +97,6 @@ class PhuTungXeMayController
     include __DIR__ . '/../views/phutungxemay/layout.php';
   }
 
-  // Hiển thị form sửa & xử lý cập nhật
   public function edit()
   {
     $error = "";
@@ -126,7 +110,6 @@ class PhuTungXeMayController
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      // Gán giá trị cho tất cả biến từ POST
       $TenSP = $_POST['TenSP'] ?? '';
       $SoSeriesSP = $_POST['SoSeriesSP'] ?? '';
       $MieuTaSP = $_POST['MieuTaSP'] ?? '';
@@ -136,28 +119,16 @@ class PhuTungXeMayController
       $nhasanxuat_MaNSX = $_POST['nhasanxuat_MaNSX'] ?? '';
       $SoLanBaoHanhToiDa = $_POST['SoLanBaoHanhToiDa'] ?? '';
       $DonGia = $_POST['DonGia'] ?? 0;
+      $ThoiGianBaoHanhDinhKy = $_POST['ThoiGianBaoHanhDinhKy'] ?? '';
+      $TrangThai = isset($_POST['TrangThai']) ? intval($_POST['TrangThai']) : 1;
 
-      $ngay = $_POST['ngay'] ?? '';
-      $thang = $_POST['thang'] ?? '';
-      $nam = $_POST['nam'] ?? '';
-      $count = 0;
-      if ($ngay)
-        $count++;
-      if ($thang)
-        $count++;
-      if ($nam)
-        $count++;
-      if ($count < 1) {
-        $error = "Phải nhập ít nhất 1 trong các trường Ngày, Tháng, Năm cho Thời gian bảo hành định kỳ!";
-      } else {
-        $ThoiGianBaoHanhDinhKy = sprintf('%04d-%02d-%02d', $nam ? $nam : 0, $thang ? $thang : 1, $ngay ? $ngay : 1);
+      if (empty($ThoiGianBaoHanhDinhKy)) {
+        $error = "Vui lòng nhập thời gian bảo hành định kỳ!";
       }
-
       if ($DonGia <= 0) {
         $error = "Đơn giá phải lớn hơn 0!";
       }
 
-      // Xử lý upload hình ảnh (nếu có)
       $HinhAnh = $item['HinhAnh'] ?? '';
       if (
         isset($_FILES['HinhAnh']) &&
@@ -190,7 +161,8 @@ class PhuTungXeMayController
           'loaiphutung' => $loaiphutung,
           'nhasanxuat_MaNSX' => $nhasanxuat_MaNSX,
           'SoLanBaoHanhToiDa' => $SoLanBaoHanhToiDa,
-          'HinhAnh' => $HinhAnh
+          'HinhAnh' => $HinhAnh,
+          'TrangThai' => $TrangThai
         ];
         $result = $this->model->update($MaSP, $data);
 
@@ -208,7 +180,6 @@ class PhuTungXeMayController
     include __DIR__ . '/../views/phutungxemay/layout.php';
   }
 
-  // Xóa phụ tùng
   public function delete()
   {
     $MaSP = $_GET['id'] ?? null;
@@ -221,6 +192,25 @@ class PhuTungXeMayController
       }
     }
     header("Location: ?action=list");
+    exit;
+  }
+
+  // Xử lý bật/tắt trạng thái (AJAX)
+  public function toggleStatus()
+  {
+    $MaSP = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    if ($MaSP <= 0) {
+      echo json_encode(['success' => false]);
+      exit;
+    }
+    $item = $this->model->getById($MaSP);
+    if (!$item) {
+      echo json_encode(['success' => false]);
+      exit;
+    }
+    $newStatus = $item['TrangThai'] == 1 ? 0 : 1;
+    $this->model->updateStatus($MaSP, $newStatus);
+    echo json_encode(['success' => true, 'newStatus' => $newStatus]);
     exit;
   }
 }

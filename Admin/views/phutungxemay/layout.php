@@ -71,8 +71,8 @@
             </div>
           </div>
           <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Quản lý Nhân Viên</a>
-          <a href="form.php" class="nav-item nav-link active"><i class="fa fa-keyboard me-2"></i>Forms</a>
-          <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a>
+          <a href="form.php" class="nav-item nav-link active"><i class="fa fa-keyboard me-2"></i>Phụ Tùng Xe Máy</a>
+          <a href="table.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Lịch Hẹn</a>
           <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
           <div class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i

@@ -4,11 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Sửa phụ tùng xe máy</title>
-  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome 5 -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  <!-- Template style.css -->
   <link href="style.css" rel="stylesheet">
 </head>
 
@@ -88,40 +85,28 @@
                 <input type="file" class="form-control" id="HinhAnh" name="HinhAnh" accept="image/*">
               </div>
               <div class="mb-3">
-                <label class="form-label">Thời gian bảo hành định kỳ <span class="text-danger">*</span></label>
-                <div class="row g-2">
-                  <div class="col-4">
-                    <input type="number" class="form-control" name="ngay" min="1" max="31" placeholder="Ngày" value="<?php
-                    // Giải mã ngày/tháng/năm từ ThoiGianBaoHanhDinhKy
-                    if (!empty($item['ThoiGianBaoHanhDinhKy'])) {
-                      $date = explode('-', $item['ThoiGianBaoHanhDinhKy']);
-                      echo htmlspecialchars($date[2]);
-                    }
-                    ?>">
-                  </div>
-                  <div class="col-4">
-                    <input type="number" class="form-control" name="thang" min="1" max="12" placeholder="Tháng" value="<?php
-                    if (!empty($item['ThoiGianBaoHanhDinhKy'])) {
-                      $date = explode('-', $item['ThoiGianBaoHanhDinhKy']);
-                      echo htmlspecialchars($date[1]);
-                    }
-                    ?>">
-                  </div>
-                  <div class="col-4">
-                    <input type="number" class="form-control" name="nam" min="1900" max="2100" placeholder="Năm" value="<?php
-                    if (!empty($item['ThoiGianBaoHanhDinhKy'])) {
-                      $date = explode('-', $item['ThoiGianBaoHanhDinhKy']);
-                      echo htmlspecialchars($date[0]);
-                    }
-                    ?>">
-                  </div>
-                </div>
-                <div class="form-text text-muted ms-1">Nhập ít nhất 1 trường trong 3 trường Ngày, Tháng, Năm.</div>
+                <label for="ThoiGianBaoHanhDinhKy" class="form-label">Thời gian bảo hành định kỳ <span
+                    class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="ThoiGianBaoHanhDinhKy" name="ThoiGianBaoHanhDinhKy"
+                  placeholder="Ví dụ: 60 ngày, Không áp dụng"
+                  value="<?= htmlspecialchars($item['ThoiGianBaoHanhDinhKy'] ?? '') ?>" required>
+                <div class="form-text text-muted">Bạn có thể nhập chữ, số, ví dụ: "30 ngày", "Không áp dụng", "18 tháng
+                  5 ngày", ...</div>
               </div>
               <div class="mb-3">
                 <label for="DonGia" class="form-label">Đơn giá <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" id="DonGia" name="DonGia" step="0.01" min="0.01" required
+                <input type="number" class="form-control" id="DonGia" name="DonGia" step="0.01" min="1" required
                   value="<?= htmlspecialchars($item['DonGia'] ?? '') ?>">
+              </div>
+              <div class="mb-3">
+                <label for="TrangThai" class="form-label">Trạng thái hiển thị</label>
+                <select class="form-select" id="TrangThai" name="TrangThai">
+                  <option value="1" <?= (isset($item['TrangThai']) && $item['TrangThai'] == 1) ? 'selected' : ''; ?>>Hiển
+                    thị
+                  </option>
+                  <option value="0" <?= (isset($item['TrangThai']) && $item['TrangThai'] == 0) ? 'selected' : ''; ?>>Ẩn
+                  </option>
+                </select>
               </div>
               <button type="submit" class="btn btn-warning w-100">
                 <i class="fas fa-save me-2"></i>Lưu thay đổi
@@ -138,7 +123,6 @@
     </div>
   </div>
 
-  <!-- Bootstrap 5 JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

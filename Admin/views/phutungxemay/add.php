@@ -1,14 +1,14 @@
+<?php
+// $error và $listNSX phải được truyền từ Controller
+?>
 <!DOCTYPE html>
 <html lang="vi">
 
 <head>
   <meta charset="UTF-8">
   <title>Thêm phụ tùng xe máy</title>
-  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome 5 -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  <!-- Template style.css -->
   <link href="style.css" rel="stylesheet">
 </head>
 
@@ -25,7 +25,6 @@
             <?php if (!empty($error)): ?>
               <div class="alert alert-danger text-center"><?= $error ?></div>
             <?php endif; ?>
-            <!-- Sửa ở đây: thêm enctype để upload file -->
             <form method="post" enctype="multipart/form-data" autocomplete="off">
               <div class="mb-3">
                 <label for="TenSP" class="form-label">Tên SP <span class="text-danger">*</span></label>
@@ -68,27 +67,25 @@
               </div>
               <div class="mb-3">
                 <label for="HinhAnh" class="form-label">Hình ảnh</label>
-                <!-- Sửa ở đây: đổi type="text" thành type="file" -->
                 <input type="file" class="form-control" id="HinhAnh" name="HinhAnh" accept="image/*">
               </div>
               <div class="mb-3">
-                <label class="form-label">Thời gian bảo hành định kỳ <span class="text-danger">*</span></label>
-                <div class="row g-2">
-                  <div class="col-4">
-                    <input type="number" class="form-control" name="ngay" min="0" max="31" placeholder="Ngày">
-                  </div>
-                  <div class="col-4">
-                    <input type="number" class="form-control" name="thang" min="0" max="12" placeholder="Tháng">
-                  </div>
-                  <div class="col-4">
-                    <input type="number" class="form-control" name="nam" placeholder="Năm">
-                  </div>
-                </div>
-                <div class="form-text text-muted ms-1">Nhập ít nhất 1 trường trong 3 trường Ngày, Tháng, Năm.</div>
+                <label for="ThoiGianBaoHanhDinhKy" class="form-label">Thời gian bảo hành định kỳ <span
+                    class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="ThoiGianBaoHanhDinhKy" name="ThoiGianBaoHanhDinhKy"
+                  placeholder="Ví dụ: 12 tháng, 6 tháng, Không áp dụng" required>
+                <div class="form-text text-muted">Vd: 30 ngày</div>
               </div>
               <div class="mb-3">
                 <label for="DonGia" class="form-label">Đơn giá <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" id="DonGia" name="DonGia" step="0.01" min="0.01" required>
+                <input type="number" class="form-control" id="DonGia" name="DonGia" step="0.01" min="1" required>
+              </div>
+              <div class="mb-3">
+                <label for="TrangThai" class="form-label">Trạng thái hiển thị</label>
+                <select class="form-select" id="TrangThai" name="TrangThai">
+                  <option value="1" selected>Hiển thị</option>
+                  <option value="0">Ẩn</option>
+                </select>
               </div>
               <button type="submit" class="btn btn-primary w-100">
                 <i class="fas fa-save me-2"></i>Thêm mới
@@ -104,8 +101,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Bootstrap 5 JS (for validation, if needed) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

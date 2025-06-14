@@ -27,6 +27,10 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">Trang chủ</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="hienthi_phutung.php">Phụ Tùng</a>
+                </li>
+
 
                 <li class="nav-item">
                     <a class="nav-link" href="about.php">Về chúng tôi</a>

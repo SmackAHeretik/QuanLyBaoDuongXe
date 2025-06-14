@@ -21,10 +21,11 @@
         <th>NamSX</th>
         <th>XuatXu</th>
         <th>ThoiGianBaoHanhDinhKy</th>
-        <th>DonGia</th>
+        <th>Đơn giá</th>
         <th>loaiphutung</th>
         <th>nhasanxuat_MaNSX</th>
         <th>SoLanBaoHanhToiDa</th>
+        <th>Trạng thái</th>
         <th>Hành động</th>
       </tr>
     </thead>
@@ -47,10 +48,16 @@
             <td><?= htmlspecialchars($row['NamSX']) ?></td>
             <td><?= htmlspecialchars($row['XuatXu']) ?></td>
             <td><?= htmlspecialchars($row['ThoiGianBaoHanhDinhKy']) ?></td>
-            <td><?= htmlspecialchars($row['DonGia']) ?></td>
+            <td><?= number_format($row['DonGia'], 0, ',', '.') ?> VND</td>
             <td><?= htmlspecialchars($row['loaiphutung']) ?></td>
             <td><?= htmlspecialchars($row['nhasanxuat_MaNSX']) ?></td>
             <td><?= htmlspecialchars($row['SoLanBaoHanhToiDa']) ?></td>
+            <td>
+              <button class="btn btn-sm <?= $row['TrangThai'] == 1 ? 'btn-success' : 'btn-secondary' ?> btn-toggle-status"
+                data-id="<?= $row['MaSP'] ?>" data-status="<?= $row['TrangThai'] ?>">
+                <?= $row['TrangThai'] == 1 ? 'Hiển thị' : 'Ẩn' ?>
+              </button>
+            </td>
             <td>
               <a href="form.php?action=edit&id=<?= urlencode($row['MaSP']) ?>" class="btn btn-sm btn-warning">Sửa</a>
               <a href="form.php?action=delete&id=<?= urlencode($row['MaSP']) ?>" class="btn btn-sm btn-danger"
@@ -60,9 +67,30 @@
         <?php endwhile; ?>
       <?php else: ?>
         <tr>
-          <td colspan="13" class="text-center">Không có dữ liệu</td>
+          <td colspan="14" class="text-center">Không có dữ liệu</td>
         </tr>
       <?php endif; ?>
     </tbody>
   </table>
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.btn-toggle-status').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        let id = this.dataset.id;
+        let btnEl = this;
+        fetch('form.php?action=toggleStatus&id=' + id, { method: 'POST' })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              btnEl.dataset.status = data.newStatus;
+              btnEl.textContent = data.newStatus == 1 ? 'Hiển thị' : 'Ẩn';
+              btnEl.className = 'btn btn-sm ' + (data.newStatus == 1 ? 'btn-success' : 'btn-secondary') + ' btn-toggle-status';
+            } else {
+              alert('Lỗi thao tác!');
+            }
+          });
+      });
+    });
+  });
+</script>

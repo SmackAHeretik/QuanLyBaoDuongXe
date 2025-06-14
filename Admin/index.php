@@ -80,9 +80,10 @@ if (!isset($_SESSION['admin'])) {
                             <a href="element.html" class="dropdown-item">Other Elements</a>
                         </div>
                     </div>
-                    <a href="NVmanagement.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Quản lý nhân viên</a>
-                    <a href="form.php" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Forms</a>
-                    <a href="table.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a>
+                    <a href="NVmanagement.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Quản lý nhân
+                        viên</a>
+                    <a href="form.php" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Phụ Tùng Xe Máy</a>
+                    <a href="table.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Lịch Hẹn</a>
                     <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i

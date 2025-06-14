@@ -16,6 +16,13 @@ class PhuTungXeMayModel
     return $this->conn->query($sql);
   }
 
+  // Lấy tất cả phụ tùng HIỂN THỊ cho trang ngoài (khách)
+  public function getAllHienThi()
+  {
+    $sql = "SELECT * FROM phutungxemay WHERE TrangThai = 1";
+    return $this->conn->query($sql);
+  }
+
   public function getById($MaSP)
   {
     $stmt = $this->conn->prepare("SELECT * FROM phutungxemay WHERE MaSP = ?");
@@ -26,42 +33,85 @@ class PhuTungXeMayModel
 
   public function add($data)
   {
-    $stmt = $this->conn->prepare("INSERT INTO phutungxemay (TenSP, SoSeriesSP, MieuTaSP, NamSX, XuatXu, ThoiGianBaoHanhDinhKy, DonGia, loaiphutung, nhasanxuat_MaNSX, SoLanBaoHanhToiDa, HinhAnh) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $this->conn->prepare("INSERT INTO phutungxemay (TenSP, SoSeriesSP, MieuTaSP, NamSX, XuatXu, ThoiGianBaoHanhDinhKy, DonGia, loaiphutung, nhasanxuat_MaNSX, SoLanBaoHanhToiDa, HinhAnh, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    $TenSP = $data['TenSP'];
+    $SoSeriesSP = $data['SoSeriesSP'];
+    $MieuTaSP = $data['MieuTaSP'];
+    $NamSX = $data['NamSX'];
+    $XuatXu = $data['XuatXu'];
+    $ThoiGianBaoHanhDinhKy = $data['ThoiGianBaoHanhDinhKy'];
+    $DonGia = floatval($data['DonGia']);
+    $loaiphutung = $data['loaiphutung'];
+    $nhasanxuat_MaNSX = intval($data['nhasanxuat_MaNSX']);
+    $SoLanBaoHanhToiDa = intval($data['SoLanBaoHanhToiDa']);
+    $HinhAnh = $data['HinhAnh'];
+    $TrangThai = isset($data['TrangThai']) ? intval($data['TrangThai']) : 1;
+
+    // sửa chuỗi kiểu đúng với dữ liệu cột:
+    // TenSP(s), SoSeriesSP(s), MieuTaSP(s), NamSX(i), XuatXu(s), ThoiGianBaoHanhDinhKy(s), DonGia(d), loaiphutung(s), nhasanxuat_MaNSX(i), SoLanBaoHanhToiDa(i), HinhAnh(s), TrangThai(i)
     $stmt->bind_param(
-      "sssissdsiis",
-      $data['TenSP'],
-      $data['SoSeriesSP'],
-      $data['MieuTaSP'],
-      $data['NamSX'],
-      $data['XuatXu'],
-      $data['ThoiGianBaoHanhDinhKy'],
-      $data['DonGia'],
-      $data['loaiphutung'],
-      $data['nhasanxuat_MaNSX'],
-      $data['SoLanBaoHanhToiDa'],
-      $data['HinhAnh']
+      'sssissdsissi',
+      $TenSP,
+      $SoSeriesSP,
+      $MieuTaSP,
+      $NamSX,
+      $XuatXu,
+      $ThoiGianBaoHanhDinhKy,
+      $DonGia,
+      $loaiphutung,
+      $nhasanxuat_MaNSX,
+      $SoLanBaoHanhToiDa,
+      $HinhAnh,
+      $TrangThai
     );
     return $stmt->execute();
   }
 
   public function update($MaSP, $data)
   {
-    $stmt = $this->conn->prepare("UPDATE phutungxemay SET TenSP=?, SoSeriesSP=?, MieuTaSP=?, NamSX=?, XuatXu=?, ThoiGianBaoHanhDinhKy=?, DonGia=?, loaiphutung=?, nhasanxuat_MaNSX=?, SoLanBaoHanhToiDa=?, HinhAnh=? WHERE MaSP=?");
+    $stmt = $this->conn->prepare("UPDATE phutungxemay SET TenSP=?, SoSeriesSP=?, MieuTaSP=?, NamSX=?, XuatXu=?, ThoiGianBaoHanhDinhKy=?, DonGia=?, loaiphutung=?, nhasanxuat_MaNSX=?, SoLanBaoHanhToiDa=?, HinhAnh=?, TrangThai=? WHERE MaSP=?");
+
+    $TenSP = $data['TenSP'];
+    $SoSeriesSP = $data['SoSeriesSP'];
+    $MieuTaSP = $data['MieuTaSP'];
+    $NamSX = $data['NamSX'];
+    $XuatXu = $data['XuatXu'];
+    $ThoiGianBaoHanhDinhKy = $data['ThoiGianBaoHanhDinhKy'];
+    $DonGia = floatval($data['DonGia']);
+    $loaiphutung = $data['loaiphutung'];
+    $nhasanxuat_MaNSX = intval($data['nhasanxuat_MaNSX']);
+    $SoLanBaoHanhToiDa = intval($data['SoLanBaoHanhToiDa']);
+    $HinhAnh = $data['HinhAnh'];
+    $TrangThai = isset($data['TrangThai']) ? intval($data['TrangThai']) : 1;
+    $MaSP_int = intval($MaSP);
+
+    // sửa chuỗi kiểu đúng với dữ liệu cột:
+    // TenSP(s), SoSeriesSP(s), MieuTaSP(s), NamSX(i), XuatXu(s), ThoiGianBaoHanhDinhKy(s), DonGia(d), loaiphutung(s), nhasanxuat_MaNSX(i), SoLanBaoHanhToiDa(i), HinhAnh(s), TrangThai(i), MaSP(i)
     $stmt->bind_param(
-      "sssissdsiisi",
-      $data['TenSP'],
-      $data['SoSeriesSP'],
-      $data['MieuTaSP'],
-      $data['NamSX'],
-      $data['XuatXu'],
-      $data['ThoiGianBaoHanhDinhKy'],
-      $data['DonGia'],
-      $data['loaiphutung'],
-      $data['nhasanxuat_MaNSX'],
-      $data['SoLanBaoHanhToiDa'],
-      $data['HinhAnh'],
-      $MaSP
+      'sssissdsissii',
+      $TenSP,
+      $SoSeriesSP,
+      $MieuTaSP,
+      $NamSX,
+      $XuatXu,
+      $ThoiGianBaoHanhDinhKy,
+      $DonGia,
+      $loaiphutung,
+      $nhasanxuat_MaNSX,
+      $SoLanBaoHanhToiDa,
+      $HinhAnh,
+      $TrangThai,
+      $MaSP_int
     );
+    return $stmt->execute();
+  }
+
+  // Bật/tắt trạng thái
+  public function updateStatus($MaSP, $TrangThai)
+  {
+    $stmt = $this->conn->prepare("UPDATE phutungxemay SET TrangThai=? WHERE MaSP=?");
+    $stmt->bind_param("ii", $TrangThai, $MaSP);
     return $stmt->execute();
   }
 

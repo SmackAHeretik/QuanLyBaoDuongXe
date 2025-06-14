@@ -117,11 +117,11 @@ class LichHenController
         include __DIR__ . '/../view/lichhen_cuatoi.php';
     }
 
-    public function getAllLichHen()
-    {
-        $sql = "SELECT * FROM lichhen";
-        $stmt = $this->db->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    // public function getAllLichHen()
+    // {
+    //     $sql = "SELECT * FROM lichhen";
+    //     $stmt = $this->db->query($sql);
+    //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // }
 }
 ?>

@@ -17,4 +17,8 @@ switch ($action) {
     default:
         $controller->list();
 }
+if ($_GET['action'] == 'toggleStatus') {
+    $controller->toggleStatus();
+    exit;
+}
 ?>
