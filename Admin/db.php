@@ -1,11 +1,16 @@
 <?php
 function connectDB()
 {
-  $conn = new mysqli('localhost', 'root', '', 'quanlybaoduongxe');
-  if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-  }
-  $conn->set_charset("utf8mb4");
-  return $conn;
+    $host = 'localhost';
+    $dbname = 'quanlybaoduongxe';
+    $username = 'root';
+    $password = '';
+    try {
+        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
+    } catch (PDOException $e) {
+        die("Kết nối thất bại: " . $e->getMessage());
+    }
 }
 ?>
