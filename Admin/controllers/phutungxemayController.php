@@ -15,7 +15,7 @@ class PhuTungXeMayController
 
   public function list()
   {
-    $data = $this->model->getAll();
+    $phutungxemay = $this->model->getAll();
     $success = $_SESSION['success'] ?? '';
     unset($_SESSION['success']);
     $error = $_SESSION['error'] ?? '';
@@ -214,4 +214,3 @@ class PhuTungXeMayController
     exit;
   }
 }
-?>

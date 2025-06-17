@@ -30,8 +30,8 @@
       </tr>
     </thead>
     <tbody>
-      <?php if ($data && $data->num_rows > 0): ?>
-        <?php while ($row = $data->fetch_assoc()): ?>
+      <?php if (!empty($phutungxemay)): ?>
+        <?php foreach ($phutungxemay as $row): ?>
           <tr>
             <td><?= htmlspecialchars($row['MaSP']) ?></td>
             <td><?= htmlspecialchars($row['TenSP']) ?></td>
@@ -64,7 +64,7 @@
                 onclick="return confirm('Bạn chắc chắn muốn xóa?')">Xóa</a>
             </td>
           </tr>
-        <?php endwhile; ?>
+        <?php endforeach; ?>
       <?php else: ?>
         <tr>
           <td colspan="14" class="text-center">Không có dữ liệu</td>

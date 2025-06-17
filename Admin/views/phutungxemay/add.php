@@ -1,107 +1,66 @@
-<?php
-// $error và $listNSX phải được truyền từ Controller
-?>
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Thêm phụ tùng xe máy</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  <link href="style.css" rel="stylesheet">
-</head>
-
-<body class="bg-light">
-
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-xl-7 col-lg-8 col-md-10">
-        <div class="card shadow border-0">
-          <div class="card-header bg-primary text-white text-center">
-            <h4 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Thêm Phụ Tùng Xe Máy</h4>
-          </div>
-          <div class="card-body p-4">
-            <?php if (!empty($error)): ?>
-              <div class="alert alert-danger text-center"><?= $error ?></div>
-            <?php endif; ?>
-            <form method="post" enctype="multipart/form-data" autocomplete="off">
-              <div class="mb-3">
-                <label for="TenSP" class="form-label">Tên SP <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="TenSP" name="TenSP" required>
-              </div>
-              <div class="mb-3">
-                <label for="SoSeriesSP" class="form-label">Số Series SP</label>
-                <input type="text" class="form-control" id="SoSeriesSP" name="SoSeriesSP">
-              </div>
-              <div class="mb-3">
-                <label for="MieuTaSP" class="form-label">Miêu tả SP</label>
-                <textarea class="form-control" id="MieuTaSP" name="MieuTaSP" rows="2"></textarea>
-              </div>
-              <div class="row g-2">
-                <div class="col-md-4 mb-3">
-                  <label for="NamSX" class="form-label">Năm SX</label>
-                  <input type="number" class="form-control" id="NamSX" name="NamSX" min="1900" max="2100">
-                </div>
-                <div class="col-md-4 mb-3">
-                  <label for="XuatXu" class="form-label">Xuất xứ</label>
-                  <input type="text" class="form-control" id="XuatXu" name="XuatXu">
-                </div>
-                <div class="col-md-4 mb-3">
-                  <label for="loaiphutung" class="form-label">Loại phụ tùng</label>
-                  <input type="text" class="form-control" id="loaiphutung" name="loaiphutung">
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="nhasanxuat_MaNSX" class="form-label">Nhà sản xuất <span class="text-danger">*</span></label>
-                <select id="nhasanxuat_MaNSX" name="nhasanxuat_MaNSX" class="form-select" required>
-                  <option value="">-- Chọn nhà sản xuất --</option>
-                  <?php foreach ($listNSX as $nsx): ?>
-                    <option value="<?= $nsx['MaNSX'] ?>"><?= htmlspecialchars($nsx['TenNhaSX']) ?></option>
-                  <?php endforeach; ?>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="SoLanBaoHanhToiDa" class="form-label">Số lần bảo hành tối đa</label>
-                <input type="number" class="form-control" id="SoLanBaoHanhToiDa" name="SoLanBaoHanhToiDa">
-              </div>
-              <div class="mb-3">
-                <label for="HinhAnh" class="form-label">Hình ảnh</label>
-                <input type="file" class="form-control" id="HinhAnh" name="HinhAnh" accept="image/*">
-              </div>
-              <div class="mb-3">
-                <label for="ThoiGianBaoHanhDinhKy" class="form-label">Thời gian bảo hành định kỳ <span
-                    class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="ThoiGianBaoHanhDinhKy" name="ThoiGianBaoHanhDinhKy"
-                  placeholder="Ví dụ: 12 tháng, 6 tháng, Không áp dụng" required>
-                <div class="form-text text-muted">Vd: 30 ngày</div>
-              </div>
-              <div class="mb-3">
-                <label for="DonGia" class="form-label">Đơn giá <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" id="DonGia" name="DonGia" step="0.01" min="1" required>
-              </div>
-              <div class="mb-3">
-                <label for="TrangThai" class="form-label">Trạng thái hiển thị</label>
-                <select class="form-select" id="TrangThai" name="TrangThai">
-                  <option value="1" selected>Hiển thị</option>
-                  <option value="0">Ẩn</option>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-primary w-100">
-                <i class="fas fa-save me-2"></i>Thêm mới
-              </button>
-            </form>
-          </div>
-          <div class="card-footer text-center bg-white">
-            <a href="?action=list" class="btn btn-link text-primary text-decoration-none">
-              <i class="fas fa-arrow-left me-1"></i>Quay lại danh sách
-            </a>
-          </div>
+<div class="container mt-4">
+    <h2>Thêm phụ tùng xe máy</h2>
+    <?php if (!empty($error)): ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
+    <form method="post" action="" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label>Tên sản phẩm</label>
+            <input type="text" name="TenSP" class="form-control" required>
         </div>
-      </div>
-    </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+        <div class="mb-3">
+            <label>Số series</label>
+            <input type="text" name="SoSeriesSP" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Miêu tả</label>
+            <textarea name="MieuTaSP" class="form-control"></textarea>
+        </div>
+        <div class="mb-3">
+            <label>Năm sản xuất</label>
+            <input type="number" name="NamSX" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Xuất xứ</label>
+            <input type="text" name="XuatXu" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Thời gian bảo hành định kỳ</label>
+            <input type="text" name="ThoiGianBaoHanhDinhKy" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Đơn giá</label>
+            <input type="number" name="DonGia" class="form-control" min="1" required>
+        </div>
+        <div class="mb-3">
+            <label>Loại phụ tùng</label>
+            <input type="text" name="loaiphutung" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Nhà sản xuất</label>
+            <select name="nhasanxuat_MaNSX" class="form-control" required>
+                <option value="">-- Chọn nhà sản xuất --</option>
+                <?php foreach ($listNSX as $nsx): ?>
+                    <option value="<?= $nsx['MaNSX'] ?>"><?= htmlspecialchars($nsx['TenNhaSX']) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>Số lần bảo hành tối đa</label>
+            <input type="number" name="SoLanBaoHanhToiDa" class="form-control" min="0">
+        </div>
+        <div class="mb-3">
+            <label>Hình ảnh</label>
+            <input type="file" name="HinhAnh" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Trạng thái</label>
+            <select name="TrangThai" class="form-control">
+                <option value="1" selected>Hiển thị</option>
+                <option value="0">Ẩn</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Thêm mới</button>
+        <a href="?action=list" class="btn btn-secondary">Quay lại</a>
+    </form>
+</div>
