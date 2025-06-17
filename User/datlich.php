@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-date_default_timezone_set('Asia/Ho_Chi_Minh'); // Đảm bảo múi giờ đúng
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 $controllerName = isset($_GET['controller']) ? $_GET['controller'] : 'LichHen';
 $actionName = isset($_GET['action']) ? $_GET['action'] : 'datLichForm';
@@ -24,10 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Lấy biến lỗi nếu có để truyền vào contact.php
 $error = isset($GLOBALS['error']) ? $GLOBALS['error'] : '';
+
+// Lấy danh sách xe của khách hàng
+include_once './utils/ConnectDb.php';
+include_once './model/BikeProfileModel.php';
+$bikeList = [];
+if (isset($_SESSION['MaKH'])) {
+    $db = (new ConnectDb())->connect();
+    $bikeModel = new BikeProfileModel($db);
+    $bikeList = $bikeModel->getBikesByCustomerId($_SESSION['MaKH']);
+}
 ?>
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -43,7 +52,6 @@ $error = isset($GLOBALS['error']) ? $GLOBALS['error'] : '';
     <link href="css/templatemo-tiya-golf-club.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
 </head>
-
 <body>
     <main>
         <?php include('./layouts/navbar/navbar.php') ?>
@@ -82,5 +90,4 @@ $error = isset($GLOBALS['error']) ? $GLOBALS['error'] : '';
     </script>
     <script src="js/custom.js"></script>
 </body>
-
 </html>
