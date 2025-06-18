@@ -113,6 +113,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="profile.php">Cập nhật tài khoản</a></li>
+                            <li><a class="dropdown-item" href="baohanh.php">Đặt lịch bảo hành</a></li>
                             <li>
                                 <span class="dropdown-header">Thông tin xe máy</span>
                             </li>
@@ -123,6 +124,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <a class="dropdown-item ps-4" href="bike_list.php">Xem danh sách xe</a>
                             </li>
                             <li><a class="dropdown-item" href="lichhen_cuatoi.php">Danh sách lịch hẹn</a></li>
+                            <li><a class="dropdown-item" href="listbaohanh.php">Danh sách lịch bảo hành</a></li>
                             <li><a class="dropdown-item" href="logout.php">Đăng xuất</a></li>
                         </ul>
                     </div>
