@@ -1,35 +1,35 @@
-
 <?php
-class StaffModel {
+class StaffModel
+{
     private $conn;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
     // Đăng ký tài khoản nhân viên
-    public function register($name, $email, $phone, $password) {
+    public function register($name, $email, $phone, $password)
+    {
         $stmt = $this->conn->prepare("INSERT INTO nhanvien (TenNV, Email, SDT, MatKhau) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $name, $email, $phone, $password);
-        return $stmt->execute();
+        return $stmt->execute([$name, $email, $phone, $password]);
     }
 
     // Kiểm tra email đã tồn tại chưa
-    public function existsEmail($email) {
+    public function existsEmail($email)
+    {
         $stmt = $this->conn->prepare("SELECT * FROM nhanvien WHERE Email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->num_rows > 0;
+        $stmt->execute([$email]);
+        // Có thể dùng rowCount hoặc fetch
+        return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
     }
 
     // Đăng nhập nhân viên
-    public function login($email, $password) {
+    public function login($email, $password)
+    {
         $stmt = $this->conn->prepare("SELECT * FROM nhanvien WHERE Email = ? AND MatKhau = ?");
-        $stmt->bind_param("ss", $email, $password);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc();
+        $stmt->execute([$email, $password]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
 ?>
