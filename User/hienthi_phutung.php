@@ -1,8 +1,12 @@
 <?php
-$projectRoot = '/QuanLyBaoDuongXe'; // Đổi nếu project nằm ở thư mục khác
-require_once __DIR__ . '/../Admin/models/phutungxemayModel.php';
-$model = new PhuTungXeMayModel();
-$products = $model->getAllHienThi();
+$projectRoot = '/QuanLyBaoDuongXe';
+require_once __DIR__ . '/utils/ConnectDb.php';
+require_once __DIR__ . '/../Admin/models/phutungxemaymodel.php';
+
+$db = new ConnectDb();
+$pdo = $db->connect();
+$model = new PhuTungXeMayModel($pdo);
+$products = $model->getAll(); // hoặc getAllHienThi() nếu muốn chỉ lấy sản phẩm TrangThai = 1
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +27,12 @@ $products = $model->getAllHienThi();
       width: 25%;
       text-align: center;
       margin-bottom: 40px;
+      cursor: pointer;
+      transition: box-shadow .2s;
+    }
+
+    .product-item:hover {
+      box-shadow: 0 0 8px #bbb;
     }
 
     .product-item img {
@@ -30,6 +40,11 @@ $products = $model->getAllHienThi();
       height: 120px;
       object-fit: contain;
       margin-bottom: 16px;
+      transition: transform .2s;
+    }
+
+    .product-item:hover img {
+      transform: scale(1.07);
     }
 
     .product-title {
@@ -67,6 +82,14 @@ $products = $model->getAllHienThi();
       float: right;
       margin-bottom: 30px;
     }
+
+    a.product-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      height: 100%;
+      width: 100%;
+    }
   </style>
 </head>
 
@@ -89,8 +112,8 @@ $products = $model->getAllHienThi();
         <?php
         $q = isset($_GET['q']) ? trim($_GET['q']) : '';
         $resultList = [];
-        if ($products && $products->num_rows > 0) {
-          while ($item = $products->fetch_assoc()) {
+        if ($products && count($products) > 0) {
+          foreach ($products as $item) {
             if ($item['TrangThai'] != 1)
               continue;
             if ($q !== '' && stripos($item['TenSP'], $q) === false)
@@ -109,9 +132,11 @@ $products = $model->getAllHienThi();
           }
           ?>
           <div class="product-item">
-            <img src="<?= htmlspecialchars($src) ?>" alt="<?= htmlspecialchars($item['TenSP']) ?>">
-            <div class="product-title"><?= htmlspecialchars($item['TenSP']) ?></div>
-            <div class="product-price"><?= number_format($item['DonGia'], 0, ',', '.') ?> VNĐ</div>
+            <a class="product-link" href="chitiet_phutung.php?id=<?= $item['MaSP'] ?>">
+              <img src="<?= htmlspecialchars($src) ?>" alt="<?= htmlspecialchars($item['TenSP']) ?>">
+              <div class="product-title"><?= htmlspecialchars($item['TenSP']) ?></div>
+              <div class="product-price"><?= number_format($item['DonGia'], 0, ',', '.') ?> VNĐ</div>
+            </a>
           </div>
         <?php endforeach; ?>
       </div>

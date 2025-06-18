@@ -1,18 +1,23 @@
 <?php
-require_once __DIR__ . '/../db.php';
-
 class PhuTungXeMayModel
 {
   private $conn;
 
-  public function __construct()
+  public function __construct($pdo)
   {
-    $this->conn = connectDB();
+    $this->conn = $pdo;
   }
 
   public function getAll()
   {
     $sql = "SELECT * FROM phutungxemay";
+    $stmt = $this->conn->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function getAllHienThi()
+  {
+    $sql = "SELECT * FROM phutungxemay WHERE TrangThai = 1";
     $stmt = $this->conn->query($sql);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
@@ -80,3 +85,4 @@ class PhuTungXeMayModel
     return $stmt->execute([$MaSP]);
   }
 }
+?>

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../models/PhuTungXeMayModel.php';
 require_once __DIR__ . '/../models/NhaSanXuatModel.php';
 
@@ -7,10 +8,10 @@ class PhuTungXeMayController
   private $model;
   private $nsxModel;
 
-  public function __construct()
+  public function __construct($pdo)
   {
-    $this->model = new PhuTungXeMayModel();
-    $this->nsxModel = new NhaSanXuatModel();
+    $this->model = new PhuTungXeMayModel($pdo);
+    $this->nsxModel = new NhaSanXuatModel($pdo);
   }
 
   public function list()

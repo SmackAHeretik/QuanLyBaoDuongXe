@@ -1,7 +1,10 @@
 <?php
 session_start();
-require_once 'controllers/phutungxemayController.php';
-$controller = new PhuTungXeMayController();
+require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/controllers/phutungxemayController.php';
+
+$pdo = connectDB();
+$controller = new PhuTungXeMayController($pdo);
 
 $action = $_GET['action'] ?? 'list';
 switch ($action) {
@@ -14,11 +17,10 @@ switch ($action) {
     case 'delete':
         $controller->delete();
         break;
+    case 'toggleStatus':
+        $controller->toggleStatus();
+        break;
     default:
         $controller->list();
-}
-if ($_GET['action'] == 'toggleStatus') {
-    $controller->toggleStatus();
-    exit;
 }
 ?>
