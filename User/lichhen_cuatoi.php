@@ -2,16 +2,24 @@
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
+ini_set('display_errors', 0);
+error_reporting(0);
+include_once './utils/ConnectDb.php';
 require_once __DIR__ . '/model/LichHenModel.php';
+
+$db = (new ConnectDb())->connect();
 
 $makh = $_SESSION['MaKH'] ?? null;
 
 // XỬ LÝ HỦY LỊCH
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cancel' && isset($_POST['malich'])) {
-  $model = new LichHenModel();
+  $model = new LichHenModel($db);
   $malich = intval($_POST['malich']);
   $lich = $model->getLichById($malich);
-  if ($lich && $lich['lichen_khachhang_MaKH'] == $makh && $lich['TrangThai'] === 'pending') {
+  if (
+    $lich && ($lich['khachhang_MaKH'] ?? $lich['lichen_khachhang_MaKH'] ?? null) == $makh &&
+    ($lich['TrangThai'] === 'pending' || $lich['TrangThai'] === 'cho duyet')
+  ) {
     $model->updateTrangThai($malich, 'cancelled');
     header("Location: lichhen_cuatoi.php");
     exit;
@@ -21,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Lấy danh sách lịch hẹn
 $lichhen = [];
 if ($makh) {
-  $model = new LichHenModel();
+  $model = new LichHenModel($db);
   $lichhen = $model->getLichHenByKhachHang($makh);
 }
 ?>
@@ -92,18 +100,24 @@ if ($makh) {
               <?php foreach ($lichhen as $i => $row): ?>
                 <tr>
                   <td><?= $i + 1 ?></td>
-                  <td><?= htmlspecialchars($row['NgayHen']) ?></td>
+                  <td>
+                    <?php
+                    $ngay = isset($row['NgayHen']) ? date('d/m/Y', strtotime($row['NgayHen'])) : '';
+                    $ca = $row['ThoiGianCa'] ?? '';
+                    echo trim($ngay . ($ca ? ' - ' . $ca : ''));
+                    ?>
+                  </td>
                   <td><?= htmlspecialchars($row['TenNV'] ?? 'Chưa phân công') ?></td>
-                  <td><?= htmlspecialchars($row['LoaiXe']) ?></td>
-                  <td><?= htmlspecialchars($row['MoTaLyDoHen']) ?></td>
+                  <td><?= htmlspecialchars($row['LoaiXe'] ?? '-') ?></td>
+                  <td><?= htmlspecialchars($row['MoTaLyDo'] ?? '-') ?></td>
                   <td>
                     <?php
                     $status = $row['TrangThai'] ?? '';
-                    if ($status === 'pending') {
+                    if ($status === 'pending' || $status === 'cho duyet') {
                       echo '<span class="badge bg-warning text-dark badge-status">Chờ xét duyệt</span>';
-                    } else if ($status === 'confirmed') {
+                    } else if ($status === 'confirmed' || $status === 'da duyet') {
                       echo '<span class="badge bg-success badge-status">Đã xét duyệt</span>';
-                    } else if ($status === 'cancelled') {
+                    } else if ($status === 'cancelled' || $status === 'huy') {
                       echo '<span class="badge bg-danger badge-status">Hủy</span>';
                     } else {
                       echo '<span class="badge bg-secondary badge-status">' . htmlspecialchars($status) . '</span>';
@@ -111,13 +125,15 @@ if ($makh) {
                     ?>
                   </td>
                   <td>
-                    <?php if ($status === 'pending'): ?>
+                    <?php if ($status === 'pending' || $status === 'cho duyet'): ?>
                       <form method="post" action="lichhen_cuatoi.php"
                         onsubmit="return confirm('Bạn có chắc muốn hủy lịch hẹn này không?');">
                         <input type="hidden" name="action" value="cancel">
                         <input type="hidden" name="malich" value="<?= $row['MaLich'] ?>">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Hủy lịch</button>
                       </form>
+                    <?php else: ?>
+                      <!-- Để trống, không echo gì cả -->
                     <?php endif; ?>
                   </td>
                 </tr>
