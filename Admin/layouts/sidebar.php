@@ -39,7 +39,12 @@
             <a href="dichvu.php" class="nav-item nav-link">
                 <i class="fa fa-concierge-bell me-2"></i>Dịch Vụ
             </a>
-
+            <a href="danhsachlichhen.php" class="nav-item nav-link">
+                <i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn
+            </a>
+            <a href="danhsachlichbaohanh.php" class="nav-item nav-link">
+                <i class="fa fa-shield-alt me-2"></i>Danh sách Bảo Hành
+            </a>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
                         class="far fa-file-alt me-2"></i>Pages</a>

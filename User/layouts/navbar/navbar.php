@@ -3,7 +3,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 ?>
-
 <nav class="navbar navbar-expand-lg">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.php">
@@ -30,16 +29,12 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li class="nav-item">
                     <a class="nav-link" href="hienthi_phutung.php">Phụ Tùng</a>
                 </li>
-
-
                 <li class="nav-item">
                     <a class="nav-link" href="about.php">Về chúng tôi</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link click-scroll" href="#section_3">Dịch vụ</a>
                 </li>
-
                 <li class="nav-item dropdown position-static" onmouseover="showMegaMenu()"
                     onmouseleave="hideMegaMenu()">
                     <a class="nav-link dropdown-toggle" href="#" id="productMegaMenu">Sản phẩm</a>
@@ -67,7 +62,6 @@ if (session_status() === PHP_SESSION_NONE) {
                                         </div>
                                     </div>
                                 </div>
-
                                 <!-- Xe số -->
                                 <div class="col-lg-6">
                                     <h6 class="text-uppercase">Xe Số</h6>
@@ -93,11 +87,9 @@ if (session_status() === PHP_SESSION_NONE) {
                         </div>
                     </div>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link click-scroll" href="#section_5">Tin tức</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link click-scroll" href="#section_6">Liên hệ</a>
                 </li>
@@ -128,7 +120,22 @@ if (session_status() === PHP_SESSION_NONE) {
                             <li><a class="dropdown-item" href="logout.php">Đăng xuất</a></li>
                         </ul>
                     </div>
-                    <a class="btn custom-btn custom-border-btn" href="datlich.php">Đặt lịch hẹn</a>
+                    <a class="btn custom-btn custom-border-btn me-2" href="datlich.php">Đặt lịch hẹn</a>
+                    <!-- Giỏ hàng icon -->
+                    <a class="btn custom-btn custom-border-btn position-relative" href="cart.php" title="Giỏ hàng">
+                        <i class="bi bi-cart3" style="font-size: 1.3rem;"></i>
+                        <?php
+                        if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+                            $cartCount = 0;
+                            foreach ($_SESSION['cart'] as $item) {
+                                $cartCount += (int)($item['qty'] ?? 1);
+                            }
+                            if ($cartCount > 0) {
+                                echo '<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.8rem;">' . $cartCount . '</span>';
+                            }
+                        }
+                        ?>
+                    </a>
                 <?php else: ?>
                     <a class="btn custom-btn custom-border-btn" href="login.php">Đăng nhập</a>
                 <?php endif; ?>
