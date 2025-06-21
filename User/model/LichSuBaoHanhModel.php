@@ -77,5 +77,6 @@ class LichSuBaoHanhModel
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$TenBHDK, $Ngay, $LoaiBaoHanh, $xemay_MaXE, $ThongTinTruocBaoHanh]);
     }
+     
 }
 ?>

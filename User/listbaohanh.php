@@ -1,20 +1,27 @@
 <?php
-// filepath: d:\Tools\xampp\htdocs\QuanLyBaoDuongXe\listbaohanh.php
 session_start();
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 include_once './utils/ConnectDb.php';
-include_once './model/LichSuBaoHanhModel.php';
+include_once './model/DSLichBaoHanh.php';
 
-$model = new LichSuBaoHanhModel();
+$model = new DSLichBaoHanh();
 
 // Nếu là khách hàng, chỉ hiện lịch của mình; nếu là admin, có thể lấy tất cả
 if (isset($_SESSION['MaKH'])) {
     $maKH = $_SESSION['MaKH'];
     $baohanhList = $model->getBaoHanhByKhachHang($maKH);
 } else {
-    // Nếu muốn cho admin xem tất cả, dùng getAllBaoHanh()
     $baohanhList = $model->getAllBaoHanh();
+}
+
+// Hàm chuyển số phân loại thành tên (tuỳ ý, có thể bỏ nếu muốn hiển thị số)
+function tenLoaiLichHen($phanLoai) {
+    switch ($phanLoai) {
+        case 1: return "Bảo hành";
+        case 0: return "Bảo dưỡng";
+        default: return "Khác";
+    }
 }
 ?>
 
@@ -23,12 +30,9 @@ if (isset($_SESSION['MaKH'])) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title>67 Performance</title>
-
     <!-- CSS FILES -->                
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,13 +41,10 @@ if (isset($_SESSION['MaKH'])) {
     <link href="css/bootstrap-icons.css" rel="stylesheet">
     <link href="css/templatemo-tiya-golf-club.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
 </head>
-
 <body>
-
     <main>
         <?php include('./layouts/navbar/navbar.php') ?>
         <?php include('./layouts/hero/hero.php') ?>   
@@ -55,9 +56,10 @@ if (isset($_SESSION['MaKH'])) {
                     <thead class="table-dark">
                         <tr>
                             <th>#</th>
-                            <th>Tên bảo hành</th>
                             <th>Ngày</th>
-                            <th>Loại bảo hành</th>
+                            <th>Thời gian</th>
+                            <th>Loại lịch hẹn</th>
+                            <th>Tên nhân viên đặt</th>
                             <th>Tên xe</th>
                             <th>Biển số xe</th>
                             <th>Ghi chú</th>
@@ -68,9 +70,10 @@ if (isset($_SESSION['MaKH'])) {
                             <?php foreach ($baohanhList as $i => $item): ?>
                                 <tr>
                                     <td><?php echo $i + 1; ?></td>
-                                    <td><?php echo htmlspecialchars($item['TenBHDK']); ?></td>
                                     <td><?php echo htmlspecialchars($item['Ngay']); ?></td>
-                                    <td><?php echo htmlspecialchars($item['LoaiBaoHanh']); ?></td>
+                                    <td><?php echo htmlspecialchars($item['ThoiGianCa'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars(tenLoaiLichHen($item['PhanLoai'])); ?></td>
+                                    <td><?php echo htmlspecialchars($item['TenNhanVien'] ?? ''); ?></td>
                                     <td><?php echo htmlspecialchars($item['TenXe'] ?? ''); ?></td>
                                     <td><?php echo htmlspecialchars($item['BienSoXe'] ?? ''); ?></td>
                                     <td><?php echo htmlspecialchars($item['ThongTinTruocBaoHanh'] ?? ''); ?></td>
@@ -78,7 +81,7 @@ if (isset($_SESSION['MaKH'])) {
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="7" class="text-center">Không có lịch bảo hành nào.</td>
+                                <td colspan="8" class="text-center">Không có lịch bảo hành nào.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -88,9 +91,7 @@ if (isset($_SESSION['MaKH'])) {
     </section>
         <?php include('./layouts/button/button.php') ?>
     </main>
-
     <?php include('./layouts/footer/footer.php') ?>  
-
     <!-- JAVASCRIPT FILES -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
@@ -99,7 +100,6 @@ if (isset($_SESSION['MaKH'])) {
     <script src="js/animated-headline.js"></script>
     <script src="js/modernizr.js"></script>
     <script src="js/mega-menu.js"></script>
-
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
@@ -116,22 +116,13 @@ if (isset($_SESSION['MaKH'])) {
                 prevEl: '.swiper-button-prev',
             },
             breakpoints: {
-                0: {
-                    slidesPerView: 1,
-                },
-                576: {
-                    slidesPerView: 1.5,
-                },
-                768: {
-                    slidesPerView: 2,
-                },
-                992: {
-                    slidesPerView: 3,
-                }
+                0: { slidesPerView: 1 },
+                576: { slidesPerView: 1.5 },
+                768: { slidesPerView: 2 },
+                992: { slidesPerView: 3 }
             }
         });
     </script>
-
     <script src="js/custom.js"></script>
 </body>
 </html>
