@@ -62,7 +62,11 @@ $nhanviens  = $nhanvienModel->getAll();
         <!-- Ngày hẹn -->
         <div class="col-md-4">
           <label for="NgayHen" class="form-label">Ngày hẹn</label>
-          <input required type="date" id="NgayHen" name="NgayHen" class="form-control">
+          <!--
+            Sử dụng cả PHP để đặt min (chống bypass khi tắt JS) 
+            và JS để giao diện luôn đúng ngày hiện tại.
+          -->
+          <input required type="date" id="NgayHen" name="NgayHen" class="form-control" min="<?= date('Y-m-d') ?>">
         </div>
 
         <!-- Thời gian ca (người nhập) -->
@@ -126,6 +130,14 @@ $(function() {
       $('#TenXe, #LoaiXe, #PhanKhuc').val('');
     }
   });
+
+  // Đặt min cho input ngày hẹn là ngày hôm nay (đảm bảo ngày quá khứ không thể chọn phía giao diện)
+  let today = new Date();
+  let yyyy = today.getFullYear();
+  let mm = String(today.getMonth() + 1).padStart(2, '0');
+  let dd = String(today.getDate()).padStart(2, '0');
+  let minDate = yyyy + '-' + mm + '-' + dd;
+  $('#NgayHen').attr('min', minDate);
 
   // AJAX submit form thêm lịch hẹn
   $('#formLichHen').submit(function(e){

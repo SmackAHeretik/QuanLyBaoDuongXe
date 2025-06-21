@@ -36,5 +36,19 @@ class LichHenModel
         $stmt->execute([':makh' => $makh]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    // Bổ sung các hàm còn thiếu:
+    public function getLichById($malich)
+    {
+        $sql = "SELECT * FROM lichhen WHERE MaLich = :malich";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':malich' => $malich]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function updateTrangThai($malich, $trangthai)
+    {
+        $sql = "UPDATE lichhen SET TrangThai = :trangthai WHERE MaLich = :malich";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([':trangthai' => $trangthai, ':malich' => $malich]);
+    }
 }
 ?>

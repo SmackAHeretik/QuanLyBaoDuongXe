@@ -31,6 +31,7 @@ $total = 0;
                                 <thead class="table-dark">
                                     <tr>
                                         <th>Sản phẩm</th>
+                                        <th>Xe của bạn</th>
                                         <th>Đơn giá</th>
                                         <th width="120">Số lượng</th>
                                         <th>Thành tiền</th>
@@ -41,13 +42,27 @@ $total = 0;
                                     <?php foreach ($cart as $item): 
                                         $thanhtien = $item['DonGia'] * $item['qty'];
                                         $total += $thanhtien;
+                                        // Xử lý đường dẫn hình ảnh
+                                        $img = $item['HinhAnh'] ?? '';
+                                        if (strpos($img, '/') === 0 || strpos($img, 'uploads/') === 0 || strpos($img, 'Admin/') === 0) {
+                                            $imgSrc = $img;
+                                        } else {
+                                            $imgSrc = 'images/' . $img;
+                                        }
                                     ?>
                                     <tr>
                                         <td class="d-flex align-items-center gap-3">
-                                            <img src="images/<?php echo htmlspecialchars($item['HinhAnh']); ?>" width="60" class="rounded">
+                                            <img src="<?php echo htmlspecialchars($imgSrc); ?>" width="60" class="rounded">
                                             <div>
                                                 <strong><?php echo htmlspecialchars($item['TenSP']); ?></strong>
                                             </div>
+                                        </td>
+                                        <td>
+                                            <?php 
+                                                echo isset($item['TenXE']) && $item['TenXE']
+                                                    ? htmlspecialchars($item['TenXE'])
+                                                    : '-';
+                                            ?>
                                         </td>
                                         <td><?php echo number_format($item['DonGia'], 0, ',', '.'); ?> VNĐ</td>
                                         <td>
@@ -55,12 +70,12 @@ $total = 0;
                                         </td>
                                         <td><?php echo number_format($thanhtien, 0, ',', '.'); ?> VNĐ</td>
                                         <td>
-                                            <a href="remove_from_cart.php?MaSP=<?php echo $item['MaSP']; ?>" class="btn btn-danger btn-sm">Xóa</a>
+                                            <a href="controller/remove_from_cart.php?MaSP=<?php echo $item['MaSP']; ?>" class="btn btn-danger btn-sm">Xóa</a>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
                                     <tr>
-                                        <td colspan="3" class="text-end"><b>Tổng cộng:</b></td>
+                                        <td colspan="4" class="text-end"><b>Tổng cộng:</b></td>
                                         <td colspan="2"><b><?php echo number_format($total, 0, ',', '.'); ?> VNĐ</b></td>
                                     </tr>
                                 </tbody>

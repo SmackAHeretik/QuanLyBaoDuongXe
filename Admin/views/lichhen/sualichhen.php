@@ -1,3 +1,7 @@
+<?php
+// KHÔNG require model ở đây nữa!
+// Các biến $lichhen, $khachhangs, $nhanviens, $xemays được truyền từ controller
+?>
 <div class="container-fluid pt-4 px-4">
   <div class="bg-light rounded p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -10,20 +14,22 @@
       <div class="row g-3">
         <div class="col-md-4">
           <label class="form-label">Tên xe</label>
-          <input required name="TenXe" class="form-control" value="<?=htmlspecialchars($lichhen['TenXe'])?>" placeholder="Tên xe">
+          <input required name="TenXe" class="form-control" value="<?=htmlspecialchars($lichhen['TenXe'])?>" placeholder="Tên xe" readonly>
         </div>
         <div class="col-md-4">
           <label class="form-label">Loại xe</label>
-          <input required name="LoaiXe" class="form-control" value="<?=htmlspecialchars($lichhen['LoaiXe'])?>" placeholder="Loại xe">
+          <input required name="LoaiXe" class="form-control" value="<?=htmlspecialchars($lichhen['LoaiXe'])?>" placeholder="Loại xe" readonly>
         </div>
         <div class="col-md-4">
           <label class="form-label">Phân khúc</label>
-          <input required name="PhanKhuc" class="form-control" value="<?=htmlspecialchars($lichhen['PhanKhuc'])?>" placeholder="Phân khúc">
+          <input required name="PhanKhuc" class="form-control" value="<?=htmlspecialchars($lichhen['PhanKhuc'])?>" placeholder="Phân khúc" readonly>
         </div>
 
         <div class="col-md-4">
           <label class="form-label">Ngày hẹn</label>
-          <input required type="date" name="NgayHen" class="form-control" value="<?=htmlspecialchars($lichhen['NgayHen'])?>" placeholder="Ngày hẹn">
+          <input required type="date" name="NgayHen" class="form-control"
+            value="<?=htmlspecialchars($lichhen['NgayHen'])?>"
+            min="<?=date('Y-m-d')?>">
         </div>
         <div class="col-md-4">
           <label class="form-label">Thời gian ca</label>
@@ -45,15 +51,41 @@
 
         <div class="col-md-4">
           <label class="form-label">Nhân viên (Mã NV)</label>
-          <input required name="nhanvien_MaNV" class="form-control" value="<?=htmlspecialchars($lichhen['nhanvien_MaNV'])?>" placeholder="Mã NV">
+          <select name="nhanvien_MaNV" class="form-select" required>
+            <option value="">-- Chọn nhân viên --</option>
+            <?php foreach($nhanviens as $nv): ?>
+              <option value="<?=$nv['MaNV']?>" <?=$lichhen['nhanvien_MaNV']==$nv['MaNV']?'selected':''?>>
+                <?=htmlspecialchars($nv['TenNV'])?> (Mã: <?=$nv['MaNV']?>)
+              </option>
+            <?php endforeach; ?>
+          </select>
         </div>
         <div class="col-md-4">
           <label class="form-label">Khách hàng (Mã KH)</label>
-          <input required name="khachhang_MaKH" class="form-control" value="<?=htmlspecialchars($lichhen['khachhang_MaKH'])?>" placeholder="Mã KH">
+          <select name="khachhang_MaKH" id="khachhang_MaKH" class="form-select" required>
+            <option value="">-- Chọn khách hàng --</option>
+            <?php foreach($khachhangs as $kh): ?>
+              <option value="<?=$kh['MaKH']?>" <?=$lichhen['khachhang_MaKH']==$kh['MaKH']?'selected':''?>>
+                <?=htmlspecialchars($kh['TenKH'])?> (Mã: <?=$kh['MaKH']?>)
+              </option>
+            <?php endforeach; ?>
+          </select>
         </div>
         <div class="col-md-4">
           <label class="form-label">Xe máy (Mã XE)</label>
-          <input required name="xemay_MaXE" class="form-control" value="<?=htmlspecialchars($lichhen['xemay_MaXE'])?>" placeholder="Mã xe máy">
+          <select name="xemay_MaXE" id="xemay_MaXE" class="form-select" required>
+            <option value="">-- Chọn mã xe --</option>
+            <?php foreach($xemays as $xe): ?>
+              <option value="<?=$xe['MaXE']?>"
+                data-tenxe="<?=htmlspecialchars($xe['TenXe'])?>"
+                data-loaixe="<?=htmlspecialchars($xe['LoaiXe'])?>"
+                data-phankhuc="<?=htmlspecialchars($xe['PhanKhuc'])?>"
+                data-makh="<?=$xe['khachhang_MaKH']?>"
+                <?=$lichhen['xemay_MaXE']==$xe['MaXE']?'selected':''?>>
+                <?=$xe['MaXE']?> - <?=$xe['BienSoXe']?>
+              </option>
+            <?php endforeach; ?>
+          </select>
         </div>
       </div>
       <div class="mt-3">
@@ -63,3 +95,29 @@
     </form>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+// Khi chọn xe máy, tự động điền Tên xe, Loại xe, Phân khúc
+$('#xemay_MaXE').change(function() {
+  let $option = $(this).find('option:selected');
+  $('input[name="TenXe"]').val($option.data('tenxe') || '');
+  $('input[name="LoaiXe"]').val($option.data('loaixe') || '');
+  $('input[name="PhanKhuc"]').val($option.data('phankhuc') || '');
+});
+// Lọc xe máy theo khách hàng khi thay đổi khách hàng
+$('#khachhang_MaKH').change(function() {
+  let makh = $(this).val();
+  $('#xemay_MaXE option').each(function(){
+    let xeMaKH = $(this).data('makh');
+    if(!xeMaKH || makh == '' || xeMaKH == makh) {
+      $(this).show();
+    } else {
+      $(this).hide();
+    }
+  });
+  $('#xemay_MaXE').val('');
+  $('input[name="TenXe"]').val('');
+  $('input[name="LoaiXe"]').val('');
+  $('input[name="PhanKhuc"]').val('');
+});
+</script>

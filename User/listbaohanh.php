@@ -88,6 +88,9 @@ function tenLoaiLichHen($phanLoai) {
                 </table>
             </div>
         </div>
+        <div class="text-center mt-4">
+              <a href="index.php" class="btn custom-btn custom-border-btn">Quay về trang chủ</a>
+        </div>
     </section>
         <?php include('./layouts/button/button.php') ?>
     </main>

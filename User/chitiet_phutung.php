@@ -6,13 +6,26 @@ $projectRoot = '/QuanLyBaoDuongXe';
 require_once __DIR__ . '/utils/ConnectDb.php';
 require_once __DIR__ . '/../Admin/models/phutungxemaymodel.php';
 
+// Lấy danh sách xe của khách hàng nếu đã đăng nhập
+$user_xemay = [];
+if (isset($_SESSION['MaKH'])) {
+    $db = new ConnectDb();
+    $pdo = $db->connect();
+    $makh = $_SESSION['MaKH'];
+    $xeStmt = $pdo->prepare("SELECT MaXE, TenXe FROM xemay WHERE khachhang_MaKH = ?");
+    $xeStmt->execute([$makh]);
+    $user_xemay = $xeStmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $db = new ConnectDb();
+    $pdo = $db->connect();
+}
+require_once __DIR__ . '/../Admin/models/phutungxemaymodel.php';
+
 if (!isset($_GET['id'])) {
     die("Thiếu mã sản phẩm.");
 }
 $maSP = intval($_GET['id']);
 
-$db = new ConnectDb();
-$pdo = $db->connect();
 $model = new PhuTungXeMayModel($pdo);
 $product = $model->getById($maSP);
 
@@ -208,16 +221,45 @@ if ($product) {
                                 <input type="hidden" name="TenSP" value="<?= htmlspecialchars($product['TenSP']) ?>">
                                 <input type="hidden" name="DonGia" value="<?= $product['DonGia'] ?>">
                                 <input type="hidden" name="HinhAnh" value="<?= htmlspecialchars($product['HinhAnh']) ?>">
+                                <?php if (isset($_SESSION['MaKH']) && count($user_xemay) > 0): ?>
+                                    <div class="mb-3 mt-2">
+                                        <label for="xemay_chon" class="form-label">Chọn xe cần phụ tùng:</label>
+                                        <select id="xemay_chon" name="MaXE" class="form-select" required onchange="updateTenXe()">
+                                            <option value="" disabled selected>-- Chọn xe của bạn --</option>
+                                            <?php foreach ($user_xemay as $xe): ?>
+                                                <option value="<?= htmlspecialchars($xe['MaXE']) ?>">
+                                                    <?= htmlspecialchars($xe['TenXe']) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <input type="hidden" name="TenXE" id="TenXE_hidden" value="">
+                                    </div>
+                                    <script>
+                                        function updateTenXe() {
+                                            var select = document.getElementById('xemay_chon');
+                                            var tenXe = select.options[select.selectedIndex].text;
+                                            document.getElementById('TenXE_hidden').value = tenXe;
+                                        }
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            updateTenXe();
+                                        });
+                                    </script>
+                                <?php endif; ?>
                                 <button type="submit" class="btn btn-danger buy-btn">Mua</button>
                             </form>
                         </div>
                         <div class="product-image">
                             <?php
                             // Đường dẫn hình ảnh
-                            if (strpos($product['HinhAnh'], 'uploads/') === 0) {
-                                $src = $projectRoot . '/Admin/' . $product['HinhAnh'];
-                            } else {
-                                $src = $projectRoot . '/Admin/uploads/' . $product['HinhAnh'];
+                            $src = '';
+                            if (isset($product['HinhAnh'])) {
+                                if (strpos($product['HinhAnh'], '/') === 0) {
+                                    $src = $product['HinhAnh'];
+                                } elseif (strpos($product['HinhAnh'], 'uploads/') === 0) {
+                                    $src = $projectRoot . '/Admin/' . $product['HinhAnh'];
+                                } else {
+                                    $src = $projectRoot . '/Admin/uploads/' . $product['HinhAnh'];
+                                }
                             }
                             ?>
                             <img src="<?= htmlspecialchars($src) ?>" alt="<?= htmlspecialchars($product['TenSP']) ?>">
@@ -227,7 +269,9 @@ if ($product) {
                     <div class="related-title">Sản phẩm liên quan</div>
                     <div class="related-products">
                         <?php foreach ($related_others as $rel):
-                            if (strpos($rel['HinhAnh'], 'uploads/') === 0) {
+                            if (strpos($rel['HinhAnh'], '/') === 0) {
+                                $rel_src = $rel['HinhAnh'];
+                            } elseif (strpos($rel['HinhAnh'], 'uploads/') === 0) {
                                 $rel_src = $projectRoot . '/Admin/' . $rel['HinhAnh'];
                             } else {
                                 $rel_src = $projectRoot . '/Admin/uploads/' . $rel['HinhAnh'];
