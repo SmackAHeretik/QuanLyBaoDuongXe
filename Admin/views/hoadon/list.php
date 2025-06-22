@@ -15,8 +15,6 @@
             <th>Tên KH</th>
             <th>Ngày</th>
             <th>Tổng Tiền</th>
-            <th>Khuyến Mãi</th>
-            <th>Sau Khi Giảm</th>
             <th>Trạng Thái</th>
             <th class="text-center">Hành động</th>
           </tr>
@@ -30,8 +28,6 @@
                 <td><?= htmlspecialchars($hd['TenKH'] ?? 'Chưa có') ?></td>
                 <td><?= htmlspecialchars($hd['Ngay']) ?></td>
                 <td><?= number_format($hd['TongTien'], 0, ',', '.') ?> VND</td>
-                <td><?= number_format($hd['TienKhuyenMai'], 0, ',', '.') ?> VND</td>
-                <td><?= number_format($hd['TienSauKhiGiam'], 0, ',', '.') ?> VND</td>
                 <td>
                   <?php
                   $status = [
@@ -56,7 +52,7 @@
             <?php endforeach ?>
           <?php else: ?>
             <tr>
-              <td colspan="9" class="text-center text-muted">Không có hóa đơn nào.</td>
+              <td colspan="7" class="text-center text-muted">Không có hóa đơn nào.</td>
             </tr>
           <?php endif ?>
         </tbody>

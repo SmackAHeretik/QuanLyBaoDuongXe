@@ -4,7 +4,7 @@ $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 $total = 0;
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,7 +12,7 @@ $total = 0;
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>67 Performance - Thanh toán</title>
+    <title>67 Performance - Đặt hàng</title>
 
     <!-- CSS FILES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +28,7 @@ $total = 0;
         <?php include('./layouts/hero/hero.php') ?>  
         <section class="section-padding">
             <div class="container">
-                <h2 class="mb-4">Thanh toán</h2>
+                <h2 class="mb-4">Đặt hàng</h2>
                 <?php if (empty($cart)): ?>
                     <div class="alert alert-info">Giỏ hàng trống. <a href="index.php">Quay về trang chủ</a></div>
                 <?php else: ?>
@@ -50,7 +50,15 @@ $total = 0;
                                     ?>
                                     <tr>
                                         <td class="d-flex align-items-center gap-3">
-                                            <img src="images/<?php echo $item['HinhAnh']; ?>" width="60" class="rounded" alt="">
+                                            <?php
+                                                $img = $item['HinhAnh'];
+                                                if (strpos($img, '/') === 0 || strpos($img, 'uploads/') === 0 || strpos($img, 'Admin/') === 0) {
+                                                    $imgSrc = $img;
+                                                } else {
+                                                    $imgSrc = 'images/' . $img;
+                                                }
+                                            ?>
+                                            <img src="<?php echo htmlspecialchars($imgSrc); ?>" width="60" class="rounded" alt="">
                                             <div>
                                                 <strong><?php echo htmlspecialchars($item['TenSP']); ?></strong>
                                             </div>
@@ -77,16 +85,12 @@ $total = 0;
                             <input type="text" class="form-control" id="phone" name="phone" required>
                         </div>
                         <div class="mb-3">
-                            <label for="address" class="form-label">Địa chỉ giao hàng</label>
-                            <input type="text" class="form-control" id="address" name="address" required>
-                        </div>
-                        <div class="mb-3">
                             <label for="note" class="form-label">Ghi chú (không bắt buộc)</label>
                             <textarea class="form-control" id="note" name="note" rows="2"></textarea>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <a href="cart.php" class="btn btn-secondary">Quay lại giỏ hàng</a>
-                            <button type="submit" class="btn btn-success">Xác nhận đặt hàng</button>
+                            <button type="submit" class="btn btn-success">Đặt hàng</button>
                         </div>
                     </form>
                 <?php endif; ?>
