@@ -27,6 +27,7 @@
                 </div>
             </div>
             <a href="NVmanagement.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Quản lý nhân viên</a>
+            <a href="khachhang.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Danh Sách Khách Hàng</a>
             <a href="form.php" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Phụ Tùng Xe Máy</a>
             <a href="table.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Xem Xe Máy</a>
             <a href="nhasanxuat.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Nhà Sản Xuất</a>
@@ -42,9 +43,7 @@
             <a href="danhsachlichhen.php" class="nav-item nav-link">
                 <i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn
             </a>
-            <a href="danhsachlichbaohanh.php" class="nav-item nav-link">
-                <i class="fa fa-shield-alt me-2"></i>Danh sách Bảo Hành
-            </a>
+            
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
                         class="far fa-file-alt me-2"></i>Pages</a>
