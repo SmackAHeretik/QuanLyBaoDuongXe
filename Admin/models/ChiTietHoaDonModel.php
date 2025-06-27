@@ -8,10 +8,17 @@ class ChiTietHoaDonModel
     $this->conn = $pdo;
   }
 
-  // Lấy tất cả chi tiết hóa đơn
-  public function getAll()
+  // Lấy tất cả chi tiết của 1 hóa đơn, kèm tên phụ tùng
+  public function getAllByHoaDon($mahd)
   {
-    $stmt = $this->conn->query("SELECT * FROM chitiethoadon ORDER BY MaCTHD DESC");
+    $stmt = $this->conn->prepare("
+        SELECT cthd.*, pt.TenSP, pt.DonGia
+        FROM chitiethoadon cthd
+        LEFT JOIN phutungxemay pt ON cthd.phutungxemay_MaSP = pt.MaSP
+        WHERE cthd.hoadon_MaHD = ?
+        ORDER BY cthd.MaCTHD DESC
+    ");
+    $stmt->execute([$mahd]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 

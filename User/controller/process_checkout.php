@@ -25,27 +25,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($cart)) {
     }
     mysqli_set_charset($conn, 'utf8mb4');
 
-    // Ngày đặt hàng
     $ngaydat = date('Y-m-d');
-
-    // Lưu từng sản phẩm trong cart vào bảng hoadon (NHỚ: mã xe và mã phụ tùng phải có)
+    // TÍNH TỔNG TIỀN TẤT CẢ SẢN PHẨM
+    $tongtien = 0;
     foreach ($cart as $item) {
-        $tongtien = $item['DonGia'] * $item['qty'];
-        $masp = $item['MaSP'];
-        $maxe = isset($item['MaXE']) && $item['MaXE'] !== '' ? $item['MaXE'] : null; // có thể null nếu không chọn xe
+        $tongtien += $item['DonGia'] * $item['qty'];
+    }
+    // Lấy mã xe của sản phẩm đầu tiên (hoặc cho phép khách chọn xe ở checkout)
+    $maxe = null;
+    foreach ($cart as $item) {
+        if (!empty($item['MaXE'])) {
+            $maxe = $item['MaXE'];
+            break;
+        }
+    }
+    // 1. Tạo hóa đơn duy nhất
+    $sql = "INSERT INTO hoadon (TongTien, Ngay, TrangThai, xemay_MaXE) VALUES (?, ?, 'cho_thanh_toan', ?)";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, 'dsi', $tongtien, $ngaydat, $maxe);
+    mysqli_stmt_execute($stmt);
+    $inserted_mahd = mysqli_insert_id($conn);
 
-        $sql = "INSERT INTO hoadon (TongTien, Ngay, TrangThai, xemay_MaXE, phutungxemay_MaSP) 
-                VALUES (?, ?, 'cho_thanh_toan', ?, ?)";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, 'dsii', $tongtien, $ngaydat, $maxe, $masp);
-        mysqli_stmt_execute($stmt);
+    // 2. Lặp qua giỏ hàng, thêm từng phụ tùng vào bảng chi tiết hóa đơn
+    foreach ($cart as $item) {
+        $masp = $item['MaSP'];
+        $gia = $item['DonGia'];
+        $soLuong = $item['qty'];
+
+        $sql_ct = "INSERT INTO chitiethoadon (hoadon_MaHD, phutungxemay_MaSP, GiaTien, SoLuong) VALUES (?, ?, ?, ?)";
+        $stmt_ct = mysqli_prepare($conn, $sql_ct);
+        mysqli_stmt_bind_param($stmt_ct, 'iidi', $inserted_mahd, $masp, $gia, $soLuong);
+        mysqli_stmt_execute($stmt_ct);
     }
 
-    // Xóa giỏ hàng sau khi đặt thành công
     unset($_SESSION['cart']);
     mysqli_close($conn);
 
-    // Hiện popup và về trang chủ
     echo "<script>
         alert('Đặt hàng thành công!');
         window.location.href = '../index.php';

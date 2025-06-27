@@ -22,7 +22,12 @@ class ChiTietHoaDonController
 
   public function list()
   {
-    $dsChiTietHD = $this->model->getAll();
+    $mahd = $_GET['hoadon_MaHD'] ?? null;
+    if ($mahd) {
+        $dsChiTietHD = $this->model->getAllByHoaDon($mahd);
+    } else {
+        $dsChiTietHD = [];
+    }
     include __DIR__ . '/../views/chitiethoadon/list.php';
   }
 
@@ -54,7 +59,7 @@ class ChiTietHoaDonController
 
       if (!$error) {
         $this->model->add($data);
-        header('Location: ?controller=chitiethoadon&action=list');
+        header('Location: ?controller=chitiethoadon&action=list&hoadon_MaHD=' . $data['hoadon_MaHD']);
         exit;
       }
     }
@@ -95,7 +100,7 @@ class ChiTietHoaDonController
 
       if (!$error) {
         $this->model->update($id, $data);
-        header('Location: ?controller=chitiethoadon&action=list');
+        header('Location: ?controller=chitiethoadon&action=list&hoadon_MaHD=' . $data['hoadon_MaHD']);
         exit;
       }
     }
@@ -105,10 +110,13 @@ class ChiTietHoaDonController
   public function delete()
   {
     $id = $_GET['id'] ?? null;
+    $mahd = null;
     if ($id) {
+      $row = $this->model->getById($id);
+      $mahd = $row ? $row['hoadon_MaHD'] : null;
       $this->model->delete($id);
     }
-    header('Location: ?controller=chitiethoadon&action=list');
+    header('Location: ?controller=chitiethoadon&action=list' . ($mahd ? '&hoadon_MaHD='.$mahd : ''));
     exit;
   }
 }

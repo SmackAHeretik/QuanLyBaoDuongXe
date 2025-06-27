@@ -76,8 +76,13 @@ switch ($action) {
         header("Location: khachhang.php");
         exit;
 
+    // chính là case mặc định: danh sách khách hàng, mỗi khách có danh sách xe, mỗi xe có nút hóa đơn
     default:
         $list_khachhang = $model->getAll();
+        foreach ($list_khachhang as &$kh) {
+            $kh['ds_xe'] = $model->getXeByKhachHang($kh['MaKH']);
+        }
+        unset($kh);
         $content = __DIR__ . '/../views/khachhang/list.php';
         include __DIR__ . '/../views/khachhang/layout.php';
         break;

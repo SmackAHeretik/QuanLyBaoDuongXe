@@ -42,5 +42,12 @@ class KhachHangModel {
         $stmt = $this->pdo->prepare("UPDATE khachhang SET TrangThai=? WHERE MaKH=?");
         return $stmt->execute([$status, $id]);
     }
+
+    // Lấy danh sách xe của khách hàng
+    public function getXeByKhachHang($makh) {
+        $stmt = $this->pdo->prepare("SELECT * FROM xemay WHERE khachhang_MaKH = ?");
+        $stmt->execute([$makh]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>

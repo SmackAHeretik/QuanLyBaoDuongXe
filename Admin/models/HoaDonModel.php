@@ -98,4 +98,14 @@ class HoaDonModel
         ");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  // Lấy hóa đơn theo mã xe
+  public function getHoaDonByMaXe($maxe) {
+    $stmt = $this->conn->prepare("
+        SELECT * FROM hoadon WHERE xemay_MaXE = ? ORDER BY MaHD DESC
+    ");
+    $stmt->execute([$maxe]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 }
+?>

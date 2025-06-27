@@ -42,17 +42,11 @@ $total = 0;
                                     <?php foreach ($cart as $item): 
                                         $thanhtien = $item['DonGia'] * $item['qty'];
                                         $total += $thanhtien;
-                                        // Xử lý đường dẫn hình ảnh
-                                        $img = $item['HinhAnh'] ?? '';
-                                        if (strpos($img, '/') === 0 || strpos($img, 'uploads/') === 0 || strpos($img, 'Admin/') === 0) {
-                                            $imgSrc = $img;
-                                        } else {
-                                            $imgSrc = 'images/' . $img;
-                                        }
+                                        $imgSrc = !empty($item['HinhAnh']) ? $item['HinhAnh'] : 'images/no-image.png';
                                     ?>
                                     <tr>
                                         <td class="d-flex align-items-center gap-3">
-                                            <img src="<?php echo htmlspecialchars($imgSrc); ?>" width="60" class="rounded">
+                                            <img src="<?php echo htmlspecialchars($imgSrc); ?>" width="60" class="rounded" alt="Ảnh sản phẩm">
                                             <div>
                                                 <strong><?php echo htmlspecialchars($item['TenSP']); ?></strong>
                                             </div>
