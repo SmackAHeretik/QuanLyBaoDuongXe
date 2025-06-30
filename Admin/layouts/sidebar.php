@@ -16,44 +16,14 @@
             </div>
         </div>
         <div class="navbar-nav w-100">
-            <a href="index.php" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-            <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
-                        class="fa fa-laptop me-2"></i>Elements</a>
-                <div class="dropdown-menu bg-transparent border-0">
-                    <a href="button.html" class="dropdown-item">Buttons</a>
-                    <a href="typography.html" class="dropdown-item">Typography</a>
-                    <a href="element.html" class="dropdown-item">Other Elements</a>
-                </div>
-            </div>
-            <a href="NVmanagement.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Quản lý nhân viên</a>
+            <a href="index.php" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Trang Chủ</a>
+            <a href="NVmanagement.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Quản Lý Nhân Viên</a>
             <a href="khachhang.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Danh Sách Khách Hàng</a>
-            <a href="form.php" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Phụ Tùng Xe Máy</a>
-            <a href="table.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Xem Xe Máy</a>
+            <a href="form.php" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Danh Sách Phụ Tùng</a>
+            <a href="table.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Danh Sách Xe Máy</a>
             <a href="nhasanxuat.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Nhà Sản Xuất</a>
-            <a href="hoadon.php" class="nav-item nav-link">
-                <i class="fa fa-file-invoice me-2"></i>Hóa Đơn
-            </a>
-            <a href="chitiethoadon.php" class="nav-item nav-link">
-                <i class="fa fa-list-alt me-2"></i>Chi Tiết Hóa Đơn
-            </a>
-            <a href="dichvu.php" class="nav-item nav-link">
-                <i class="fa fa-concierge-bell me-2"></i>Dịch Vụ
-            </a>
-            <a href="danhsachlichhen.php" class="nav-item nav-link">
-                <i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn
-            </a>
-            
-            <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
-                        class="far fa-file-alt me-2"></i>Pages</a>
-                <div class="dropdown-menu bg-transparent border-0">
-                    <a href="signin.html" class="dropdown-item">Sign In</a>
-                    <a href="signup.html" class="dropdown-item">Sign Up</a>
-                    <a href="404.html" class="dropdown-item">404 Error</a>
-                    <a href="blank.html" class="dropdown-item">Blank Page</a>
-                </div>
-            </div>
+            <a href="dichvu.php" class="nav-item nav-link"><i class="fa fa-concierge-bell me-2"></i>Danh Sách Dịch Vụ</a>
+            <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>
         </div>
     </nav>
 </div>
