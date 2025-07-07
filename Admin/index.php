@@ -1,10 +1,4 @@
-<?php
-session_start();
-if (!isset($_SESSION['admin'])) {
-    header('Location: signin.php');
-    exit();
-}
-?>
+<?php include __DIR__ . '/auth_check.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 

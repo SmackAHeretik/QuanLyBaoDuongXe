@@ -2,6 +2,19 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Lấy danh sách phụ tùng cho mega menu động
+$phutung_list = [];
+$conn = mysqli_connect('localhost', 'root', '', 'quanlybaoduongxe');
+if ($conn) {
+    mysqli_set_charset($conn, 'utf8mb4');
+    $sql = "SELECT MaSP, TenSP, DonGia, HinhAnh FROM phutungxemay WHERE TrangThai=1 LIMIT 12";
+    $result = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_assoc($result)) {
+        $phutung_list[] = $row;
+    }
+    mysqli_close($conn);
+}
 ?>
 <nav class="navbar navbar-expand-lg">
     <div class="container">
@@ -35,10 +48,10 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li class="nav-item">
                     <a class="nav-link click-scroll" href="#section_3">Dịch vụ</a>
                 </li>
-                <li class="nav-item dropdown position-static" onmouseover="showMegaMenu()"
-                    onmouseleave="hideMegaMenu()">
+                <!-- Mega menu Sản phẩm -->
+                <li class="nav-item dropdown position-static" onmouseover="showMegaMenu()" onmouseleave="hideMegaMenu()">
                     <a class="nav-link dropdown-toggle" href="#" id="productMegaMenu">Sản phẩm</a>
-                    <div class="dropdown-menu w-100 mt-0 border-0 shadow mega-menu" id="megaMenu">
+                    <div class="dropdown-menu w-100 mt-0 border-0 shadow mega-menu" id="megaMenu" style="display: none;">
                         <div class="container py-4">
                             <div class="row">
                                 <!-- Xe tay ga -->
@@ -87,6 +100,37 @@ if (session_status() === PHP_SESSION_NONE) {
                         </div>
                     </div>
                 </li>
+                <!-- Mega menu Phụ tùng -->
+                <li class="nav-item dropdown position-static" onmouseover="$('#megaMenuPhutung').show()" onmouseleave="$('#megaMenuPhutung').hide()">
+                    <a class="nav-link dropdown-toggle" href="#" id="phutungMegaMenu">Phụ tùng</a>
+                    <div class="dropdown-menu w-100 mt-0 border-0 shadow mega-menu" id="megaMenuPhutung" style="display: none; min-width: 700px;">
+                        <div class="container py-4">
+                            <h6 class="text-uppercase mb-3">Phụ tùng nổi bật</h6>
+                            <div class="row">
+                                <?php foreach ($phutung_list as $sp): ?>
+                                    <div class="col-6 col-md-4 col-lg-3 mb-3 text-center">
+                                        <a href="chitiet_phutung.php?MaSP=<?php echo $sp['MaSP']; ?>" class="text-decoration-none text-dark">
+                                            <img src="<?php
+                                                echo !empty($sp['HinhAnh'])
+                                                    ? '../' . $sp['HinhAnh']
+                                                    : 'images/no-image.png';
+                                            ?>"
+                                            alt="<?php echo htmlspecialchars($sp['TenSP']); ?>"
+                                            width="90" height="70" class="mb-2" style="object-fit:cover;">
+                                            <div class="fw-bold small"><?php echo htmlspecialchars($sp['TenSP']); ?></div>
+                                            <div class="text-danger small">
+                                                <?php echo number_format($sp['DonGia'], 0, ',', '.'); ?> VNĐ
+                                            </div>
+                                        </a>
+                                    </div>
+                                <?php endforeach; ?>
+                                <?php if (empty($phutung_list)): ?>
+                                    <div class="col-12 text-center text-muted">Chưa có phụ tùng nào!</div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link click-scroll" href="#section_5">Tin tức</a>
                 </li>
@@ -94,7 +138,6 @@ if (session_status() === PHP_SESSION_NONE) {
                     <a class="nav-link click-scroll" href="#section_6">Liên hệ</a>
                 </li>
             </ul>
-
             <!-- Nút bên phải -->
             <div class="d-none d-lg-flex align-items-center ms-lg-3">
                 <?php if (isset($_SESSION['TenKH'])): ?>
@@ -144,3 +187,12 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </div>
 </nav>
+<script>
+// Mega menu sản phẩm (JS thuần)
+function showMegaMenu() {
+    document.getElementById('megaMenu').style.display = 'block';
+}
+function hideMegaMenu() {
+    document.getElementById('megaMenu').style.display = 'none';
+}
+</script>
