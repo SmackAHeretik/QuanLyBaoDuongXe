@@ -5,7 +5,6 @@
 $requiredRole = 'admin';
 include __DIR__ . '/auth_check.php';
 
-session_start();
 $adminName = isset($_SESSION['admin']['username']) ? $_SESSION['admin']['username'] : 'Admin';
 ?>
 <!DOCTYPE html>

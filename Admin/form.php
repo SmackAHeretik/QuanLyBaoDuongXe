@@ -5,7 +5,6 @@
 $requiredRole = 'admin';
 include __DIR__ . '/auth_check.php';
 
-session_start();
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/controllers/phutungxemayController.php';
 

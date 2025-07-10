@@ -5,7 +5,6 @@
 $requiredRole = 'admin';
 include __DIR__ . '/auth_check.php';
 
-session_start();
 require_once 'controllers/NhaSanXuatController.php';
 
 $controller = new NhaSanXuatController();
