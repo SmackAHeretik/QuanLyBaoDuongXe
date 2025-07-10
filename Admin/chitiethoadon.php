@@ -1,5 +1,13 @@
 <?php
+// ===============================
+// PHÂN QUYỀN: CHỈ ADMIN ĐƯỢC XEM
+// ===============================
+$requiredRole = 'admin';
+include __DIR__ . '/auth_check.php';
+
+// ===============================
 // ROUTER & HIỂN THỊ - CHI TIẾT HÓA ĐƠN
+// ===============================
 require_once __DIR__ . '/db.php';
 $db = connectDB();
 

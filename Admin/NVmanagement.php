@@ -1,4 +1,10 @@
 <?php
+// ===============================
+// PHÂN QUYỀN: CHỈ ADMIN MỚI ĐƯỢC TẠO TÀI KHOẢN NHÂN VIÊN/QUẢN LÝ
+// ===============================
+$requiredRole = 'admin';
+include __DIR__ . '/auth_check.php';
+
 session_start();
 $adminName = isset($_SESSION['admin']['username']) ? $_SESSION['admin']['username'] : 'Admin';
 ?>

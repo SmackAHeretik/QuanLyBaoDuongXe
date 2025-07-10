@@ -1,4 +1,10 @@
 <?php
+// ===============================
+// PHÂN QUYỀN: CHỈ ADMIN ĐƯỢC QUẢN LÝ DANH SÁCH XE MÁY
+// ===============================
+$requiredRole = 'admin';
+include __DIR__ . '/auth_check.php';
+
 // ROUTER VÀ HIỂN THỊ - CHỈ GỌI CONTROLLER, KHÔNG TRỰC TIẾP TRUY VẤN DB Ở ĐÂY
 
 $controller = $_GET['controller'] ?? 'xemay';

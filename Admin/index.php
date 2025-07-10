@@ -43,18 +43,15 @@
         </div>
         <!-- Spinner End -->
 
-
         <!-- Sidebar Start -->
         <?php include('./layouts/sidebar.php') ?>
         <!-- Sidebar End -->
-
 
         <!-- Content Start -->
         <div class="content">
             <!-- Navbar Start -->
             <?php include('./layouts/navbar.php'); ?>
             <!-- Navbar End -->
-
 
             <!-- Sale & Revenue Start -->
             <div class="container-fluid pt-4 px-4">
@@ -99,7 +96,6 @@
             </div>
             <!-- Sale & Revenue End -->
 
-
             <!-- Sales Chart Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
@@ -124,7 +120,6 @@
                 </div>
             </div>
             <!-- Sales Chart End -->
-
 
             <!-- Recent Sales Start -->
             <div class="container-fluid pt-4 px-4">
@@ -198,7 +193,6 @@
                 </div>
             </div>
             <!-- Recent Sales End -->
-
 
             <!-- Widgets Start -->
             <div class="container-fluid pt-4 px-4">
@@ -325,7 +319,6 @@
             </div>
             <!-- Widgets End -->
 
-
             <!-- Footer Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light rounded-top p-4">
@@ -346,7 +339,6 @@
             <!-- Footer End -->
         </div>
         <!-- Content End -->
-
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

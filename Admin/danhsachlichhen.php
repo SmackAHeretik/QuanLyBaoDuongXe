@@ -2,7 +2,7 @@
 // ===============================
 // ROUTER CHUNG - DANH SÁCH LỊCH HẸN
 // ===============================
-
+include __DIR__ . '/auth_check.php';
 // Kết nối DB và gọi controller
 require_once __DIR__ . '/db.php';
 $db = connectDB();

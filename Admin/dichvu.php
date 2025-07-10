@@ -1,5 +1,13 @@
 <?php
+// ===============================
+// PHÂN QUYỀN: CHỈ ADMIN ĐƯỢC XEM
+// ===============================
+$requiredRole = 'admin';
+include __DIR__ . '/auth_check.php';
+
+// ===============================
 // ROUTER VÀ HIỂN THỊ - CHỈ GỌI CONTROLLER, KHÔNG TRỰC TIẾP TRUY VẤN DB Ở ĐÂY
+// ===============================
 
 // Kết nối DB (nếu controller/model cần dùng PDO)
 require_once __DIR__ . '/db.php';
