@@ -20,7 +20,6 @@ class StaffModel
     {
         $stmt = $this->conn->prepare("SELECT * FROM nhanvien WHERE Email = ?");
         $stmt->execute([$email]);
-        // Có thể dùng rowCount hoặc fetch
         return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
     }
 

@@ -1,4 +1,3 @@
-
 <?php
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../models/StaffModel.php';
@@ -22,15 +21,9 @@ class StaffController {
         return "Đăng ký thất bại!";
     }
 
-    // Đăng nhập nhân viên
-    public function login($email, $password) {
-        $staff = $this->staffModel->login($email, $password);
-        if ($staff) {
-            session_start();
-            $_SESSION['staff'] = $staff;
-            return true;
-        }
-        return "Email hoặc mật khẩu không đúng!";
+    // Đăng nhập, trả về dữ liệu nếu thành công, false nếu thất bại. KHÔNG set session ở đây.
+    public function loginNoSession($email, $password) {
+        return $this->staffModel->login($email, $password);
     }
 }
 ?>

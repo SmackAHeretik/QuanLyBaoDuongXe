@@ -10,16 +10,9 @@ class AdminController {
         $this->adminModel = new AdminModel($db);
     }
 
-    public function login($email, $password) {
-        $admin = $this->adminModel->login($email, $password);
-        if ($admin) {
-            session_start();
-            $_SESSION['admin'] = $admin;
-            header('Location: index.php');
-            exit();
-        } else {
-            return "Email hoặc mật khẩu không đúng!";
-        }
+    // Đăng nhập, trả về dữ liệu nếu thành công, false nếu thất bại. KHÔNG set session ở đây.
+    public function loginNoSession($email, $password) {
+        return $this->adminModel->login($email, $password);
     }
 }
 ?>

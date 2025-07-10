@@ -1,62 +1,64 @@
 <?php
-
 require_once 'controllers/AdminController.php';
-require_once 'controllers/ManagerController.php';
 require_once 'controllers/StaffController.php';
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
-    $role = $_POST['role'] ?? '';
 
-    if ($role == 'admin') {
-        $controller = new AdminController();
-        $error = $controller->login($email, $password);
-    } elseif ($role == 'manager') {
-        $controller = new ManagerController();
-        $error = $controller->login($email, $password);
-    } elseif ($role == 'staff') {
-        $controller = new StaffController();
-        $error = $controller->login($email, $password);
-    } else {
-        $error = "Vui lòng chọn loại tài khoản!";
+    // Kiểm tra đăng nhập admin
+    $adminController = new AdminController();
+    $admin = $adminController->loginNoSession($email, $password);
+    if ($admin) {
+        session_start();
+        $_SESSION['user'] = [
+            'data' => $admin,
+            'role' => 'admin'
+        ];
+        header('Location: index.php');
+        exit();
     }
+
+    // Kiểm tra đăng nhập staff
+    $staffController = new StaffController();
+    $staff = $staffController->loginNoSession($email, $password);
+    if ($staff) {
+        session_start();
+        $_SESSION['user'] = [
+            'data' => $staff,
+            'role' => 'staff'
+        ];
+        header('Location: index.php');
+        exit();
+    }
+
+    $error = "Email hoặc mật khẩu không đúng!";
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <title>67 Performance - Đăng Nhập Admin Panel</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
-
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
     <!-- Libraries Stylesheet -->
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
 </head>
-
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
         <!-- Spinner Start -->
@@ -89,15 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password" required>
                                 <label for="floatingPassword">Password</label>
                             </div>
-                            <div class="form-floating mb-3">
-                                <select class="form-select" id="role" name="role" required>
-                                    <option value="">-- Chọn loại tài khoản --</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="manager">Quản lý</option>
-                                    <option value="staff">Nhân viên</option>
-                                </select>
-                                <label for="role">Loại tài khoản</label>
-                            </div>
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -114,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <!-- Sign In End -->
     </div>
-
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -125,7 +117,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="lib/tempusdominus/js/moment.min.js"></script>
     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 </body>
