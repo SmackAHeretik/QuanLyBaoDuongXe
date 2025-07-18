@@ -3,12 +3,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Lấy danh sách phụ tùng cho mega menu động
+// Lấy danh sách phụ tùng cho mega menu động, giới hạn 4 sản phẩm
 $phutung_list = [];
 $conn = mysqli_connect('localhost', 'root', '', 'quanlybaoduongxe');
 if ($conn) {
     mysqli_set_charset($conn, 'utf8mb4');
-    $sql = "SELECT MaSP, TenSP, DonGia, HinhAnh FROM phutungxemay WHERE TrangThai=1 LIMIT 12";
+    $sql = "SELECT MaSP, TenSP, DonGia, HinhAnh FROM phutungxemay WHERE TrangThai=1 LIMIT 4";
     $result = mysqli_query($conn, $sql);
     while ($row = mysqli_fetch_assoc($result)) {
         $phutung_list[] = $row;
@@ -25,15 +25,12 @@ if ($conn) {
                 <small>Chăm Sóc / Bảo Dưỡng Xe</small>
             </span>
         </a>
-
         <div class="d-lg-none ms-auto me-3">
             <a class="btn custom-btn custom-border-btn" data-bs-toggle="offcanvas" href="#offcanvasExample">Login</a>
         </div>
-
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-lg-auto">
                 <li class="nav-item">
@@ -102,17 +99,17 @@ if ($conn) {
                 </li>
                 <!-- Mega menu Phụ tùng -->
                 <li class="nav-item dropdown position-static" onmouseover="$('#megaMenuPhutung').show()" onmouseleave="$('#megaMenuPhutung').hide()">
-                    <a class="nav-link dropdown-toggle" href="#" id="phutungMegaMenu">Phụ tùng</a>
+                    <a class="nav-link dropdown-toggle" href="hienthi_phutung.php" id="phutungMegaMenu">Phụ tùng</a>
                     <div class="dropdown-menu w-100 mt-0 border-0 shadow mega-menu" id="megaMenuPhutung" style="display: none; min-width: 700px;">
                         <div class="container py-4">
-                            <h6 class="text-uppercase mb-3">Phụ tùng nổi bật</h6>
+                            <a href="hienthi_phutung.php" class="h6 text-uppercase mb-3 d-block text-decoration-none text-dark">Phụ tùng nổi bật</a>
                             <div class="row">
                                 <?php foreach ($phutung_list as $sp): ?>
                                     <div class="col-6 col-md-4 col-lg-3 mb-3 text-center">
-                                        <a href="chitiet_phutung.php?MaSP=<?php echo $sp['MaSP']; ?>" class="text-decoration-none text-dark">
+                                        <a href="chitiet_phutung.php?id=<?php echo $sp['MaSP']; ?>" class="text-decoration-none text-dark">
                                             <img src="<?php
                                                 echo !empty($sp['HinhAnh'])
-                                                    ? '../' . $sp['HinhAnh']
+                                                    ? $sp['HinhAnh']
                                                     : 'images/no-image.png';
                                             ?>"
                                             alt="<?php echo htmlspecialchars($sp['TenSP']); ?>"

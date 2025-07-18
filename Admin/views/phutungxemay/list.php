@@ -44,7 +44,36 @@
               <?php endif; ?>
             </td>
             <td><?= htmlspecialchars($row['SoSeriesSP']) ?></td>
-            <td><?= htmlspecialchars($row['MieuTaSP']) ?></td>
+            <td>
+              <?php
+                $desc = $row['MieuTaSP'];
+                $shortDesc = mb_substr($desc, 0, 40) . (mb_strlen($desc) > 40 ? '...' : '');
+                $modalId = 'descModal' . $row['MaSP'];
+              ?>
+              <span><?= htmlspecialchars($shortDesc) ?></span>
+              <?php if (mb_strlen($desc) > 40): ?>
+                <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#<?= $modalId ?>">
+                  Xem chi tiết
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="<?= $modalId ?>" tabindex="-1" aria-labelledby="<?= $modalId ?>Label" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="<?= $modalId ?>Label">Mô tả sản phẩm</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                      </div>
+                      <div class="modal-body">
+                        <?= nl2br(htmlspecialchars($desc)) ?>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <?php endif; ?>
+            </td>
             <td><?= htmlspecialchars($row['NamSX']) ?></td>
             <td><?= htmlspecialchars($row['XuatXu']) ?></td>
             <td><?= htmlspecialchars($row['ThoiGianBaoHanhDinhKy']) ?></td>
