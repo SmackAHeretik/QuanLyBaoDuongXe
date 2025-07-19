@@ -1,26 +1,66 @@
 let megaMenuTimeout;
 
-function showMegaMenu() {
+// Hiện mega menu khi hover
+function showMegaMenu(menuId) {
     clearTimeout(megaMenuTimeout);
-    document.getElementById("megaMenu").style.display = "block";
+    document.getElementById(menuId).style.display = "block";
 }
 
-function hideMegaMenu() {
+// Ẩn mega menu khi rời chuột (chờ 300ms để người dùng chuyển vùng)
+function hideMegaMenu(menuId) {
     megaMenuTimeout = setTimeout(() => {
-        document.getElementById("megaMenu").style.display = "none";
+        document.getElementById(menuId).style.display = "none";
     }, 300);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    // xử lý cho "Xe của bạn"
     const megaMenu = document.getElementById("megaMenu");
-    if (megaMenu) {
-        megaMenu.addEventListener("mouseover", () => {
-            clearTimeout(megaMenuTimeout);
-            megaMenu.style.display = "block";
+    const megaMenuButton = document.getElementById("megaMenuButton");
+
+    if (megaMenu && megaMenuButton) {
+        megaMenuButton.addEventListener("mouseover", function () {
+            showMegaMenu("megaMenu");
+        });
+        megaMenuButton.addEventListener("mouseleave", function () {
+            hideMegaMenu("megaMenu");
         });
 
-        megaMenu.addEventListener("mouseleave", () => {
-            hideMegaMenu();
+        megaMenu.addEventListener("mouseover", function () {
+            showMegaMenu("megaMenu");
+        });
+        megaMenu.addEventListener("mouseleave", function () {
+            hideMegaMenu("megaMenu");
+        });
+
+        // Xử lý click trên nút "Xe của bạn"
+        megaMenuButton.addEventListener("click", function (e) {
+            window.location.href = megaMenuButton.getAttribute("href");
+        });
+    }
+
+    // xử lý cho "Phụ tùng"
+    const megaMenuPhutung = document.getElementById("megaMenuPhutung");
+    const phutungMenuBtn = document.getElementById("phutungMegaMenu");
+
+    if (megaMenuPhutung && phutungMenuBtn) {
+        phutungMenuBtn.addEventListener("mouseover", function () {
+            showMegaMenu("megaMenuPhutung");
+        });
+        phutungMenuBtn.addEventListener("mouseleave", function () {
+            hideMegaMenu("megaMenuPhutung");
+        });
+
+        megaMenuPhutung.addEventListener("mouseover", function () {
+            showMegaMenu("megaMenuPhutung");
+        });
+        megaMenuPhutung.addEventListener("mouseleave", function () {
+            hideMegaMenu("megaMenuPhutung");
+        });
+
+        // Xử lý click trên nút "Phụ tùng"
+        phutungMenuBtn.addEventListener("click", function (e) {
+            window.location.href = phutungMenuBtn.getAttribute("href");
         });
     }
 });

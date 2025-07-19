@@ -41,8 +41,12 @@
                 <td><?= htmlspecialchars($row['dichvu_MaDV']) ?></td>
                 <td><?= number_format($row['GiaTien'], 0, ',', '.') ?> VND</td>
                 <td><?= htmlspecialchars($row['SoLuong']) ?></td>
-                <td><?= htmlspecialchars($row['NgayBDBH']) ?></td>
-                <td><?= htmlspecialchars($row['NgayKTBH']) ?></td>
+                <td>
+                  <?= !empty($row['NgayBDBH']) ? htmlspecialchars(date('d/m/Y H:i', strtotime($row['NgayBDBH']))) : '<span class="text-muted">--</span>' ?>
+                </td>
+                <td>
+                  <?= !empty($row['NgayKTBH']) ? htmlspecialchars(date('d/m/Y H:i', strtotime($row['NgayKTBH']))) : '<span class="text-muted">--</span>' ?>
+                </td>
                 <td><?= htmlspecialchars($row['SoLanDaBaoHanh']) ?></td>
                 <td class="text-center">
                   <a href="?controller=chitiethoadon&action=edit&id=<?= $row['MaCTHD'] ?>&hoadon_MaHD=<?= htmlspecialchars($row['hoadon_MaHD']) ?>"

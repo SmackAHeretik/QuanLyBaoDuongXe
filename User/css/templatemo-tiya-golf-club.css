@@ -1507,6 +1507,83 @@ strong {
 .floating-btn.map:hover {
     background-color: #a71d2a;
 }
+/* ==== Mega Menu Hover (Chỉ mở khi hover vào nút hoặc menu) ==== */
 
+/* Ẩn dropdown mặc định */
+.mega-hover .dropdown-menu {
+  display: none;
+  margin-top: 0;
+  padding-bottom: 0;
+}
 
+/* Hiện dropdown khi hover vào li hoặc khi focus-within (phím tab) */
+.mega-hover:hover .dropdown-menu,
+.mega-hover:focus-within .dropdown-menu {
+  display: block !important;
+}
 
+/* Đảm bảo dropdown-menu nằm sát với nút navbar */
+.mega-hover {
+  position: relative;
+}
+
+/* Mega menu hiển thị đẹp */
+.dropdown-menu.mega-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  width: 100vw; /* hoặc width: 100% nếu chỉ muốn ngang navbar */
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  z-index: 99;
+  border-radius: 0 0 8px 8px;
+  padding: 32px 0 32px 0;
+  /* Có thể chỉnh padding-top/bottom cho vùng nhận chuột tốt hơn */
+}
+
+/* Responsive: Chỉnh lại width khi ở mobile nếu cần */
+@media (max-width: 991px) {
+  .dropdown-menu.mega-menu {
+      width: 100%;
+      left: 0;
+      right: 0;
+      border-radius: 0;
+      padding: 16px 0 16px 0;
+  }
+}
+
+/* Hiệu ứng hover cho item trong mega menu */
+.mega-menu a:hover, .mega-menu a:focus {
+  background: #f7f7f7;
+  text-decoration: underline;
+}
+
+/* Đảm bảo các khối con không bị chồng lên nhau */
+.mega-menu .row > div {
+  min-height: 120px;
+}
+
+/* Nút + trong mega menu */
+.mega-menu .btn-success {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: background 0.15s;
+}
+.mega-menu .btn-success:hover {
+  background: #1ea463;
+}
+
+/* Badge giỏ hàng trong navbar */
+.navbar .badge {
+  min-width: 1.1em;
+  min-height: 1.1em;
+  font-size: 0.8em;
+  padding: 0.25em 0.5em;
+  top: 5px !important;
+  left: 85% !important;
+}
+
+/* Ẩn vùng hover buffer nếu có */
+.mega-hover::after {
+  display: none !important;
+}

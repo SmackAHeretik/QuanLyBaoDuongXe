@@ -34,7 +34,7 @@ if ($user) {
             <a href="index.php" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Trang Chủ</a>
 
             <?php if ($role === 'admin'): ?>
-                <a href="NVmanagement.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Quản Lý Nhân Viên</a>
+                <a href="NVmanagement.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Danh Sách Nhân Viên</a>
                 <a href="khachhang.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Danh Sách Khách Hàng</a>
                 <a href="form.php" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Danh Sách Phụ Tùng</a>
                 <a href="table.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Danh Sách Xe Máy</a>

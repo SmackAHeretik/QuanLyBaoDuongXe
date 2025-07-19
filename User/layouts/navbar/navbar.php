@@ -3,15 +3,26 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Lấy danh sách phụ tùng cho mega menu động, giới hạn 4 sản phẩm
+// Lấy phụ tùng nổi bật
 $phutung_list = [];
+$bike_list = [];
 $conn = mysqli_connect('localhost', 'root', '', 'quanlybaoduongxe');
 if ($conn) {
     mysqli_set_charset($conn, 'utf8mb4');
+    // Phụ tùng nổi bật
     $sql = "SELECT MaSP, TenSP, DonGia, HinhAnh FROM phutungxemay WHERE TrangThai=1 LIMIT 4";
     $result = mysqli_query($conn, $sql);
     while ($row = mysqli_fetch_assoc($result)) {
         $phutung_list[] = $row;
+    }
+    // Xe của bạn
+    if (isset($_SESSION['MaKH'])) {
+        $makh = (int)$_SESSION['MaKH'];
+        $sql_bike = "SELECT MaXe, TenXe, BienSoXe, HinhAnhMatTruocXe FROM xemay WHERE khachhang_MaKH = $makh";
+        $result_bike = mysqli_query($conn, $sql_bike);
+        while ($row_bike = mysqli_fetch_assoc($result_bike)) {
+            $bike_list[] = $row_bike;
+        }
     }
     mysqli_close($conn);
 }
@@ -37,76 +48,65 @@ if ($conn) {
                     <a class="nav-link" href="index.php">Trang chủ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="hienthi_phutung.php">Phụ Tùng</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="about.php">Về chúng tôi</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link click-scroll" href="#section_3">Dịch vụ</a>
-                </li>
-                <!-- Mega menu Sản phẩm -->
-                <li class="nav-item dropdown position-static" onmouseover="showMegaMenu()" onmouseleave="hideMegaMenu()">
-                    <a class="nav-link dropdown-toggle" href="#" id="productMegaMenu">Sản phẩm</a>
-                    <div class="dropdown-menu w-100 mt-0 border-0 shadow mega-menu" id="megaMenu" style="display: none;">
-                        <div class="container py-4">
-                            <div class="row">
-                                <!-- Xe tay ga -->
-                                <div class="col-lg-6">
-                                    <h6 class="text-uppercase">Xe Tay Ga</h6>
-                                    <div class="row">
-                                        <div class="col-4 text-center">
-                                            <img src="images/janus.png" width="100" height="70">
-                                            <p class="mb-0 small">JANUS</p>
-                                            <small>Giá từ 28.6tr</small>
+                <!-- Mega menu Xe của bạn, chỉ hiện khi đã đăng nhập -->
+                <?php if (isset($_SESSION['MaKH'])): ?>
+                <li class="nav-item dropdown position-static mega-hover">
+                    <a class="nav-link dropdown-toggle" id="megaMenuButton" href="bike_list.php">Xe của bạn</a>
+                    <div class="dropdown-menu w-100 mt-0 border-0 shadow mega-menu" id="megaMenu">
+                        <div class="container py-4 position-relative">
+                            <a href="bike_list.php" class="h6 text-uppercase mb-3 d-inline-block text-decoration-none text-dark">Xe của bạn</a>
+                            <!-- Nút + bên phải -->
+                            <a href="/QuanLyBaoDuongXe/User/bikeprofile.php"
+                               class="btn btn-success position-absolute"
+                               style="top: 10px; right: 10px; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; padding:0;"
+                               title="Thêm xe">
+                                +
+                            </a>
+                            <div class="row justify-content-center">
+                                <?php if (!empty($bike_list)): ?>
+                                    <?php foreach ($bike_list as $xe): ?>
+                                        <div class="col-6 col-md-4 col-lg-3 mb-3 text-center">
+                                            <a href="/QuanLyBaoDuongXe/User/bike_update.php?MaXe=<?php echo $xe['MaXe']; ?>" class="text-decoration-none text-dark">
+                                                <img src="<?php
+                                                    echo !empty($xe['HinhAnhMatTruocXe'])
+                                                        ? $xe['HinhAnhMatTruocXe']
+                                                        : 'images/no-image.png';
+                                                ?>"
+                                                alt="<?php echo htmlspecialchars($xe['TenXe']); ?>"
+                                                width="120" height="90" class="mb-2" style="object-fit:cover;">
+                                                <div class="fw-bold small"><?php echo htmlspecialchars($xe['TenXe']); ?></div>
+                                                <div class="small text-muted">Biển số: <?php echo htmlspecialchars($xe['BienSoXe']); ?></div>
+                                            </a>
                                         </div>
-                                        <div class="col-4 text-center">
-                                            <img src="images/grande.png" width="100" height="70">
-                                            <p class="mb-0 small">GRANDE</p>
-                                            <small>Giá từ 46tr</small>
-                                        </div>
-                                        <div class="col-4 text-center">
-                                            <img src="images/freego.png" width="100" height="70">
-                                            <p class="mb-0 small">FREEGO</p>
-                                            <small>Giá từ 30.3tr</small>
-                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="col-12 text-center mt-2">
+                                        <span class="text-muted">
+                                            Bạn chưa có thông tin xe trong danh sách,
+                                            <a href="/QuanLyBaoDuongXe/User/bikeprofile.php" class="text-primary text-decoration-underline">
+                                                nhấn vào đây
+                                            </a>
+                                            để thêm thông tin.
+                                        </span>
                                     </div>
-                                </div>
-                                <!-- Xe số -->
-                                <div class="col-lg-6">
-                                    <h6 class="text-uppercase">Xe Số</h6>
-                                    <div class="row">
-                                        <div class="col-4 text-center">
-                                            <img src="images/sirius.png" width="100" height="70">
-                                            <p class="mb-0 small">SIRIUS</p>
-                                            <small>Giá từ 18tr</small>
-                                        </div>
-                                        <div class="col-4 text-center">
-                                            <img src="images/jupiter.png" width="100" height="70">
-                                            <p class="mb-0 small">JUPITER</p>
-                                            <small>Giá từ 30tr</small>
-                                        </div>
-                                        <div class="col-4 text-center">
-                                            <img src="images/exciter.png" width="100" height="70">
-                                            <p class="mb-0 small">EXCITER</p>
-                                            <small>Giá từ 47tr</small>
-                                        </div>
-                                    </div>
-                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </li>
-                <!-- Mega menu Phụ tùng -->
-                <li class="nav-item dropdown position-static" onmouseover="$('#megaMenuPhutung').show()" onmouseleave="$('#megaMenuPhutung').hide()">
-                    <a class="nav-link dropdown-toggle" href="hienthi_phutung.php" id="phutungMegaMenu">Phụ tùng</a>
-                    <div class="dropdown-menu w-100 mt-0 border-0 shadow mega-menu" id="megaMenuPhutung" style="display: none; min-width: 700px;">
+                <?php endif; ?>
+                <!-- Mega menu Phụ tùng nổi bật -->
+                <li class="nav-item dropdown position-static mega-hover">
+                    <a class="nav-link dropdown-toggle" id="phutungMegaMenu" href="/QuanLyBaoDuongXe/User/hienthi_phutung.php">Phụ tùng</a>
+                    <div class="dropdown-menu w-100 mt-0 border-0 shadow mega-menu" id="megaMenuPhutung">
                         <div class="container py-4">
-                            <a href="hienthi_phutung.php" class="h6 text-uppercase mb-3 d-block text-decoration-none text-dark">Phụ tùng nổi bật</a>
+                            <a href="/QuanLyBaoDuongXe/User/hienthi_phutung.php" class="h6 text-uppercase mb-3 d-block text-decoration-none text-dark">Phụ tùng nổi bật</a>
                             <div class="row">
                                 <?php foreach ($phutung_list as $sp): ?>
                                     <div class="col-6 col-md-4 col-lg-3 mb-3 text-center">
-                                        <a href="chitiet_phutung.php?id=<?php echo $sp['MaSP']; ?>" class="text-decoration-none text-dark">
+                                        <a href="/QuanLyBaoDuongXe/User/chitiet_phutung.php?id=<?php echo $sp['MaSP']; ?>" class="text-decoration-none text-dark">
                                             <img src="<?php
                                                 echo !empty($sp['HinhAnh'])
                                                     ? $sp['HinhAnh']
@@ -129,10 +129,7 @@ if ($conn) {
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link click-scroll" href="#section_5">Tin tức</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link click-scroll" href="#section_6">Liên hệ</a>
+                    <a class="nav-link" href="#section_6">Liên hệ</a>
                 </li>
             </ul>
             <!-- Nút bên phải -->
@@ -184,12 +181,3 @@ if ($conn) {
         </div>
     </div>
 </nav>
-<script>
-// Mega menu sản phẩm (JS thuần)
-function showMegaMenu() {
-    document.getElementById('megaMenu').style.display = 'block';
-}
-function hideMegaMenu() {
-    document.getElementById('megaMenu').style.display = 'none';
-}
-</script>
