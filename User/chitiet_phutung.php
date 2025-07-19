@@ -8,7 +8,8 @@ require_once __DIR__ . '/../Admin/models/phutungxemaymodel.php';
 
 // Lấy danh sách xe của khách hàng nếu đã đăng nhập
 $user_xemay = [];
-if (isset($_SESSION['MaKH'])) {
+$isLoggedIn = isset($_SESSION['MaKH']);
+if ($isLoggedIn) {
     $db = new ConnectDb();
     $pdo = $db->connect();
     $makh = $_SESSION['MaKH'];
@@ -185,6 +186,13 @@ if ($product) {
             display: inline-block;
         }
         .dot-gray { background: #bbb; }
+        /* MODAL */
+        .modal-custom {
+            z-index: 99999;
+        }
+        .modal-content-custom {
+            border-radius: 12px;
+        }
         @media (max-width: 991.98px) {
             .main-section { padding: 35px 0 40px 0; }
             .product-detail-container { flex-direction: column; align-items: stretch; }
@@ -216,12 +224,12 @@ if ($product) {
                                 <?= nl2br(htmlspecialchars($product['MieuTaSP'])) ?>
                             </div>
                             <!-- NÚT MUA: GỬI ĐỦ THÔNG TIN SANG controller/add_to_cart.php -->
-                            <form method="get" action="controller/add_to_cart.php" style="display:inline;">
+                            <form method="get" action="controller/add_to_cart.php" style="display:inline;" id="buyForm">
                                 <input type="hidden" name="MaSP" value="<?= $product['MaSP'] ?>">
                                 <input type="hidden" name="TenSP" value="<?= htmlspecialchars($product['TenSP']) ?>">
                                 <input type="hidden" name="DonGia" value="<?= $product['DonGia'] ?>">
                                 <input type="hidden" name="HinhAnh" value="<?= htmlspecialchars($product['HinhAnh']) ?>">
-                                <?php if (isset($_SESSION['MaKH']) && count($user_xemay) > 0): ?>
+                                <?php if ($isLoggedIn): ?>
                                     <div class="mb-3 mt-2">
                                         <label for="xemay_chon" class="form-label">Chọn xe cần phụ tùng:</label>
                                         <select id="xemay_chon" name="MaXE" class="form-select" required onchange="updateTenXe()">
@@ -237,7 +245,7 @@ if ($product) {
                                     <script>
                                         function updateTenXe() {
                                             var select = document.getElementById('xemay_chon');
-                                            var tenXe = select.options[select.selectedIndex].text;
+                                            var tenXe = select.options[select.selectedIndex] ? select.options[select.selectedIndex].text : '';
                                             document.getElementById('TenXE_hidden').value = tenXe;
                                         }
                                         document.addEventListener('DOMContentLoaded', function() {
@@ -245,7 +253,7 @@ if ($product) {
                                         });
                                     </script>
                                 <?php endif; ?>
-                                <button type="submit" class="btn btn-danger buy-btn">Mua</button>
+                                <button type="submit" class="btn btn-danger buy-btn" id="buyBtn">Mua</button>
                             </form>
                         </div>
                         <div class="product-image">
@@ -296,6 +304,43 @@ if ($product) {
         </section>
     </main>
 
+    <!-- MODAL: Thông báo phải thêm thông tin xe -->
+    <div class="modal fade modal-custom" id="requireBikeModal" tabindex="-1" aria-labelledby="requireBikeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-custom">
+          <div class="modal-header">
+            <h5 class="modal-title" id="requireBikeModalLabel">Thông báo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body">
+            Bạn hãy thêm thông tin xe trước khi đặt hàng!
+          </div>
+          <div class="modal-footer">
+            <a href="/QuanLyBaoDuongXe/User/bikeprofile.php" class="btn btn-primary">Thêm xe ngay</a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- MODAL: Thông báo phải đăng nhập -->
+    <div class="modal fade modal-custom" id="requireLoginModal" tabindex="-1" aria-labelledby="requireLoginModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-custom">
+          <div class="modal-header">
+            <h5 class="modal-title" id="requireLoginModalLabel">Thông báo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body">
+            Bạn cần đăng nhập trước khi đặt hàng!
+          </div>
+          <div class="modal-footer">
+            <a href="/QuanLyBaoDuongXe/User/login.php" class="btn btn-primary">Đăng nhập ngay</a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <?php include('./layouts/footer/footer.php') ?>
 
     <!-- JAVASCRIPT FILES -->
@@ -308,5 +353,40 @@ if ($product) {
     <script src="js/mega-menu.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="js/custom.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var buyBtn = document.getElementById('buyBtn');
+        var buyForm = document.getElementById('buyForm');
+        <?php if (!$isLoggedIn): ?>
+            // Chưa đăng nhập, chặn submit và hiện modal đăng nhập
+            buyBtn.onclick = function(e) {
+                e.preventDefault();
+                var modal = new bootstrap.Modal(document.getElementById('requireLoginModal'));
+                modal.show();
+                return false;
+            };
+            buyForm.onsubmit = function(e) {
+                e.preventDefault();
+                var modal = new bootstrap.Modal(document.getElementById('requireLoginModal'));
+                modal.show();
+                return false;
+            };
+        <?php elseif (count($user_xemay) == 0): ?>
+            // Đã đăng nhập nhưng chưa có xe, chặn submit và hiện modal thêm xe
+            buyBtn.onclick = function(e) {
+                e.preventDefault();
+                var modal = new bootstrap.Modal(document.getElementById('requireBikeModal'));
+                modal.show();
+                return false;
+            };
+            buyForm.onsubmit = function(e) {
+                e.preventDefault();
+                var modal = new bootstrap.Modal(document.getElementById('requireBikeModal'));
+                modal.show();
+                return false;
+            };
+        <?php endif; ?>
+    });
+    </script>
 </body>
 </html>

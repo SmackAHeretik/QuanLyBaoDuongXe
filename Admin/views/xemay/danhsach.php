@@ -10,6 +10,7 @@
                 echo '<div class="alert alert-success">Xóa xe máy thành công!</div>';
             }
         }
+        $defaultImg = "uploads/noimage.png";
     ?>
     <a href="table.php?controller=xemay&action=them" class="btn btn-primary mb-3">Thêm xe máy</a>
     <table class="table table-bordered">
@@ -35,14 +36,24 @@
                 <td><?= htmlspecialchars($xe['PhanKhuc']) ?></td>
                 <td><?= htmlspecialchars($xe['BienSoXe']) ?></td>
                 <td>
-                    <?php if ($xe['HinhAnhMatTruocXe']): ?>
-                        <img src="uploads/<?= htmlspecialchars($xe['HinhAnhMatTruocXe']) ?>" style="max-width:80px;">
-                    <?php endif; ?>
+                    <?php
+                        $imgTruoc = $xe['HinhAnhMatTruocXe'];
+                        if (!empty($imgTruoc) && file_exists($imgTruoc)) {
+                            echo '<img src="' . htmlspecialchars($imgTruoc) . '" style="max-width:80px;">';
+                        } else {
+                            echo '<img src="' . $defaultImg . '" style="max-width:80px;">';
+                        }
+                    ?>
                 </td>
                 <td>
-                    <?php if ($xe['HinhAnhMatSauXe']): ?>
-                        <img src="uploads/<?= htmlspecialchars($xe['HinhAnhMatSauXe']) ?>" style="max-width:80px;">
-                    <?php endif; ?>
+                    <?php
+                        $imgSau = $xe['HinhAnhMatSauXe'];
+                        if (!empty($imgSau) && file_exists($imgSau)) {
+                            echo '<img src="' . htmlspecialchars($imgSau) . '" style="max-width:80px;">';
+                        } else {
+                            echo '<img src="' . $defaultImg . '" style="max-width:80px;">';
+                        }
+                    ?>
                 </td>
                 <td><?= htmlspecialchars($xe['TenKH']) ?></td>
                 <td>

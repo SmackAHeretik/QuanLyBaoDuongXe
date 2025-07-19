@@ -50,53 +50,64 @@ if ($conn) {
                 <li class="nav-item">
                     <a class="nav-link" href="about.php">Về chúng tôi</a>
                 </li>
-                <!-- Mega menu Xe của bạn, chỉ hiện khi đã đăng nhập -->
-                <?php if (isset($_SESSION['MaKH'])): ?>
+                <!-- Mega menu Xe của bạn: luôn hiện -->
                 <li class="nav-item dropdown position-static mega-hover">
                     <a class="nav-link dropdown-toggle" id="megaMenuButton" href="bike_list.php">Xe của bạn</a>
                     <div class="dropdown-menu w-100 mt-0 border-0 shadow mega-menu" id="megaMenu">
                         <div class="container py-4 position-relative">
-                            <a href="bike_list.php" class="h6 text-uppercase mb-3 d-inline-block text-decoration-none text-dark">Xe của bạn</a>
-                            <!-- Nút + bên phải -->
-                            <a href="/QuanLyBaoDuongXe/User/bikeprofile.php"
-                               class="btn btn-success position-absolute"
-                               style="top: 10px; right: 10px; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; padding:0;"
-                               title="Thêm xe">
-                                +
-                            </a>
-                            <div class="row justify-content-center">
-                                <?php if (!empty($bike_list)): ?>
-                                    <?php foreach ($bike_list as $xe): ?>
-                                        <div class="col-6 col-md-4 col-lg-3 mb-3 text-center">
-                                            <a href="/QuanLyBaoDuongXe/User/bike_update.php?MaXe=<?php echo $xe['MaXe']; ?>" class="text-decoration-none text-dark">
-                                                <img src="<?php
-                                                    echo !empty($xe['HinhAnhMatTruocXe'])
-                                                        ? $xe['HinhAnhMatTruocXe']
-                                                        : 'images/no-image.png';
-                                                ?>"
-                                                alt="<?php echo htmlspecialchars($xe['TenXe']); ?>"
-                                                width="120" height="90" class="mb-2" style="object-fit:cover;">
-                                                <div class="fw-bold small"><?php echo htmlspecialchars($xe['TenXe']); ?></div>
-                                                <div class="small text-muted">Biển số: <?php echo htmlspecialchars($xe['BienSoXe']); ?></div>
-                                            </a>
+                            <?php if (!isset($_SESSION['MaKH'])): ?>
+                                <div class="row justify-content-center">
+                                    <div class="col-12 text-center">
+                                        <div class="alert alert-warning d-inline-block px-4 py-3" style="background: #fffbe6; font-size: 1.2rem;">
+                                            Bạn hãy <a href="login.php" class="text-primary text-decoration-underline">đăng nhập</a> để tiếp tục.
                                         </div>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <div class="col-12 text-center mt-2">
-                                        <span class="text-muted">
-                                            Bạn chưa có thông tin xe trong danh sách,
-                                            <a href="/QuanLyBaoDuongXe/User/bikeprofile.php" class="text-primary text-decoration-underline">
-                                                nhấn vào đây
-                                            </a>
-                                            để thêm thông tin.
-                                        </span>
                                     </div>
-                                <?php endif; ?>
-                            </div>
+                                </div>
+                            <?php else: ?>
+                                <a href="bike_list.php" class="h6 text-uppercase mb-3 d-inline-block text-decoration-none text-dark">Xe của bạn</a>
+                                <!-- Nút thêm xe -->
+                                <a href="/QuanLyBaoDuongXe/User/bikeprofile.php"
+                                   class="btn btn-success position-absolute"
+                                   style="top: 10px; right: 10px; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; padding:0;"
+                                   title="Thêm xe">
+                                    +
+                                </a>
+                                <div class="row justify-content-center">
+                                    <?php if (!empty($bike_list)): ?>
+                                        <?php foreach ($bike_list as $xe): ?>
+                                            <div class="col-6 col-md-4 col-lg-3 mb-3 text-center">
+                                                <a href="/QuanLyBaoDuongXe/User/bike_update.php?MaXe=<?php echo $xe['MaXe']; ?>" class="text-decoration-none text-dark">
+                                                    <img src="<?php
+                                                        $img = $xe['HinhAnhMatTruocXe'];
+                                                        if (!empty($img) && file_exists($img)) {
+                                                            echo $img;
+                                                        } else {
+                                                            echo 'images/no-image.png';
+                                                        }
+                                                    ?>"
+                                                    alt="<?php echo htmlspecialchars($xe['TenXe']); ?>"
+                                                    width="120" height="90" class="mb-2" style="object-fit:cover;">
+                                                    <div class="fw-bold small"><?php echo htmlspecialchars($xe['TenXe']); ?></div>
+                                                    <div class="small text-muted">Biển số: <?php echo htmlspecialchars($xe['BienSoXe']); ?></div>
+                                                </a>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <div class="col-12 text-center mt-2">
+                                            <span class="text-muted">
+                                                Bạn chưa có thông tin xe trong danh sách,
+                                                <a href="/QuanLyBaoDuongXe/User/bikeprofile.php" class="text-primary text-decoration-underline">
+                                                    nhấn vào đây
+                                                </a>
+                                                để thêm thông tin.
+                                            </span>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </li>
-                <?php endif; ?>
                 <!-- Mega menu Phụ tùng nổi bật -->
                 <li class="nav-item dropdown position-static mega-hover">
                     <a class="nav-link dropdown-toggle" id="phutungMegaMenu" href="/QuanLyBaoDuongXe/User/hienthi_phutung.php">Phụ tùng</a>
@@ -108,9 +119,12 @@ if ($conn) {
                                     <div class="col-6 col-md-4 col-lg-3 mb-3 text-center">
                                         <a href="/QuanLyBaoDuongXe/User/chitiet_phutung.php?id=<?php echo $sp['MaSP']; ?>" class="text-decoration-none text-dark">
                                             <img src="<?php
-                                                echo !empty($sp['HinhAnh'])
-                                                    ? $sp['HinhAnh']
-                                                    : 'images/no-image.png';
+                                                $img = $sp['HinhAnh'];
+                                                if (!empty($img) && file_exists($img)) {
+                                                    echo $img;
+                                                } else {
+                                                    echo 'images/no-image.png';
+                                                }
                                             ?>"
                                             alt="<?php echo htmlspecialchars($sp['TenSP']); ?>"
                                             width="90" height="70" class="mb-2" style="object-fit:cover;">
