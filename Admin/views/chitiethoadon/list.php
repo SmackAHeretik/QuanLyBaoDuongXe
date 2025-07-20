@@ -22,7 +22,7 @@
             <th>Số lượng</th>
             <th>Ngày bắt đầu BH</th>
             <th>Ngày kết thúc BH</th>
-            <th>Số lần đã bảo hành</th>
+            <th>Số lần bảo hành còn lại</th>
             <th class="text-center">Hành động</th>
           </tr>
         </thead>

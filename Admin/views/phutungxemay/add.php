@@ -34,7 +34,12 @@
         </div>
         <div class="mb-3">
             <label>Loại phụ tùng</label>
-            <input type="text" name="loaiphutung" class="form-control">
+            <select name="loaiphutung" class="form-control" required>
+                <option value="">-- Chọn loại phụ tùng --</option>
+                <option value="Xe tay ga">Xe tay ga</option>
+                <option value="Xe số">Xe số</option>
+                <option value="Xe côn tay">Xe côn tay</option>
+            </select>
         </div>
         <div class="mb-3">
             <label>Nhà sản xuất</label>

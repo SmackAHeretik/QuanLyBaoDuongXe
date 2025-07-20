@@ -34,7 +34,12 @@
         </div>
         <div class="mb-3">
             <label>Loại phụ tùng</label>
-            <input type="text" name="loaiphutung" class="form-control" value="<?= htmlspecialchars($item['loaiphutung']) ?>">
+            <select name="loaiphutung" class="form-control" required>
+                <option value="">-- Chọn loại phụ tùng --</option>
+                <option value="Xe tay ga" <?= ($item['loaiphutung']=="Xe tay ga") ? 'selected' : '' ?>>Xe tay ga</option>
+                <option value="Xe số" <?= ($item['loaiphutung']=="Xe số") ? 'selected' : '' ?>>Xe số</option>
+                <option value="Xe côn tay" <?= ($item['loaiphutung']=="Xe côn tay") ? 'selected' : '' ?>>Xe côn tay</option>
+            </select>
         </div>
         <div class="mb-3">
             <label>Nhà sản xuất</label>
