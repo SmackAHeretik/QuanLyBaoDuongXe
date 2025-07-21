@@ -97,3 +97,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($cart)) {
     exit;
 }
 ?>
+<?php
+session_start();
+$total = 0;
+foreach ($_SESSION['cart'] as $item) {
+    $total += $item['DonGia'] * $item['qty'];
+}
+
+// Lưu đầy đủ đơn hàng vào session
+$_SESSION['order'] = [
+    'cart' => $_SESSION['cart'],
+    'fullname' => $_POST['fullname'],
+    'phone' => $_POST['phone'],
+    'note' => $_POST['note'],
+    'total' => $total,
+    'date' => date('Y-m-d H:i:s'),
+];
+
+// Sau khi lưu, chuyển về listphutungdamua.php hoặc trang cảm ơn
+header('Location: ../listphutungdamua.php');
+exit;
+?>

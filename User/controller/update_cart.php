@@ -1,14 +1,15 @@
 <?php
 session_start();
-if (isset($_POST['qty'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qty'])) {
     foreach ($_POST['qty'] as $MaSP => $qty) {
-        if ($qty <= 0) {
-            unset($_SESSION['cart'][$MaSP]);
-        } else {
-            $_SESSION['cart'][$MaSP]['qty'] = $qty;
+        foreach ($_SESSION['cart'] as &$item) {
+            if ($item['MaSP'] == $MaSP) {
+                $item['qty'] = max(1, intval($qty));
+            }
         }
     }
+    unset($item);
 }
-header('Location: cart.php');
+header('Location: ../cart.php');
 exit;
 ?>

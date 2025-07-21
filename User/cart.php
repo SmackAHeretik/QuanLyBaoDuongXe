@@ -22,7 +22,8 @@ $total = 0;
         <section class="section-padding">
             <div class="container">
                 <h2 class="mb-4">Giỏ hàng</h2>
-                <form action="update_cart.php" method="post" class="bg-white p-4 rounded shadow-sm">
+                <!-- Sửa đường dẫn action: -->
+                <form action="controller/update_cart.php" method="post" class="bg-white p-4 rounded shadow-sm">
                     <?php if (empty($cart)): ?>
                         <div class="alert alert-info">Giỏ hàng trống.</div>
                     <?php else: ?>
@@ -104,7 +105,6 @@ $total = 0;
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="js/custom.js"></script>
     <script>
-    // Xử lý số lượng và thành tiền động
     document.querySelectorAll('.so-luong').forEach(function(input) {
         input.addEventListener('input', function() {
             let value = parseInt(input.value, 10);
@@ -117,10 +117,8 @@ $total = 0;
             let thanhTienCell = row.querySelector('.thanh-tien');
             thanhTienCell.textContent = (price * value).toLocaleString('vi-VN') + ' VNĐ';
 
-            // Cập nhật tổng cộng
             updateTongCong();
         });
-        // Ngăn nhập số nhỏ hơn 1 bằng nút mũi tên
         input.addEventListener('change', function() {
             if (input.value < 1) input.value = 1;
             input.dispatchEvent(new Event('input'));
