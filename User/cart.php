@@ -42,7 +42,12 @@ $total = 0;
                                     <?php foreach ($cart as $item): 
                                         $thanhtien = $item['DonGia'] * $item['qty'];
                                         $total += $thanhtien;
-                                        $imgSrc = !empty($item['HinhAnh']) ? $item['HinhAnh'] : 'images/no-image.png';
+                                        // Đảm bảo hình đúng đường dẫn tuyệt đối
+                                        if (!empty($item['HinhAnh']) && $item['HinhAnh'] !== 'no-image.png') {
+                                            $imgSrc = '/QuanLyBaoDuongXe/Admin/' . $item['HinhAnh'];
+                                        } else {
+                                            $imgSrc = 'images/no-image.png';
+                                        }
                                     ?>
                                     <tr>
                                         <td class="d-flex align-items-center gap-3">

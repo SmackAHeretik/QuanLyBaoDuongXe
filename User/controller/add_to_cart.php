@@ -10,7 +10,7 @@ if (!$maSP) {
     exit;
 }
 
-// Kết nối DB lấy sản phẩm (bảo đảm lấy đúng tên file ảnh thật)
+// Kết nối DB lấy sản phẩm
 $conn = mysqli_connect('localhost', 'root', '', 'quanlybaoduongxe');
 mysqli_set_charset($conn, 'utf8mb4');
 $sql = "SELECT * FROM phutungxemay WHERE MaSP = ?";
@@ -26,18 +26,15 @@ if (!$product) {
     exit;
 }
 
-// Nếu chưa có giỏ hàng thì tạo giỏ hàng
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// Xử lý đường dẫn hình ảnh
-$hinhAnh = !empty($product['HinhAnh']) ? 'uploads/' . $product['HinhAnh'] : 'images/no-image.png';
+// Sửa chỗ này: chỉ lấy tên file ảnh
+$hinhAnh = !empty($product['HinhAnh']) ? $product['HinhAnh'] : 'no-image.png';
 
-// Nếu sản phẩm đã có trong giỏ, tăng số lượng
 if (isset($_SESSION['cart'][$maSP])) {
     $_SESSION['cart'][$maSP]['qty'] += 1;
-    // Nếu có chọn lại xe, cập nhật lại
     if ($maXE) {
         $_SESSION['cart'][$maSP]['MaXE'] = $maXE;
         $_SESSION['cart'][$maSP]['TenXE'] = $tenXE;
@@ -54,7 +51,6 @@ if (isset($_SESSION['cart'][$maSP])) {
     ];
 }
 
-// Chuyển về trang giỏ hàng
 header('Location: ../cart.php');
 exit;
 ?>
