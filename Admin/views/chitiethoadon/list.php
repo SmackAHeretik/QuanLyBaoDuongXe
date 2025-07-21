@@ -68,7 +68,7 @@
         </tbody>
       </table>
     </div>
-    <a href="index.php?controller=hoadon&action=index" class="btn btn-secondary mt-3"><i class="fa fa-arrow-left"></i> Quay lại danh sách hóa đơn</a>
+    <a href="khachhang.php?controller=hoadon&action=index" class="btn btn-secondary mt-3"><i class="fa fa-arrow-left"></i> Quay lại danh sách hóa đơn</a>
   </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

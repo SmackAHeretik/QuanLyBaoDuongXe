@@ -28,12 +28,13 @@ class StaffModel {
         $stmt->execute([$email]);
         return $stmt->fetch() ? true : false;
     }
-    // Thêm nhân viên
+    // Thêm nhân viên (lưu hash)
     public function add($data) {
         $stmt = $this->db->prepare("
             INSERT INTO nhanvien (TenNV, Email, SDT, MatKhau)
             VALUES (?, ?, ?, ?)
         ");
+        // Lưu mật khẩu dạng hash
         $hash = password_hash($data['password'], PASSWORD_BCRYPT);
         return $stmt->execute([
             $data['tennv'],
@@ -42,7 +43,7 @@ class StaffModel {
             $hash
         ]);
     }
-    // Sửa thông tin nhân viên
+    // Sửa thông tin nhân viên (lưu hash nếu đổi mật khẩu)
     public function update($id, $data) {
         if (!empty($data['password'])) {
             $stmt = $this->db->prepare("

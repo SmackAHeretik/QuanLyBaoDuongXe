@@ -13,6 +13,7 @@ class StaffController {
     // Đăng nhập nhân viên không lưu session
     public function loginNoSession($email, $password) {
         $user = $this->model->getByEmail($email);
+        // Kiểm tra bằng password_verify (đã lưu hash)
         if ($user && password_verify($password, $user['MatKhau'])) {
             return $user;
         }
