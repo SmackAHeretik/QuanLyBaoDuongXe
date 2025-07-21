@@ -25,9 +25,9 @@
         </select>
     </div>
     <button type="submit" class="btn btn-primary">Lưu</button>
-    <a href="khachhang_controller.php" class="btn btn-secondary">Hủy</a>
+    <a href="khachhang.php" class="btn btn-secondary">Hủy</a>
 </form>
 <?php else: ?>
     <div class="alert alert-danger">Không tìm thấy khách hàng!</div>
-    <a href="khachhang_controller.php" class="btn btn-secondary">Quay lại danh sách</a>
+    <a href="khachhang.php" class="btn btn-secondary">Quay lại danh sách</a>
 <?php endif; ?>

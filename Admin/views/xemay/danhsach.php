@@ -11,6 +11,7 @@
             }
         }
         $defaultImg = "uploads/noimage.png";
+        $baseImgPath = "/QuanLyBaoDuongXe/User/";   // Đường dẫn tuyệt đối đến thư mục uploads
     ?>
     <a href="table.php?controller=xemay&action=them" class="btn btn-primary mb-3">Thêm xe máy</a>
     <table class="table table-bordered">
@@ -38,21 +39,15 @@
                 <td>
                     <?php
                         $imgTruoc = $xe['HinhAnhMatTruocXe'];
-                        if (!empty($imgTruoc) && file_exists($imgTruoc)) {
-                            echo '<img src="' . htmlspecialchars($imgTruoc) . '" style="max-width:80px;">';
-                        } else {
-                            echo '<img src="' . $defaultImg . '" style="max-width:80px;">';
-                        }
+                        $srcTruoc = (!empty($imgTruoc)) ? $baseImgPath . $imgTruoc : $baseImgPath . $defaultImg;
+                        echo '<img src="' . htmlspecialchars($srcTruoc) . '" style="max-width:80px;">';
                     ?>
                 </td>
                 <td>
                     <?php
                         $imgSau = $xe['HinhAnhMatSauXe'];
-                        if (!empty($imgSau) && file_exists($imgSau)) {
-                            echo '<img src="' . htmlspecialchars($imgSau) . '" style="max-width:80px;">';
-                        } else {
-                            echo '<img src="' . $defaultImg . '" style="max-width:80px;">';
-                        }
+                        $srcSau = (!empty($imgSau)) ? $baseImgPath . $imgSau : $baseImgPath . $defaultImg;
+                        echo '<img src="' . htmlspecialchars($srcSau) . '" style="max-width:80px;">';
                     ?>
                 </td>
                 <td><?= htmlspecialchars($xe['TenKH']) ?></td>

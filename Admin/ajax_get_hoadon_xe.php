@@ -48,8 +48,8 @@ if (empty($ds)) {
                   <span class="badge bg-<?= $color ?>"><?= $label ?></span>
                 </td>
                 <td>
-                  <a href="index.php?controller=hoadon&action=edit&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-primary" title="Sửa"><i class="fa fa-edit"></i></a>
-                  <a href="index.php?controller=hoadon&action=delete&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-danger" title="Xóa" onclick="return confirm('Xóa hóa đơn?')"><i class="fa fa-trash"></i></a>
+                  <a href="hoadon.php?controller=hoadon&action=edit&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-primary" title="Sửa"><i class="fa fa-edit"></i></a>
+                  <a href="hoadon.php?controller=hoadon&action=delete&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-danger" title="Xóa" onclick="return confirm('Xóa hóa đơn?')"><i class="fa fa-trash"></i></a>
                   <!-- Nút chi tiết hóa đơn -->
                   <a href="chitiethoadon.php?hoadon_MaHD=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-info" title="Chi tiết hóa đơn">
                     <i class="fa fa-list"></i>

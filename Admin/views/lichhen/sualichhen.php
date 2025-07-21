@@ -3,7 +3,7 @@
 // Các biến $lichhen, $khachhangs, $nhanviens, $xemays được truyền từ controller
 ?>
 <div class="container-fluid pt-4 px-4">
-  <div class="bg-light rounded p-4">
+  <div class="bg-light rounded p-4 position-relative">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h5 class="mb-0 fw-bold">Sửa lịch hẹn</h5>
       <a href="?controller=lichhen" class="btn btn-secondary">
@@ -78,6 +78,12 @@
         <a href="?controller=lichhen" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Quay lại</a>
       </div>
     </form>
+    <!-- Nút tạo hóa đơn góc phải dưới -->
+    <a href="views/hoadon/add.php" 
+       class="btn btn-primary"
+       style="position: absolute; bottom: 16px; right: 16px; z-index: 10;">
+      <i class="fa fa-file-invoice"></i> Tạo hóa đơn
+    </a>
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

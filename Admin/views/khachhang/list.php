@@ -1,5 +1,5 @@
 <h2>Danh sách khách hàng</h2>
-<a href="khachhang_controller.php?action=add" class="btn btn-primary mb-3">Thêm khách hàng</a>
+<a href="khachhang.php?action=add" class="btn btn-primary mb-3">Thêm khách hàng</a>
 <table class="table table-bordered table-striped align-middle">
     <thead class="table-dark">
         <tr>
@@ -57,12 +57,12 @@
                 <?php endif; ?>
             </td>
             <td>
-                <a href="khachhang_controller.php?action=edit&id=<?= $kh['MaKH'] ?>" class="btn btn-warning btn-sm">Sửa</a>
-                <a href="khachhang_controller.php?action=delete&id=<?= $kh['MaKH'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+                <a href="khachhang.php?action=edit&id=<?= $kh['MaKH'] ?>" class="btn btn-warning btn-sm">Sửa</a>
+                <a href="khachhang.php?action=delete&id=<?= $kh['MaKH'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
                 <?php if ($kh['TrangThai'] == 'hoat_dong'): ?>
-                    <a href="khachhang_controller.php?action=block&id=<?= $kh['MaKH'] ?>" class="btn btn-secondary btn-sm">Khóa</a>
+                    <a href="khachhang.php?action=block&id=<?= $kh['MaKH'] ?>" class="btn btn-secondary btn-sm">Khóa</a>
                 <?php else: ?>
-                    <a href="khachhang_controller.php?action=unblock&id=<?= $kh['MaKH'] ?>" class="btn btn-success btn-sm">Mở khóa</a>
+                    <a href="khachhang.php?action=unblock&id=<?= $kh['MaKH'] ?>" class="btn btn-success btn-sm">Mở khóa</a>
                 <?php endif; ?>
             </td>
         </tr>

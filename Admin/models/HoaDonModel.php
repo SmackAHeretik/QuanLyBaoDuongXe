@@ -46,15 +46,13 @@ class HoaDonModel
   public function add($data)
   {
     $stmt = $this->conn->prepare("
-            INSERT INTO hoadon (TongTien, Ngay, TrangThai, TienKhuyenMai, TienSauKhiGiam, xemay_MaXE)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO hoadon (TongTien, Ngay, TrangThai, xemay_MaXE)
+            VALUES (?, ?, ?, ?)
         ");
     return $stmt->execute([
       $data['TongTien'],
       $data['Ngay'],
       $data['TrangThai'],
-      $data['TienKhuyenMai'],
-      $data['TienSauKhiGiam'],
       $data['xemay_MaXE']
     ]);
   }
@@ -63,15 +61,13 @@ class HoaDonModel
   public function update($id, $data)
   {
     $stmt = $this->conn->prepare("
-            UPDATE hoadon SET TongTien=?, Ngay=?, TrangThai=?, TienKhuyenMai=?, TienSauKhiGiam=?, xemay_MaXE=?
+            UPDATE hoadon SET TongTien=?, Ngay=?, TrangThai=?, xemay_MaXE=?
             WHERE MaHD=?
         ");
     return $stmt->execute([
       $data['TongTien'],
       $data['Ngay'],
       $data['TrangThai'],
-      $data['TienKhuyenMai'],
-      $data['TienSauKhiGiam'],
       $data['xemay_MaXE'],
       $id
     ]);
@@ -108,4 +104,3 @@ class HoaDonModel
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 }
-?>
