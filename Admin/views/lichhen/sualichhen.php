@@ -71,22 +71,7 @@
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="col-md-4">
-          <label class="form-label">Xe máy (Mã XE)</label>
-          <select name="xemay_MaXE" id="xemay_MaXE" class="form-select" required>
-            <option value="">-- Chọn mã xe --</option>
-            <?php foreach($xemays as $xe): ?>
-              <option value="<?=$xe['MaXE']?>"
-                data-tenxe="<?=htmlspecialchars($xe['TenXe'])?>"
-                data-loaixe="<?=htmlspecialchars($xe['LoaiXe'])?>"
-                data-phankhuc="<?=htmlspecialchars($xe['PhanKhuc'])?>"
-                data-makh="<?=$xe['khachhang_MaKH']?>"
-                <?=$lichhen['xemay_MaXE']==$xe['MaXE']?'selected':''?>>
-                <?=$xe['MaXE']?> - <?=$xe['BienSoXe']?>
-              </option>
-            <?php endforeach; ?>
-          </select>
-        </div>
+        
       </div>
       <div class="mt-3">
         <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Lưu</button>

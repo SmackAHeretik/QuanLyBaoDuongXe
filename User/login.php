@@ -37,12 +37,11 @@
                 <div class="container">
                         <div class="row">
                                 <div class="col-lg-12 col-12 text-center mx-auto mb-lg-5 mb-4">
-                                        <h2><span>Membership</span> at Tiya</h2>
+                                        <h2><span>Tài Khoản</span></h2>
                                 </div>
 
                                 <!-- FORM ĐĂNG NHẬP -->
                                 <div class="col-lg-6 col-12 mb-3 mb-lg-0">
-                                        <h4 class="mb-4 pb-lg-2">Membership Fees</h4>
                                         <div class="table-responsive">
                                         <form action="./controller/user_controller.php" method="POST" class="custom-form membership-form shadow-lg" role="form">
                                                 <h4 class="text-white mb-4">Đăng Nhập</h4>
@@ -64,9 +63,8 @@
 
                                 <!-- FORM ĐĂNG KÝ -->
                                 <div class="col-lg-5 col-12 mx-auto">
-                                        <h4 class="mb-4 pb-lg-2">Please join us!</h4>
                                         <form action="./controller/user_controller.php" method="POST" class="custom-form membership-form shadow-lg" role="form">
-                                        <h4 class="text-white mb-4">Member Register</h4>
+                                        <h4 class="text-white mb-4">Đăng Ký</h4>
 
                                         <div class="form-floating">
                                                 <input type="text" name="TenKH" id="TenKH" class="form-control" placeholder="Tên Khách Hàng" required>

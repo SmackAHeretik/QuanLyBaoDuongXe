@@ -10,11 +10,22 @@ class StaffController {
         $this->model = new StaffModel($db);
     }
 
+    // Đăng nhập nhân viên không lưu session
+    public function loginNoSession($email, $password) {
+        $user = $this->model->getByEmail($email);
+        if ($user && password_verify($password, $user['MatKhau'])) {
+            return $user;
+        }
+        return false;
+    }
+
+    // Hiển thị danh sách nhân viên
     public function list() {
         $dsStaff = $this->model->getAll();
         include __DIR__ . '/../views/nhanvien/list.php';
     }
 
+    // Thêm nhân viên
     public function add() {
         $error = '';
         $data = [];
@@ -46,6 +57,7 @@ class StaffController {
         include __DIR__ . '/../views/nhanvien/add.php';
     }
 
+    // Sửa thông tin nhân viên
     public function edit() {
         $error = '';
         $id = $_GET['id'] ?? '';
@@ -80,6 +92,7 @@ class StaffController {
         include __DIR__ . '/../views/nhanvien/edit.php';
     }
 
+    // Xóa nhân viên
     public function delete() {
         $id = $_GET['id'] ?? '';
         if ($id) {

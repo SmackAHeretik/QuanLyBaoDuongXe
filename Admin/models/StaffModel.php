@@ -16,6 +16,12 @@ class StaffModel {
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    // Lấy thông tin nhân viên theo email
+    public function getByEmail($email) {
+        $stmt = $this->db->prepare("SELECT * FROM nhanvien WHERE Email = ?");
+        $stmt->execute([$email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     // Kiểm tra email đã tồn tại
     public function existsEmail($email) {
         $stmt = $this->db->prepare("SELECT MaNV FROM nhanvien WHERE Email = ?");
