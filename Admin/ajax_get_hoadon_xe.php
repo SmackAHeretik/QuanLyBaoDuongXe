@@ -14,10 +14,6 @@ if (!$maXe || !is_numeric($maXe)) {
 $model = new HoaDonModel(connectDB());
 $ds = $model->getHoaDonByMaXe($maXe);
 
-if (empty($ds)) {
-    echo '<div class="text-muted">Không có hóa đơn nào cho xe này.</div>';
-    exit;
-}
 ?>
 <div class="table-responsive">
     <table class="table table-bordered">
@@ -31,6 +27,11 @@ if (empty($ds)) {
             </tr>
         </thead>
         <tbody>
+            <?php if (empty($ds)): ?>
+            <tr>
+                <td colspan="5" class="text-center text-muted">Không có hóa đơn nào cho xe này.</td>
+            </tr>
+            <?php else: ?>
             <?php foreach ($ds as $hd): ?>
             <tr>
                 <td><?= htmlspecialchars($hd['MaHD']) ?></td>
@@ -50,13 +51,21 @@ if (empty($ds)) {
                 <td>
                   <a href="hoadon.php?controller=hoadon&action=edit&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-primary" title="Sửa"><i class="fa fa-edit"></i></a>
                   <a href="hoadon.php?controller=hoadon&action=delete&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-danger" title="Xóa" onclick="return confirm('Xóa hóa đơn?')"><i class="fa fa-trash"></i></a>
-                  <!-- Nút chi tiết hóa đơn -->
                   <a href="chitiethoadon.php?hoadon_MaHD=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-info" title="Chi tiết hóa đơn">
                     <i class="fa fa-list"></i>
                   </a>
                 </td>
             </tr>
             <?php endforeach; ?>
+            <?php endif; ?>
+            <!-- Nút tạo hóa đơn mới cho xe này đặt cuối bảng, luôn hiển thị -->
+            <tr>
+                <td colspan="5" class="text-end">
+                    <a class="btn btn-success" href="hoadon.php?controller=hoadon&action=add&xemay_MaXE=<?= $maXe ?>" title="Tạo hóa đơn mới cho xe này">
+                        <i class="fa fa-plus"></i> Tạo hóa đơn mới cho xe này
+                    </a>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>
