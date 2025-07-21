@@ -47,17 +47,8 @@ $mainContent = ob_get_clean();
     <div class="container-xxl position-relative bg-white d-flex p-0">
         <?php include('./layouts/sidebar.php') ?>
         <div class="content">
-            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="index.php" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-                </a>
-                <a href="#" class="sidebar-toggler flex-shrink-0">
-                    <i class="fa fa-bars"></i>
-                </a>
-                <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Search">
-                </form>
-            </nav>
+
+            <?php include('./layouts/navbar.php') ?>
             <!-- MAIN CONTENT: GỌI ACTION SAU NAVBAR -->
             <?= $mainContent ?>
             <div class="container-fluid pt-4 px-4">
@@ -80,3 +71,37 @@ $mainContent = ob_get_clean();
     <script src="js/main.js"></script>
 </body>
 </html>
+<script>
+// Loại bỏ dấu tiếng Việt
+function stripVietnamese(str) {
+    str = str.toLowerCase();
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    return str;
+}
+
+// Xử lý loại bỏ khoảng trắng đầu/cuối, thừa giữa các từ trước khi submit (search server)
+document.getElementById('searchForm').addEventListener('submit', function(e) {
+    var input = document.getElementById('searchInput');
+    input.value = input.value.trim().replace(/\s+/g, ' ');
+});
+
+// Lọc realtime trên bảng không phân biệt hoa/thường, có dấu/không dấu
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    let searchValue = stripVietnamese(e.target.value.trim().replace(/\s+/g, ' '));
+    let rows = document.querySelectorAll('table tbody tr');
+    rows.forEach(row => {
+        let rowText = stripVietnamese(row.textContent.trim().replace(/\s+/g, ' '));
+        if (searchValue === "" || rowText.includes(searchValue)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+});
+</script>

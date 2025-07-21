@@ -63,11 +63,15 @@ $total = 0;
                                                     : '-';
                                             ?>
                                         </td>
-                                        <td><?php echo number_format($item['DonGia'], 0, ',', '.'); ?> VNĐ</td>
-                                        <td>
-                                            <input type="number" class="form-control" name="qty[<?php echo $item['MaSP']; ?>]" value="<?php echo $item['qty']; ?>" min="1">
+                                        <td class="don-gia" data-price="<?php echo $item['DonGia']; ?>">
+                                            <?php echo number_format($item['DonGia'], 0, ',', '.'); ?> VNĐ
                                         </td>
-                                        <td><?php echo number_format($thanhtien, 0, ',', '.'); ?> VNĐ</td>
+                                        <td>
+                                            <input type="number" class="form-control so-luong" name="qty[<?php echo $item['MaSP']; ?>]" value="<?php echo $item['qty']; ?>" min="1" style="width:70px;text-align:center;">
+                                        </td>
+                                        <td class="thanh-tien">
+                                            <?php echo number_format($thanhtien, 0, ',', '.'); ?> VNĐ
+                                        </td>
                                         <td>
                                             <a href="controller/remove_from_cart.php?MaSP=<?php echo $item['MaSP']; ?>" class="btn btn-danger btn-sm">Xóa</a>
                                         </td>
@@ -75,7 +79,7 @@ $total = 0;
                                     <?php endforeach; ?>
                                     <tr>
                                         <td colspan="4" class="text-end"><b>Tổng cộng:</b></td>
-                                        <td colspan="2"><b><?php echo number_format($total, 0, ',', '.'); ?> VNĐ</b></td>
+                                        <td colspan="2"><b id="tong-cong"><?php echo number_format($total, 0, ',', '.'); ?> VNĐ</b></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -99,5 +103,43 @@ $total = 0;
     <script src="js/mega-menu.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="js/custom.js"></script>
+    <script>
+    // Xử lý số lượng và thành tiền động
+    document.querySelectorAll('.so-luong').forEach(function(input) {
+        input.addEventListener('input', function() {
+            let value = parseInt(input.value, 10);
+            if (isNaN(value) || value < 1) {
+                input.value = 1;
+                value = 1;
+            }
+            let row = input.closest('tr');
+            let price = parseInt(row.querySelector('.don-gia').getAttribute('data-price'), 10);
+            let thanhTienCell = row.querySelector('.thanh-tien');
+            thanhTienCell.textContent = (price * value).toLocaleString('vi-VN') + ' VNĐ';
+
+            // Cập nhật tổng cộng
+            updateTongCong();
+        });
+        // Ngăn nhập số nhỏ hơn 1 bằng nút mũi tên
+        input.addEventListener('change', function() {
+            if (input.value < 1) input.value = 1;
+            input.dispatchEvent(new Event('input'));
+        });
+    });
+
+    function updateTongCong() {
+        let tong = 0;
+        document.querySelectorAll('tbody tr').forEach(function(row) {
+            let priceCell = row.querySelector('.don-gia');
+            let qtyInput = row.querySelector('.so-luong');
+            if (priceCell && qtyInput) {
+                let price = parseInt(priceCell.getAttribute('data-price'), 10);
+                let qty = parseInt(qtyInput.value, 10);
+                tong += price * qty;
+            }
+        });
+        document.getElementById('tong-cong').textContent = tong.toLocaleString('vi-VN') + ' VNĐ';
+    }
+    </script>
 </body>
 </html>
