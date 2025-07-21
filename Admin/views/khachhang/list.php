@@ -28,7 +28,7 @@
                                     <span>
                                         <?= htmlspecialchars($xe['TenXe']) ?> - <?= htmlspecialchars($xe['BienSoXe']) ?>
                                     </span>
-                                    <!-- Nút Hóa đơn mới -->
+                                    <!-- Nút Hóa đơn -->
                                     <button
                                         class="btn btn-sm btn-primary btn-hoa-don"
                                         data-maxe="<?= $xe['MaXE'] ?>"
