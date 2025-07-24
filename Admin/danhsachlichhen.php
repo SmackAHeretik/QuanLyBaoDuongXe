@@ -90,3 +90,18 @@ $mainContent = ob_get_clean();
 </body>
 
 </html>
+<script>
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    let searchValue = e.target.value.trim().toLowerCase().replace(/\s+/g, ' ');
+    let rows = document.querySelectorAll('table tbody tr');
+    rows.forEach(row => {
+        // Ghép text của toàn bộ hàng, loại bỏ khoảng trắng thừa và chuyển về chữ thường
+        let rowText = row.textContent.trim().toLowerCase().replace(/\s+/g, ' ');
+        if (searchValue === "" || rowText.includes(searchValue)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+});
+</script>

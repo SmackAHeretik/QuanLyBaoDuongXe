@@ -9,11 +9,11 @@ $roleLabel = 'Chưa xác định';
 if ($user) {
     if ($role === 'admin') {
         $displayName = $user['data']['username'] ?? $user['data']['name'] ?? 'Admin';
-        // Lấy Roles từ bảng admin (ảnh 6)
+        // Lấy Roles từ bảng admin
         $roleLabel = $user['data']['Roles'] ?? 'Admin';
     } elseif ($role === 'staff') {
         $displayName = $user['data']['TenNV'] ?? 'Staff';
-        // Lấy Roles từ bảng nhân viên (ảnh 5)
+        // Lấy Roles từ bảng nhân viên
         $roleLabel = $user['data']['Roles'] ?? 'Nhân viên';
     }
 }
@@ -44,6 +44,8 @@ if ($user) {
                 <a href="table.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Danh Sách Xe Máy</a>
                 <a href="nhasanxuat.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Nhà Sản Xuất</a>
                 <a href="dichvu.php" class="nav-item nav-link"><i class="fa fa-concierge-bell me-2"></i>Danh Sách Dịch Vụ</a>
+                <!-- DÒNG LỊCH HẸN CHO ADMIN -->
+                <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>
             <?php elseif ($role === 'staff'): ?>
                 <?php if ($roleLabel === 'Thợ sửa xe'): ?>
                     <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>

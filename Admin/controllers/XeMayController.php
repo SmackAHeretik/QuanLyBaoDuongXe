@@ -24,26 +24,34 @@ class XeMayController
         $msg = '';
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
-                'TenXe' => $_POST['TenXe'],
-                'LoaiXe' => $_POST['LoaiXe'],
-                'PhanKhuc' => $_POST['PhanKhuc'],
-                'BienSoXe' => $_POST['BienSoXe'],
-                'khachhang_MaKH' => $_POST['khachhang_MaKH'],
+                'TenXe' => $_POST['TenXe'] ?? '',
+                'LoaiXe' => $_POST['LoaiXe'] ?? '',
+                'PhanKhuc' => $_POST['PhanKhuc'] ?? '',
+                'BienSoXe' => $_POST['BienSoXe'] ?? '',
+                'khachhang_MaKH' => $_POST['khachhang_MaKH'] ?? '',
             ];
 
-            // Xử lý upload ảnh mặt trước
+            // Đảm bảo thư mục upload tồn tại
+            $uploadDir = __DIR__ . '/../User/uploads/';
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            // Xử lý upload ảnh mặt trước vào User/uploads
             if (isset($_FILES['HinhAnhMatTruocXe']) && $_FILES['HinhAnhMatTruocXe']['error'] == 0) {
                 $name = time() . '_' . basename($_FILES['HinhAnhMatTruocXe']['name']);
-                move_uploaded_file($_FILES['HinhAnhMatTruocXe']['tmp_name'], "uploads/$name");
+                $targetPath = $uploadDir . $name;
+                move_uploaded_file($_FILES['HinhAnhMatTruocXe']['tmp_name'], $targetPath);
                 $data['HinhAnhMatTruocXe'] = $name;
             } else {
                 $data['HinhAnhMatTruocXe'] = null;
             }
 
-            // Xử lý upload ảnh mặt sau
+            // Xử lý upload ảnh mặt sau vào User/uploads
             if (isset($_FILES['HinhAnhMatSauXe']) && $_FILES['HinhAnhMatSauXe']['error'] == 0) {
                 $name = time() . '_' . basename($_FILES['HinhAnhMatSauXe']['name']);
-                move_uploaded_file($_FILES['HinhAnhMatSauXe']['tmp_name'], "uploads/$name");
+                $targetPath = $uploadDir . $name;
+                move_uploaded_file($_FILES['HinhAnhMatSauXe']['tmp_name'], $targetPath);
                 $data['HinhAnhMatSauXe'] = $name;
             } else {
                 $data['HinhAnhMatSauXe'] = null;
@@ -75,26 +83,34 @@ class XeMayController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
-                'TenXe' => $_POST['TenXe'],
-                'LoaiXe' => $_POST['LoaiXe'],
-                'PhanKhuc' => $_POST['PhanKhuc'],
-                'BienSoXe' => $_POST['BienSoXe'],
-                'khachhang_MaKH' => $_POST['khachhang_MaKH'],
+                'TenXe' => $_POST['TenXe'] ?? '',
+                'LoaiXe' => $_POST['LoaiXe'] ?? '',
+                'PhanKhuc' => $_POST['PhanKhuc'] ?? '',
+                'BienSoXe' => $_POST['BienSoXe'] ?? '',
+                'khachhang_MaKH' => $_POST['khachhang_MaKH'] ?? '',
             ];
 
-            // Xử lý upload ảnh mặt trước
+            // Đảm bảo thư mục upload tồn tại
+            $uploadDir = __DIR__ . '/../User/uploads/';
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            // Xử lý upload ảnh mặt trước vào User/uploads
             if (isset($_FILES['HinhAnhMatTruocXe']) && $_FILES['HinhAnhMatTruocXe']['error'] == 0 && $_FILES['HinhAnhMatTruocXe']['name'] != "") {
                 $name = time() . '_' . basename($_FILES['HinhAnhMatTruocXe']['name']);
-                move_uploaded_file($_FILES['HinhAnhMatTruocXe']['tmp_name'], "uploads/$name");
+                $targetPath = $uploadDir . $name;
+                move_uploaded_file($_FILES['HinhAnhMatTruocXe']['tmp_name'], $targetPath);
                 $data['HinhAnhMatTruocXe'] = $name;
             } else {
                 $data['HinhAnhMatTruocXe'] = $_POST['HinhAnhMatTruocXe_current'] ?? null;
             }
 
-            // Xử lý upload ảnh mặt sau
+            // Xử lý upload ảnh mặt sau vào User/uploads
             if (isset($_FILES['HinhAnhMatSauXe']) && $_FILES['HinhAnhMatSauXe']['error'] == 0 && $_FILES['HinhAnhMatSauXe']['name'] != "") {
                 $name = time() . '_' . basename($_FILES['HinhAnhMatSauXe']['name']);
-                move_uploaded_file($_FILES['HinhAnhMatSauXe']['tmp_name'], "uploads/$name");
+                $targetPath = $uploadDir . $name;
+                move_uploaded_file($_FILES['HinhAnhMatSauXe']['tmp_name'], $targetPath);
                 $data['HinhAnhMatSauXe'] = $name;
             } else {
                 $data['HinhAnhMatSauXe'] = $_POST['HinhAnhMatSauXe_current'] ?? null;
