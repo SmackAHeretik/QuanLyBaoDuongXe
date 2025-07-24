@@ -31,8 +31,8 @@ class StaffModel {
     // Thêm nhân viên (lưu hash)
     public function add($data) {
         $stmt = $this->db->prepare("
-            INSERT INTO nhanvien (TenNV, Email, SDT, MatKhau)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO nhanvien (TenNV, Email, SDT, MatKhau, Roles)
+            VALUES (?, ?, ?, ?, ?)
         ");
         // Lưu mật khẩu dạng hash
         $hash = password_hash($data['password'], PASSWORD_BCRYPT);
@@ -40,14 +40,15 @@ class StaffModel {
             $data['tennv'],
             $data['email'],
             $data['sdt'],
-            $hash
+            $hash,
+            $data['roles']
         ]);
     }
     // Sửa thông tin nhân viên (lưu hash nếu đổi mật khẩu)
     public function update($id, $data) {
         if (!empty($data['password'])) {
             $stmt = $this->db->prepare("
-                UPDATE nhanvien SET TenNV=?, Email=?, SDT=?, MatKhau=? WHERE MaNV=?
+                UPDATE nhanvien SET TenNV=?, Email=?, SDT=?, MatKhau=?, Roles=? WHERE MaNV=?
             ");
             $hash = password_hash($data['password'], PASSWORD_BCRYPT);
             return $stmt->execute([
@@ -55,16 +56,18 @@ class StaffModel {
                 $data['email'],
                 $data['sdt'],
                 $hash,
+                $data['roles'],
                 $id
             ]);
         } else {
             $stmt = $this->db->prepare("
-                UPDATE nhanvien SET TenNV=?, Email=?, SDT=? WHERE MaNV=?
+                UPDATE nhanvien SET TenNV=?, Email=?, SDT=?, Roles=? WHERE MaNV=?
             ");
             return $stmt->execute([
                 $data['tennv'],
                 $data['email'],
                 $data['sdt'],
+                $data['roles'],
                 $id
             ]);
         }
