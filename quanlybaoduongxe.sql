@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 07, 2025 at 01:20 PM
+-- Generation Time: Jul 24, 2025 at 06:25 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -30,15 +30,17 @@ SET time_zone = "+00:00";
 CREATE TABLE `admin` (
   `AdminID` int(11) NOT NULL,
   `username` varchar(45) DEFAULT NULL,
-  `password` varchar(45) DEFAULT NULL
+  `password` varchar(45) DEFAULT NULL,
+  `Roles` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`AdminID`, `username`, `password`) VALUES
-(1, 'huy@gmail.com', '123');
+INSERT INTO `admin` (`AdminID`, `username`, `password`, `Roles`) VALUES
+(1, 'huy@gmail.com', '123', 'Kỹ Thuật Viên'),
+(2, 'khang@gmail.com', '123', 'Giám Đốc');
 
 -- --------------------------------------------------------
 
@@ -76,7 +78,7 @@ INSERT INTO `chitiethoadon` (`MaCTHD`, `MaSP`, `GiaTien`, `SoLuong`, `NgayBDBH`,
 (34, NULL, 70000.00, 1, NULL, NULL, NULL, 18, 15, NULL),
 (35, NULL, 100000.00, 2, NULL, NULL, NULL, 19, 14, NULL),
 (36, NULL, 30000.00, 1, NULL, NULL, NULL, 19, 13, NULL),
-(37, NULL, 90000.00, 1, NULL, NULL, NULL, 19, 17, NULL);
+(37, NULL, 0.00, 1, '2025-07-17 13:12:00', '2025-07-24 13:12:00', 3, 19, 15, 3);
 
 -- --------------------------------------------------------
 
@@ -139,7 +141,9 @@ INSERT INTO `hoadon` (`MaHD`, `TongTien`, `Ngay`, `TrangThai`, `xemay_MaXE`, `ph
 (16, 30000.00, '2025-06-22', 'cho_thanh_toan', 9, 13),
 (17, 30000.00, '2025-06-27', 'cho_thanh_toan', 8, 13),
 (18, 170000.00, '2025-06-27', 'cho_thanh_toan', 8, 0),
-(19, 320000.00, '2025-06-27', 'cho_thanh_toan', 8, 0);
+(19, 320000.00, '2025-06-27', 'cho_thanh_toan', 8, 0),
+(20, 1500000.00, '2025-07-22', 'cho_thanh_toan', 8, 0),
+(21, 1500000.00, '2025-07-09', 'cho_thanh_toan', 8, 0);
 
 -- --------------------------------------------------------
 
@@ -165,7 +169,8 @@ CREATE TABLE `khachhang` (
 
 INSERT INTO `khachhang` (`MaKH`, `TenKH`, `Email`, `MatKhau`, `DiaChi`, `SDT`, `TrangThai`, `Reset_token`, `admin_AdminID`) VALUES
 (1, 'truong vinh khang', 'khang@gmail.com', '$2y$10$T0JL6NSGE15w7M3wZe9PRuAPjXQvfJ4G0FyfzA/bxednx5mf7MC/G', NULL, '123456789', NULL, NULL, NULL),
-(2, 'huyadmin', 'huy@gmail.com', '$2y$10$jnZ4Hfbq9bmW8kknzxETUevh5U5qX0jV7.WAvh2P2iD00xChmpk2e', NULL, '1213123123', NULL, NULL, NULL);
+(2, 'huyadmin', 'huy@gmail.com', '$2y$10$jnZ4Hfbq9bmW8kknzxETUevh5U5qX0jV7.WAvh2P2iD00xChmpk2e', NULL, '1213123123', 'bi_khoa', NULL, NULL),
+(3, 'huy', 'huy1@gmail.com', '$2y$10$AFY6s1Y/NlbKt4dzKwhd1uUXaSAM2SPMHGrtg/o/DK.cHOU0YEMGi', '', '123', 'bi_khoa', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -264,6 +269,7 @@ CREATE TABLE `nhanvien` (
   `MatKhau` varchar(100) DEFAULT NULL,
   `Email` varchar(45) DEFAULT NULL,
   `SDT` varchar(20) DEFAULT NULL,
+  `Roles` varchar(25) NOT NULL,
   `lichlamviec_MaLLV` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -271,15 +277,9 @@ CREATE TABLE `nhanvien` (
 -- Dumping data for table `nhanvien`
 --
 
-INSERT INTO `nhanvien` (`MaNV`, `TenNV`, `MatKhau`, `Email`, `SDT`, `lichlamviec_MaLLV`) VALUES
-(1, 'Trần quốc lâm', '123', 'lam@gmail.com', '123456789', 9),
-(2, 'Nguyễn Quang Huy ', '123', 'huyz@gmail.com', '1234567678', 9),
-(3, 'Ngô Mạnh Cường ', '123', 'cuong@gmail.com', '1234567678', 9),
-(9, 'Nguyễn Văn A', 'matkhau123', 'a.nguyen@example.com', '0901111222', 10),
-(10, 'Trần Thị B', 'baomat456', 'b.tran@example.com', '0902222333', 10),
-(11, 'Lê Văn C', 'pass789', 'c.le@example.com', '0903333444', 10),
-(12, 'Phạm Minh D', '123456', 'd.pham@example.com', '0904444555', 10),
-(13, 'Hoàng Thị E', 'mkhoang', 'e.hoang@example.com', '0905555666', 10);
+INSERT INTO `nhanvien` (`MaNV`, `TenNV`, `MatKhau`, `Email`, `SDT`, `Roles`, `lichlamviec_MaLLV`) VALUES
+(16, 'Trần Quốc Lâm', '$2y$10$e85C0dlspSdgI41eY.8jvudBtQ4RBI5Qhryf73kaMQJfEt388Ryfa', 'lam@gmail.com', '1234', 'Thợ sửa xe', NULL),
+(18, 'Khang', '$2y$10$A8M23W6I2hAFLfooKv0WP.vQAiyoBcqA56G6rCX7XEj12Hre4ra0u', 'khang1@gmail.com', '12345', 'Nhân viên kế toán', NULL);
 
 -- --------------------------------------------------------
 
@@ -470,7 +470,7 @@ ALTER TABLE `xemay`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `AdminID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `AdminID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `chitiethoadon`
@@ -488,13 +488,13 @@ ALTER TABLE `dichvu`
 -- AUTO_INCREMENT for table `hoadon`
 --
 ALTER TABLE `hoadon`
-  MODIFY `MaHD` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `MaHD` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `khachhang`
 --
 ALTER TABLE `khachhang`
-  MODIFY `MaKH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `MaKH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `lichhen`
@@ -518,7 +518,7 @@ ALTER TABLE `lichsubaohanh`
 -- AUTO_INCREMENT for table `nhanvien`
 --
 ALTER TABLE `nhanvien`
-  MODIFY `MaNV` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `MaNV` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `nhasanxuat`
