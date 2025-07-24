@@ -1,11 +1,10 @@
 <?php
 // ===============================
-// PHÂN QUYỀN: CHỈ ADMIN ĐƯỢC QUẢN LÝ NHÂN VIÊN
+// PHÂN QUYỀN: CHỈ ADMIN VÀ KẾ TOÁN ĐƯỢC QUẢN LÝ NHÂN VIÊN
 // ===============================
-$requiredRole = 'admin';
+$requiredRole = 'ketoan'; // đổi từ 'admin' sang 'ketoan'
 include __DIR__ . '/auth_check.php';
 
-// Routing (chuẩn hóa đường dẫn, phân biệt hoa thường và di chuyển đúng thư mục)
 require_once __DIR__ . '/controllers/StaffController.php';
 $action = $_GET['action'] ?? 'list';
 $ctrl = new StaffController();

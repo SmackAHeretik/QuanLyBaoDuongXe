@@ -14,7 +14,7 @@
                     <th>Mã LH</th>
                     <th>Khách hàng</th>
                     <th>Xe</th>
-                    <th>Nhân viên</th>
+                    <th>Thợ</th> <!-- Đã đổi -->
                     <th>Ngày hẹn</th>
                     <th>Ca</th>
                     <th>Trạng thái</th>
@@ -27,7 +27,7 @@
                     <td><?= $lh['MaLH'] ?></td>
                     <td><?= htmlspecialchars($lh['TenKH'] ?? ''); ?></td>
                     <td><?= htmlspecialchars($lh['TenXe'] ?? ''); ?></td>
-                    <td><?= htmlspecialchars($lh['TenNV'] ?? ''); ?></td>
+                    <td><?= htmlspecialchars($lh['TenNV'] ?? ''); ?></td> <!-- Số liệu vẫn là tên nhân viên -->
                     <td><?= htmlspecialchars($lh['NgayHen']) ?></td>
                     <td><?= htmlspecialchars($lh['ThoiGianCa']) ?></td>
                     <td class="trangthai">
@@ -64,12 +64,11 @@ $(function(){
             if(typeof res === 'string') res = JSON.parse(res);
             if(res.status=='success') {
                 showPopup('Cập nhật trạng thái thành công!', 'success');
-                // Cập nhật badge trạng thái
                 var badge = '';
                 if(status == 'da duyet') badge = '<span class="badge bg-success">Đã duyệt</span>';
                 else if(status == 'huy') badge = '<span class="badge bg-danger">Đã hủy</span>';
                 $row.find('.trangthai').html(badge);
-                $row.find('.btn-duyet').remove(); // Ẩn nút
+                $row.find('.btn-duyet').remove();
             } else {
                 showPopup('Cập nhật thất bại: '+(res.msg||''), 'danger');
             }

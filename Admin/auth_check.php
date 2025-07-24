@@ -7,17 +7,37 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-/**
- * Phân quyền nâng cao:
- * - Nếu trang chỉ dành cho admin, ở đầu file cần khai báo:
- *     $requiredRole = 'admin';
- *     include 'auth_check.php';
- * - Nếu không khai báo $requiredRole thì chỉ cần đăng nhập là vào được.
- */
-if (isset($requiredRole)) {
-    $role = $_SESSION['user']['role'] ?? '';
-    if ($role !== $requiredRole) {
-        // Không đủ quyền, thông báo popup rồi về trang chủ
+if (!isset($requiredRole)) {
+    return;
+}
+
+$role = $_SESSION['user']['role'] ?? '';
+$staffRole = $_SESSION['user']['data']['Roles'] ?? '';
+
+if ($requiredRole === 'admin') {
+    if ($role !== 'admin') {
+        echo "<script>
+            alert('Bạn không có quyền truy cập trang này!');
+            window.location.href = 'index.php';
+        </script>";
+        exit();
+    }
+}
+if ($requiredRole === 'ketoan') {
+    // Admin luôn được vào
+    if ($role === 'admin') return;
+    // Kế toán được vào
+    if ($role !== 'staff' || $staffRole !== 'Nhân viên kế toán') {
+        echo "<script>
+            alert('Bạn không có quyền truy cập trang này!');
+            window.location.href = 'index.php';
+        </script>";
+        exit();
+    }
+}
+if ($requiredRole === 'thosuaxe') {
+    if ($role === 'admin') return;
+    if ($role !== 'staff' || $staffRole !== 'Thợ sửa xe') {
         echo "<script>
             alert('Bạn không có quyền truy cập trang này!');
             window.location.href = 'index.php';

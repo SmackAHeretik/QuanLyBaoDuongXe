@@ -1,8 +1,8 @@
 <?php
 // ===============================
-// PHÂN QUYỀN: CHỈ ADMIN QUẢN LÝ KHÁCH HÀNG
+// PHÂN QUYỀN: CHỈ ADMIN VÀ KẾ TOÁN ĐƯỢC QUẢN LÝ KHÁCH HÀNG
 // ===============================
-$requiredRole = 'admin';
+$requiredRole = 'ketoan'; // đổi từ 'admin' sang 'ketoan'
 include __DIR__ . '/auth_check.php';
 
 require_once __DIR__ . '/db.php';

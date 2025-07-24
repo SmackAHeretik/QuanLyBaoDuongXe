@@ -1,9 +1,8 @@
 <?php
-require_once __DIR__ . '/../db.php';
-
 class LichHenModel {
     private $db;
     public function __construct($db) { $this->db = $db; }
+
     public function getAll() {
         $sql = "SELECT lh.*, nv.TenNV, kh.TenKH, xe.TenXe FROM lichhen lh
             LEFT JOIN nhanvien nv ON lh.nhanvien_MaNV = nv.MaNV
@@ -11,6 +10,19 @@ class LichHenModel {
             LEFT JOIN xemay xe ON lh.xemay_MaXE = xe.MaXE";
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getAllByNhanVien($maNV) {
+        $sql = "SELECT lh.*, nv.TenNV, kh.TenKH, xe.TenXe 
+            FROM lichhen lh
+            LEFT JOIN nhanvien nv ON lh.nhanvien_MaNV = nv.MaNV
+            LEFT JOIN khachhang kh ON lh.khachhang_MaKH = kh.MaKH
+            LEFT JOIN xemay xe ON lh.xemay_MaXE = xe.MaXE
+            WHERE lh.nhanvien_MaNV = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$maNV]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getById($id) {
         $stmt = $this->db->prepare("SELECT * FROM lichhen WHERE MaLH=?");
         $stmt->execute([$id]);

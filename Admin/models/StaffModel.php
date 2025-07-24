@@ -4,50 +4,52 @@ class StaffModel {
     public function __construct($db) {
         $this->db = $db;
     }
-    // Lấy danh sách nhân viên
     public function getAll() {
         $stmt = $this->db->prepare("SELECT * FROM nhanvien");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    // Lấy thông tin nhân viên theo ID
     public function getById($id) {
         $stmt = $this->db->prepare("SELECT * FROM nhanvien WHERE MaNV = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    // Lấy thông tin nhân viên theo email
     public function getByEmail($email) {
         $stmt = $this->db->prepare("SELECT * FROM nhanvien WHERE Email = ?");
         $stmt->execute([$email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    // Kiểm tra email đã tồn tại
     public function existsEmail($email) {
         $stmt = $this->db->prepare("SELECT MaNV FROM nhanvien WHERE Email = ?");
         $stmt->execute([$email]);
         return $stmt->fetch() ? true : false;
     }
-    // Thêm nhân viên (lưu hash)
+    // Kiểm tra email trùng với username của admin
+    public function existsEmailInAdmin($email) {
+        $stmt = $this->db->prepare("SELECT AdminID FROM admin WHERE username = ?");
+        $stmt->execute([$email]);
+        return $stmt->fetch() ? true : false;
+    }
+    // Thêm nhân viên (có Roles)
     public function add($data) {
         $stmt = $this->db->prepare("
-            INSERT INTO nhanvien (TenNV, Email, SDT, MatKhau)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO nhanvien (TenNV, Email, SDT, MatKhau, Roles)
+            VALUES (?, ?, ?, ?, ?)
         ");
-        // Lưu mật khẩu dạng hash
         $hash = password_hash($data['password'], PASSWORD_BCRYPT);
         return $stmt->execute([
             $data['tennv'],
             $data['email'],
             $data['sdt'],
-            $hash
+            $hash,
+            $data['roles']
         ]);
     }
-    // Sửa thông tin nhân viên (lưu hash nếu đổi mật khẩu)
+    // Sửa thông tin nhân viên (có Roles)
     public function update($id, $data) {
         if (!empty($data['password'])) {
             $stmt = $this->db->prepare("
-                UPDATE nhanvien SET TenNV=?, Email=?, SDT=?, MatKhau=? WHERE MaNV=?
+                UPDATE nhanvien SET TenNV=?, Email=?, SDT=?, MatKhau=?, Roles=? WHERE MaNV=?
             ");
             $hash = password_hash($data['password'], PASSWORD_BCRYPT);
             return $stmt->execute([
@@ -55,21 +57,22 @@ class StaffModel {
                 $data['email'],
                 $data['sdt'],
                 $hash,
+                $data['roles'],
                 $id
             ]);
         } else {
             $stmt = $this->db->prepare("
-                UPDATE nhanvien SET TenNV=?, Email=?, SDT=? WHERE MaNV=?
+                UPDATE nhanvien SET TenNV=?, Email=?, SDT=?, Roles=? WHERE MaNV=?
             ");
             return $stmt->execute([
                 $data['tennv'],
                 $data['email'],
                 $data['sdt'],
+                $data['roles'],
                 $id
             ]);
         }
     }
-    // Xóa nhân viên
     public function delete($id) {
         $stmt = $this->db->prepare("DELETE FROM nhanvien WHERE MaNV = ?");
         return $stmt->execute([$id]);

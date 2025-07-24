@@ -13,7 +13,6 @@ class StaffController {
     // Đăng nhập nhân viên không lưu session
     public function loginNoSession($email, $password) {
         $user = $this->model->getByEmail($email);
-        // Kiểm tra bằng password_verify (đã lưu hash)
         if ($user && password_verify($password, $user['MatKhau'])) {
             return $user;
         }
@@ -34,11 +33,12 @@ class StaffController {
             $data['tennv'] = trim($_POST['tennv'] ?? '');
             $data['email'] = trim($_POST['email'] ?? '');
             $data['sdt'] = trim($_POST['sdt'] ?? '');
+            $data['roles'] = trim($_POST['roles'] ?? '');
             $password = $_POST['password'] ?? '';
             $confirm = $_POST['confirm'] ?? '';
             $data['password'] = $password;
 
-            if (!$data['tennv'] || !$data['email'] || !$data['sdt'] || !$password || !$confirm) {
+            if (!$data['tennv'] || !$data['email'] || !$data['sdt'] || !$data['roles'] || !$password || !$confirm) {
                 $error = "Vui lòng điền đầy đủ thông tin!";
             } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                 $error = "Email không hợp lệ!";
@@ -46,6 +46,8 @@ class StaffController {
                 $error = "Mật khẩu xác nhận không khớp!";
             } elseif ($this->model->existsEmail($data['email'])) {
                 $error = "Email đã tồn tại!";
+            } elseif ($this->model->existsEmailInAdmin($data['email'])) {
+                $error = "Email này trùng với tài khoản admin, vui lòng chọn email khác!";
             } else {
                 if ($this->model->add($data)) {
                     header('Location: ?action=list');
@@ -71,16 +73,19 @@ class StaffController {
             $data['tennv'] = trim($_POST['tennv'] ?? '');
             $data['email'] = trim($_POST['email'] ?? '');
             $data['sdt'] = trim($_POST['sdt'] ?? '');
+            $data['roles'] = trim($_POST['roles'] ?? $data['Roles']);
             $password = $_POST['password'] ?? '';
             $confirm = $_POST['confirm'] ?? '';
             $data['password'] = $password;
 
-            if (!$data['tennv'] || !$data['email'] || !$data['sdt']) {
+            if (!$data['tennv'] || !$data['email'] || !$data['sdt'] || !$data['roles']) {
                 $error = "Vui lòng điền đầy đủ thông tin!";
             } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                 $error = "Email không hợp lệ!";
             } elseif ($password && $password !== $confirm) {
                 $error = "Mật khẩu xác nhận không khớp!";
+            } elseif ($this->model->existsEmailInAdmin($data['email'])) {
+                $error = "Email này trùng với tài khoản admin, vui lòng chọn email khác!";
             } else {
                 if ($this->model->update($id, $data)) {
                     header('Location: ?action=list');

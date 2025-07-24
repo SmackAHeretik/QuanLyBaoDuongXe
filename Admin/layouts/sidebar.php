@@ -3,14 +3,18 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 $user = $_SESSION['user'] ?? null;
 $role = $user['role'] ?? '';
 $displayName = 'Jhon Doe'; // fallback nếu chưa có session
-$roleLabel = 'Admin';
+$roleLabel = 'Chưa xác định';
+
+// Lấy label vai trò đúng theo dữ liệu bảng
 if ($user) {
     if ($role === 'admin') {
         $displayName = $user['data']['username'] ?? $user['data']['name'] ?? 'Admin';
-        $roleLabel = 'Admin';
+        // Lấy Roles từ bảng admin (ảnh 6)
+        $roleLabel = $user['data']['Roles'] ?? 'Admin';
     } elseif ($role === 'staff') {
         $displayName = $user['data']['TenNV'] ?? 'Staff';
-        $roleLabel = 'Staff';
+        // Lấy Roles từ bảng nhân viên (ảnh 5)
+        $roleLabel = $user['data']['Roles'] ?? 'Nhân viên';
     }
 }
 ?>
@@ -40,10 +44,15 @@ if ($user) {
                 <a href="table.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Danh Sách Xe Máy</a>
                 <a href="nhasanxuat.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Nhà Sản Xuất</a>
                 <a href="dichvu.php" class="nav-item nav-link"><i class="fa fa-concierge-bell me-2"></i>Danh Sách Dịch Vụ</a>
+            <?php elseif ($role === 'staff'): ?>
+                <?php if ($roleLabel === 'Thợ sửa xe'): ?>
+                    <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>
+                <?php elseif ($roleLabel === 'Nhân viên kế toán'): ?>
+                    <a href="NVmanagement.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Danh Sách Nhân Viên</a>
+                    <a href="khachhang.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Danh Sách Khách Hàng</a>
+                    <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>
+                <?php endif; ?>
             <?php endif; ?>
-
-            <!-- Danh sách lịch hẹn: ai cũng thấy -->
-            <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>
         </div>
     </nav>
 </div>

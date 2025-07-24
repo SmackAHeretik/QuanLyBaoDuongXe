@@ -1,8 +1,4 @@
 <?php
-// =========================
-// CONTROLLER CHUNG (Lịch hẹn)
-// =========================
-
 require_once __DIR__ . '/../models/LichHenModel.php';
 
 class LichHenController {
@@ -16,9 +12,21 @@ class LichHenController {
         $this->xeModel = new XeModel($db);
         $this->nhanVienModel = new NhanVienModel($db);
     }
-    // Hiển thị danh sách lịch hẹn
+    // Hiển thị danh sách lịch hẹn (filter theo role)
     public function index() {
-        $ds = $this->model->getAll();
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $user = $_SESSION['user'] ?? null;
+        $role = $user['role'] ?? '';
+        $staffRole = $user['data']['Roles'] ?? '';
+        $maNV = $user['data']['MaNV'] ?? '';
+
+        if ($role === 'staff' && $staffRole === 'Thợ sửa xe') {
+            // Chỉ lấy lịch hẹn của thợ này
+            $ds = $this->model->getAllByNhanVien($maNV);
+        } else {
+            // Admin, kế toán... lấy tất cả lịch hẹn
+            $ds = $this->model->getAll();
+        }
         require './views/lichhen/danhsachlichhen.php';
     }
     // Thêm lịch hẹn
@@ -56,15 +64,11 @@ class LichHenController {
         exit;
     }
 
-    // =========================
     // Duyệt/hủy lịch hẹn (AJAX)
-    // =========================
     public function update_status() {
-        // Chỉ xử lý khi là AJAX POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST['status'])) {
             $id = (int)$_POST['id'];
             $status = $_POST['status'];
-            // Chỉ cho phép các giá trị hợp lệ
             $validStatuses = ['da duyet', 'huy'];
             if (!in_array($status, $validStatuses)) {
                 echo json_encode(['status'=>'fail', 'msg'=>'Trạng thái không hợp lệ']);
@@ -75,7 +79,6 @@ class LichHenController {
                 echo json_encode(['status'=>'fail', 'msg'=>'Không tìm thấy lịch hẹn']);
                 exit;
             }
-            // Chỉ cho phép duyệt/hủy từ trạng thái 'cho duyet'
             if ($lichhen['TrangThai'] !== 'cho duyet') {
                 echo json_encode(['status'=>'fail', 'msg'=>'Chỉ xử lý lịch hẹn chờ duyệt']);
                 exit;
@@ -88,7 +91,6 @@ class LichHenController {
             }
             exit;
         }
-        // Nếu gọi sai, trả về lỗi
         echo json_encode(['status'=>'fail', 'msg'=>'Thiếu dữ liệu']);
         exit;
     }
