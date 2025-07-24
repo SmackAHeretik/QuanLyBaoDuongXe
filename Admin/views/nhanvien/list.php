@@ -15,6 +15,7 @@
                         <th>Họ tên</th>
                         <th>Email</th>
                         <th>Điện thoại</th>
+                        <th>Vai trò</th>
                         <th class="text-center">Hành động</th>
                     </tr>
                 </thead>
@@ -27,6 +28,7 @@
                                 <td><?= htmlspecialchars($nv['TenNV']) ?></td>
                                 <td><?= htmlspecialchars($nv['Email']) ?></td>
                                 <td><?= htmlspecialchars($nv['SDT']) ?></td>
+                                <td><?= htmlspecialchars($nv['Roles'] ?? 'Chưa xác định') ?></td>
                                 <td class="text-center">
                                     <a href="?action=edit&id=<?= $nv['MaNV'] ?>" class="btn btn-sm btn-primary me-1" title="Sửa">
                                         <i class="fa fa-edit"></i>
@@ -40,7 +42,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6" class="text-center text-muted">Không có nhân viên nào.</td>
+                            <td colspan="7" class="text-center text-muted">Không có nhân viên nào.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

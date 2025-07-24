@@ -34,14 +34,17 @@ class StaffController {
             $data['tennv'] = trim($_POST['tennv'] ?? '');
             $data['email'] = trim($_POST['email'] ?? '');
             $data['sdt'] = trim($_POST['sdt'] ?? '');
+            $data['roles'] = trim($_POST['roles'] ?? '');
             $password = $_POST['password'] ?? '';
             $confirm = $_POST['confirm'] ?? '';
             $data['password'] = $password;
 
-            if (!$data['tennv'] || !$data['email'] || !$data['sdt'] || !$password || !$confirm) {
+            if (!$data['tennv'] || !$data['email'] || !$data['sdt'] || !$data['roles'] || !$password || !$confirm) {
                 $error = "Vui lòng điền đầy đủ thông tin!";
             } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                 $error = "Email không hợp lệ!";
+            } elseif (!in_array($data['roles'], ['Thợ sửa xe', 'Nhân viên kế toán'])) {
+                $error = "Vai trò không hợp lệ!";
             } elseif ($password !== $confirm) {
                 $error = "Mật khẩu xác nhận không khớp!";
             } elseif ($this->model->existsEmail($data['email'])) {
@@ -71,14 +74,17 @@ class StaffController {
             $data['tennv'] = trim($_POST['tennv'] ?? '');
             $data['email'] = trim($_POST['email'] ?? '');
             $data['sdt'] = trim($_POST['sdt'] ?? '');
+            $data['roles'] = trim($_POST['roles'] ?? '');
             $password = $_POST['password'] ?? '';
             $confirm = $_POST['confirm'] ?? '';
             $data['password'] = $password;
 
-            if (!$data['tennv'] || !$data['email'] || !$data['sdt']) {
+            if (!$data['tennv'] || !$data['email'] || !$data['sdt'] || !$data['roles']) {
                 $error = "Vui lòng điền đầy đủ thông tin!";
             } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                 $error = "Email không hợp lệ!";
+            } elseif (!in_array($data['roles'], ['Thợ sửa xe', 'Nhân viên kế toán'])) {
+                $error = "Vai trò không hợp lệ!";
             } elseif ($password && $password !== $confirm) {
                 $error = "Mật khẩu xác nhận không khớp!";
             } else {
