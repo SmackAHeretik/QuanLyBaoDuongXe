@@ -1,11 +1,11 @@
-<h3>Sửa lịch làm việc</h3>
+<h3>Cập nhật lịch làm việc</h3>
 <?php if (!empty($error)): ?>
     <div class="alert alert-danger"><?= $error ?></div>
 <?php endif; ?>
 <form method="post">
     <div class="form-group mb-2">
         <label for="ngay">Ngày</label>
-        <input type="date" name="ngay" id="ngay" class="form-control" value="<?= htmlspecialchars($data['ngay'] ?? '') ?>">
+        <input type="date" name="ngay" id="ngay" class="form-control" value="<?= htmlspecialchars($data['ngay'] ?? '') ?>" required>
     </div>
     <div class="form-group mb-2">
         <label for="TrangThai">Trạng thái</label>
@@ -18,7 +18,7 @@
     </div>
     <div class="form-group mb-2">
         <label for="ThoiGianCa">Ca làm việc</label>
-        <input type="text" name="ThoiGianCa" id="ThoiGianCa" class="form-control" value="<?= htmlspecialchars($data['ThoiGianCa'] ?? '') ?>">
+        <input type="text" name="ThoiGianCa" id="ThoiGianCa" class="form-control" value="<?= htmlspecialchars($data['ThoiGianCa'] ?? '') ?>" required>
     </div>
     <div class="form-check mb-2">
         <input type="checkbox" name="LaNgayCuoiTuan" id="LaNgayCuoiTuan" class="form-check-input" <?= (!empty($data['LaNgayCuoiTuan'])) ? 'checked' : '' ?>>
@@ -30,8 +30,20 @@
     </div>
     <div class="form-group mb-2">
         <label for="admin_AdminID">Admin ID</label>
-        <input type="number" name="admin_AdminID" id="admin_AdminID" class="form-control" value="<?= htmlspecialchars($data['admin_AdminID'] ?? '') ?>">
+        <input type="number" name="admin_AdminID" id="admin_AdminID" class="form-control" value="<?= htmlspecialchars($data['admin_AdminID'] ?? '') ?>" required>
     </div>
-    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-    <a href="?action=list" class="btn btn-secondary">Quay lại</a>
+    <div class="form-group mb-2">
+        <label for="thoSuaXe">Chọn thợ sửa xe</label>
+        <select name="thoSuaXe[]" id="thoSuaXe" class="form-control" multiple required>
+            <?php foreach ($dsThoSuaXe as $tho): ?>
+                <option value="<?= $tho['MaNV'] ?>"
+                    <?= !empty($data['thoSuaXe']) && in_array($tho['MaNV'], $data['thoSuaXe']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($tho['TenNV']) ?> (<?= htmlspecialchars($tho['SDT']) ?>)
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <small>Nhấn Ctrl để chọn nhiều thợ</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Cập nhật</button>
+    <a href="?controller=lichlamviec" class="btn btn-secondary">Quay lại</a>
 </form>

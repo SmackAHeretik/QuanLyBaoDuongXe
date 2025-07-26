@@ -1,80 +1,140 @@
 <?php
-require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../models/LichLamViecModel.php';
+require_once __DIR__ . '/../models/NhanVienModel.php';
+require_once __DIR__ . '/../models/PhanCongLichLamViecModel.php';
 
 class LichLamViecController {
-    private $model;
-    public function __construct() {
-        $db = connectDB();
-        $this->model = new LichLamViecModel($db);
+    private $db;
+    private $lichLamViecModel;
+    private $nhanVienModel;
+    private $phanCongModel;
+
+    public function __construct($db) {
+        $this->db = $db;
+        $this->lichLamViecModel = new LichLamViecModel($db);
+        $this->nhanVienModel = new NhanVienModel($db);
+        $this->phanCongModel = new PhanCongLichLamViecModel($db);
     }
 
-    public function list() {
-        $dsLich = $this->model->getAll();
-        include __DIR__ . '/../views/lichlamviec/list.php';
+    // Hiển thị danh sách lịch làm việc
+    public function index() {
+        $dsLich = $this->lichLamViecModel->getAll();
+        $phancongModel = $this->phanCongModel; // Đưa biến này cho view
+        ob_start();
+        require __DIR__ . '/../views/lichlamviec/list.php';
+        echo ob_get_clean();
     }
 
+    // Thêm lịch làm việc
     public function add() {
         $error = '';
         $data = [];
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data['ngay'] = $_POST['ngay'] ?? '';
-            $data['TrangThai'] = $_POST['TrangThai'] ?? '';
-            $data['ThoiGianCa'] = $_POST['ThoiGianCa'] ?? '';
-            $data['LaNgayCuoiTuan'] = isset($_POST['LaNgayCuoiTuan']) ? 1 : 0;
-            $data['LaNgayNghiLe'] = isset($_POST['LaNgayNghiLe']) ? 1 : 0;
-            $data['admin_AdminID'] = $_POST['admin_AdminID'] ?? null;
+        $dsThoSuaXe = $this->nhanVienModel->getAllThoSuaXe();
 
-            if (!$data['ngay'] || !$data['TrangThai'] || !$data['ThoiGianCa']) {
-                $error = "Vui lòng điền đầy đủ thông tin!";
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $_POST;
+            $data['LaNgayCuoiTuan'] = isset($data['LaNgayCuoiTuan']) ? 1 : 0;
+            $data['LaNgayNghiLe']   = isset($data['LaNgayNghiLe'])   ? 1 : 0;
+
+            $ngay = $data['ngay'] ?? '';
+            $ca = $data['ThoiGianCa'] ?? '';
+
+            // Kiểm tra trùng ngày + ca làm việc
+            $sql = "SELECT COUNT(*) FROM lichlamviec WHERE ngay = :ngay AND ThoiGianCa = :ca";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([':ngay' => $ngay, ':ca' => $ca]);
+            $exists = $stmt->fetchColumn();
+
+            if ($exists > 0) {
+                $error = "Đã tồn tại ca làm việc $ca cho ngày $ngay. Vui lòng chọn ca khác!";
             } else {
-                if ($this->model->add($data)) {
-                    header('Location: ?action=list');
+                // Tạo lịch làm việc mới
+                $ok = $this->lichLamViecModel->add($data);
+                if ($ok) {
+                    $MaLLV = $this->db->lastInsertId();
+                    // Gán thợ vào ca làm việc này
+                    if (!empty($data['thoSuaXe']) && is_array($data['thoSuaXe'])) {
+                        foreach ($data['thoSuaXe'] as $maNV) {
+                            // Đảm bảo 1 nhân viên chỉ được gán 1 lần vào ca/ngày này
+                            if (!$this->phanCongModel->isNhanVienInCa($MaLLV, $maNV)) {
+                                $this->phanCongModel->insert($MaLLV, $maNV);
+                            }
+                        }
+                    }
+                    header('Location: ?action=index');
                     exit;
                 } else {
-                    $error = "Thêm lịch làm việc thất bại!";
+                    $error = 'Lỗi lưu dữ liệu!';
                 }
             }
         }
-        include __DIR__ . '/../views/lichlamviec/add.php';
+
+        require __DIR__ . '/../views/lichlamviec/add.php';
     }
 
+    // Sửa lịch làm việc
     public function edit() {
         $error = '';
-        $id = $_GET['id'] ?? '';
-        $data = $this->model->getById($id);
-        if (!$data) {
-            echo '<div class="alert alert-danger">Không tìm thấy lịch làm việc!</div>';
-            return;
-        }
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data['ngay'] = $_POST['ngay'] ?? $data['ngay'];
-            $data['TrangThai'] = $_POST['TrangThai'] ?? $data['TrangThai'];
-            $data['ThoiGianCa'] = $_POST['ThoiGianCa'] ?? $data['ThoiGianCa'];
-            $data['LaNgayCuoiTuan'] = isset($_POST['LaNgayCuoiTuan']) ? 1 : 0;
-            $data['LaNgayNghiLe'] = isset($_POST['LaNgayNghiLe']) ? 1 : 0;
-            $data['admin_AdminID'] = $_POST['admin_AdminID'] ?? $data['admin_AdminID'];
+        $id = $_GET['id'] ?? null;
+        $data = [];
+        if (!$id) { header('Location: ?action=index'); exit; }
 
-            if (!$data['ngay'] || !$data['TrangThai'] || !$data['ThoiGianCa']) {
-                $error = "Vui lòng điền đầy đủ thông tin!";
+        $lich = $this->lichLamViecModel->getById($id);
+        $dsThoSuaXe = $this->nhanVienModel->getAllThoSuaXe();
+
+        // Lấy danh sách nhân viên đã phân công
+        $dsPhanCong = $this->phanCongModel->getNhanVienByMaLLV($id);
+        $data = $lich;
+        $data['thoSuaXe'] = array_column($dsPhanCong, 'MaNV');
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $_POST;
+            $data['LaNgayCuoiTuan'] = isset($data['LaNgayCuoiTuan']) ? 1 : 0;
+            $data['LaNgayNghiLe']   = isset($data['LaNgayNghiLe'])   ? 1 : 0;
+
+            $ngay = $data['ngay'] ?? '';
+            $ca = $data['ThoiGianCa'] ?? '';
+
+            // Kiểm tra trùng ngày + ca làm việc, nhưng bỏ qua chính lịch này khi sửa
+            $sql = "SELECT COUNT(*) FROM lichlamviec WHERE ngay = :ngay AND ThoiGianCa = :ca AND MaLLV != :id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([':ngay' => $ngay, ':ca' => $ca, ':id' => $id]);
+            $exists = $stmt->fetchColumn();
+
+            if ($exists > 0) {
+                $error = "Đã tồn tại ca làm việc $ca cho ngày $ngay. Vui lòng chọn ca khác!";
             } else {
-                if ($this->model->update($id, $data)) {
-                    header('Location: ?action=list');
+                // Update lịch làm việc
+                $ok = $this->lichLamViecModel->update($id, $data);
+                if ($ok) {
+                    // Xoá hết phân công cũ, gán lại
+                    $this->phanCongModel->deleteByMaLLV($id);
+                    if (!empty($data['thoSuaXe']) && is_array($data['thoSuaXe'])) {
+                        foreach ($data['thoSuaXe'] as $maNV) {
+                            if (!$this->phanCongModel->isNhanVienInCa($id, $maNV)) {
+                                $this->phanCongModel->insert($id, $maNV);
+                            }
+                        }
+                    }
+                    header('Location: ?action=index');
                     exit;
                 } else {
-                    $error = "Cập nhật lịch làm việc thất bại!";
+                    $error = 'Lỗi cập nhật dữ liệu!';
                 }
             }
         }
-        include __DIR__ . '/../views/lichlamviec/edit.php';
+
+        require __DIR__ . '/../views/lichlamviec/edit.php';
     }
 
+    // Xóa lịch làm việc
     public function delete() {
-        $id = $_GET['id'] ?? '';
+        $id = $_GET['id'] ?? null;
         if ($id) {
-            $this->model->delete($id);
+            $this->phanCongModel->deleteByMaLLV($id); // Xoá phân công trước
+            $this->lichLamViecModel->delete($id);
         }
-        header('Location: ?action=list');
+        header('Location: ?action=index');
         exit;
     }
 }
