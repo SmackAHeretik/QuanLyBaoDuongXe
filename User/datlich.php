@@ -5,12 +5,17 @@ include_once './utils/ConnectDb.php';
 include_once './model/BikeProfileModel.php';
 include_once './model/NhanVienModel.php';
 include_once './model/LichHenModel.php';
+include_once './model/LichLamViecModel.php'; // BỔ SUNG ĐỂ LẤY MaLLV
 
 $bikeList = [];
 if (isset($_SESSION['MaKH'])) {
     $db = (new ConnectDb())->connect();
     $bikeModel = new BikeProfileModel($db);
     $bikeList = $bikeModel->getBikesByCustomerId($_SESSION['MaKH']);
+} else {
+    // Nếu chưa đăng nhập, chuyển về trang đăng nhập
+    header('Location: login.php');
+    exit;
 }
 
 $error = '';
@@ -33,9 +38,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $xeInfo = $bikeModel->getBikeById($MaXE);
         $nvModel = new NhanVienModel($db);
+
+        // Lấy MaLLV ứng với ngày và ca từ bảng lichlamviec
+        $lichLamViecModel = new LichLamViecModel($db);
+        $ca = $lichLamViecModel->getCaLamViecByNgayVaCa($NgayHen, $ThoiGianCa);
+        if (!$ca) {
+            $_SESSION['error'] = 'Không tìm thấy ca làm việc!';
+            header('Location: datlich.php');
+            exit;
+        }
+        $MaLLV = $ca['MaLLV'];
+
         $nhanviens = $nvModel->getNhanVienConTrong($NgayHen, $ThoiGianCa);
         $nhanvien_MaNV = null;
         if ($nhanviens && count($nhanviens) > 0) {
+            // Chọn random 1 nhân viên còn trống ca
             $randomIdx = array_rand($nhanviens);
             $nhanvien_MaNV = $nhanviens[$randomIdx]['MaNV'];
             $nhanvien_TenNV = $nhanviens[$randomIdx]['TenNV'];
@@ -57,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'TrangThai' => $TrangThai,
             'xemay_MaXE' => $MaXE,
             'khachhang_MaKH' => $_SESSION['MaKH'],
+            'MaLLV' => $MaLLV, // BỔ SUNG MaLLV
         ];
         $model = new LichHenModel($db);
         $ok = $model->insertLichHen($data);
@@ -83,18 +101,17 @@ if (isset($_SESSION['error'])) {
 }
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>67 Performance</title>
+    <title>67 Performance - Đặt lịch hẹn</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-icons.css" rel="stylesheet">
     <link href="css/templatemo-tiya-golf-club.css" rel="stylesheet">
@@ -111,7 +128,6 @@ if (isset($_SESSION['error'])) {
             background: #fff;
             transition: background 0.2s, color 0.2s;
         }
-
         .block-ca.active,
         .block-ca:focus {
             background-color: #f4b860 !important;
@@ -220,13 +236,19 @@ if (isset($_SESSION['error'])) {
                     var selected = this.options[this.selectedIndex];
                     document.getElementById('loaixe').value = selected.getAttribute('data-loaixe') || '';
                     document.getElementById('phankhuc').value = selected.getAttribute('data-phankhuc') || '';
+                    // Reset lựa chọn ca và nhân viên khi đổi xe
+                    $('#ThoiGianCaBlocks').html('');
+                    $('#ThoiGianCa').val('');
+                    $('#nhanvienTen').val('');
+                    $('#NgayHen').val('');
                 });
 
                 // Khi chọn ngày hẹn, load ca làm việc qua AJAX và hiển thị dạng block
                 $('#NgayHen').on('change', function () {
                     var ngay = $(this).val();
                     $('#ThoiGianCaBlocks').html("Đang tải ca...");
-                    $('#nhanvienTen').val(""); // reset nhân viên
+                    $('#ThoiGianCa').val("");
+                    $('#nhanvienTen').val("");
                     $.get('api/get_ca.php', { ngay: ngay }, function (data) {
                         var cas = data;
                         if (typeof data === "string") cas = JSON.parse(data);
@@ -238,7 +260,6 @@ if (isset($_SESSION['error'])) {
                                     </button>`;
                         });
                         $('#ThoiGianCaBlocks').html(html);
-                        $('#ThoiGianCa').val(""); // reset chọn cũ
                     });
                 });
 
@@ -253,6 +274,7 @@ if (isset($_SESSION['error'])) {
                     var ngay = $('#NgayHen').val();
                     var ca = $(this).data('ca');
                     $.get('api/random_nhanvien.php', { ngay: ngay, ca: ca }, function (data) {
+                        if (typeof data === "string") data = JSON.parse(data);
                         if (data && data.TenNV) {
                             $('#nhanvienTen').val(data.TenNV);
                         } else {
@@ -261,7 +283,6 @@ if (isset($_SESSION['error'])) {
                     }, 'json');
                 });
             </script>
-
         </section>
     </main>
     <?php include('./layouts/footer/footer.php') ?>
@@ -295,5 +316,4 @@ if (isset($_SESSION['error'])) {
     </script>
     <script src="js/custom.js"></script>
 </body>
-
 </html>

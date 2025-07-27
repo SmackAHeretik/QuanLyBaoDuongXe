@@ -17,13 +17,18 @@
                         <th>Ca làm việc</th>
                         <th>Cuối tuần</th>
                         <th>Nghỉ lễ</th>
+                        <th>Nhân viên đảm nhiệm</th>
                         <th>Admin ID</th>
                         <th class="text-center">Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (!empty($dsLich)): ?>
-                        <?php foreach ($dsLich as $key => $llv): ?>
+                        <?php
+                        foreach ($dsLich as $key => $llv):
+                            $dsNhanVien = $phancongModel->getNhanVienByMaLLV($llv['MaLLV']); // Trả về mảng ['MaNV', 'TenNV']
+                            $tenNhanVien = array_column($dsNhanVien, 'TenNV');
+                        ?>
                             <tr>
                                 <td><?= $key + 1 ?></td>
                                 <td><?= htmlspecialchars($llv['MaLLV']) ?></td>
@@ -32,6 +37,15 @@
                                 <td><?= htmlspecialchars($llv['ThoiGianCa']) ?></td>
                                 <td><?= $llv['LaNgayCuoiTuan'] ? 'Có' : 'Không' ?></td>
                                 <td><?= $llv['LaNgayNghiLe'] ? 'Có' : 'Không' ?></td>
+                                <td>
+                                    <?php
+                                    if (!empty($tenNhanVien)) {
+                                        echo htmlspecialchars(implode(', ', $tenNhanVien));
+                                    } else {
+                                        echo '<span class="text-muted">Chưa phân công</span>';
+                                    }
+                                    ?>
+                                </td>
                                 <td><?= htmlspecialchars($llv['admin_AdminID']) ?></td>
                                 <td class="text-center">
                                     <a href="?action=edit&id=<?= $llv['MaLLV'] ?>" class="btn btn-sm btn-primary me-1" title="Sửa">
@@ -46,7 +60,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="9" class="text-center text-muted">Không có lịch làm việc nào.</td>
+                            <td colspan="10" class="text-center text-muted">Không có lịch làm việc nào.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

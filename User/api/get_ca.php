@@ -1,26 +1,36 @@
 <?php
 require_once '../utils/ConnectDb.php';
 require_once '../model/LichLamViecModel.php';
-require_once '../model/NhanVienModel.php';
+require_once '../model/PhanCongLichLamViecModel.php';
+require_once '../model/LichHenModel.php';
 
 header('Content-Type: application/json');
 $ngay = $_GET['ngay'] ?? '';
 
 if (!$ngay) {
-  echo json_encode([]);
-  exit;
+    echo json_encode([]);
+    exit;
 }
 
 $db = (new ConnectDb())->connect();
 $lichlamviecModel = new LichLamViecModel($db);
-$nvModel = new NhanVienModel($db);
+$phanCongModel = new PhanCongLichLamViecModel($db);
+$lichHenModel = new LichHenModel($db);
 
-// Lấy tất cả ca làm việc hợp lệ của ngày
 $cas = $lichlamviecModel->getCaLamViecByNgay($ngay);
 
-foreach ($cas as &$ca) {
-  $nhanviens = $nvModel->getNhanVienConTrong($ngay, $ca['ThoiGianCa']);
-  $ca['disabled'] = count($nhanviens) == 0;
+$result = [];
+foreach ($cas as $ca) {
+    $MaLLV = $ca['MaLLV'];
+    $soTho = count($phanCongModel->getNhanVienByMaLLV($MaLLV));
+    $soLichHen = $lichHenModel->countLichHenByLLV($MaLLV);
+
+    $result[] = [
+        'MaLLV'      => $MaLLV,
+        'ThoiGianCa' => $ca['ThoiGianCa'],
+        'disabled'   => ($soLichHen >= $soTho)
+    ];
 }
-echo json_encode($cas);
+
+echo json_encode($result);
 ?>

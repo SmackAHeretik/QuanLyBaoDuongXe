@@ -31,3 +31,4 @@ class LichLamViecModel {
         return $stmt->execute([$id]);
     }
 }
+?>

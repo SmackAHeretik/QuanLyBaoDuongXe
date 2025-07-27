@@ -5,9 +5,16 @@
 $requiredRole = 'ketoan'; // hoặc 'admin', tuỳ config hệ thống
 include __DIR__ . '/auth_check.php';
 
+require_once __DIR__ . '/db.php'; // <-- Đảm bảo có file kết nối DB, cung cấp hàm connectDB()
 require_once __DIR__ . '/controllers/LichLamViecController.php';
-$action = $_GET['action'] ?? 'list';
-$ctrl = new LichLamViecController();
+
+$action = $_GET['action'] ?? 'index';
+
+// Kết nối DB
+$db = connectDB(); // hoặc new PDO(...);
+
+// Truyền $db vào controller
+$ctrl = new LichLamViecController($db);
 
 ob_start();
 if (method_exists($ctrl, $action)) {
