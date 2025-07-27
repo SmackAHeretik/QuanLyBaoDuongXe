@@ -1,7 +1,4 @@
 <?php
-$requiredRole = 'admin';
-include __DIR__ . '/auth_check.php';
-
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/models/HoaDonModel.php';
 
@@ -10,10 +7,8 @@ if (!$maXe || !is_numeric($maXe)) {
     echo '<div class="text-danger">Dữ liệu không hợp lệ!</div>';
     exit;
 }
-
 $model = new HoaDonModel(connectDB());
 $ds = $model->getHoaDonByMaXe($maXe);
-
 ?>
 <div class="table-responsive">
     <table class="table table-bordered">
@@ -51,14 +46,36 @@ $ds = $model->getHoaDonByMaXe($maXe);
                 <td>
                   <a href="hoadon.php?controller=hoadon&action=edit&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-primary" title="Sửa"><i class="fa fa-edit"></i></a>
                   <a href="hoadon.php?controller=hoadon&action=delete&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-danger" title="Xóa" onclick="return confirm('Xóa hóa đơn?')"><i class="fa fa-trash"></i></a>
-                  <a href="chitiethoadon.php?hoadon_MaHD=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-info" title="Chi tiết hóa đơn">
-                    <i class="fa fa-list"></i>
-                  </a>
+                  <a href="chitiethoadon.php?hoadon_MaHD=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-info" title="Chi tiết hóa đơn"><i class="fa fa-list"></i></a>
+                  <?php if ($hd['TrangThai'] === 'cho_thanh_toan'): ?>
+                  <!-- Form thay thế cho button mã QR -->
+                  <form action="checkout.php" method="post" style="display:inline;">
+                      <input type="hidden" name="mahd" value="<?= htmlspecialchars($hd['MaHD']) ?>">
+                      <input type="hidden" name="tongtien" value="<?= htmlspecialchars($hd['TongTien']) ?>">
+                      <button
+                          class="btn btn-sm btn-success"
+                          title="Thanh toán QR"
+                          type="submit"
+                      >
+                          <i class="fa fa-qrcode"></i>
+                      </button>
+                  </form>
+                  <form action="checkout.php" method="post" style="display:inline;">
+                      <input type="hidden" name="mahd" value="<?= htmlspecialchars($hd['MaHD']) ?>">
+                      <input type="hidden" name="tienmat" value="1">
+                      <button
+                          class="btn btn-sm btn-warning"
+                          title="Thanh toán tiền mặt"
+                          type="submit"
+                      >
+                          <b>₫</b>
+                      </button>
+                  </form>
+                  <?php endif; ?>
                 </td>
             </tr>
             <?php endforeach; ?>
             <?php endif; ?>
-            <!-- Nút tạo hóa đơn mới cho xe này đặt cuối bảng, luôn hiển thị -->
             <tr>
                 <td colspan="5" class="text-end">
                     <a class="btn btn-success" href="hoadon.php?controller=hoadon&action=add&xemay_MaXE=<?= $maXe ?>" title="Tạo hóa đơn mới cho xe này">

@@ -1,0 +1,13 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/payos-vn/payos-php.git"
+        }
+    ],
+    "require": {
+        "payos/payos-php": "dev-main"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

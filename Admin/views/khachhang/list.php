@@ -100,5 +100,47 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         });
     });
+
+    // Event delegation cho các nút trong modal (bao gồm cả QR và tiền mặt)
+    document.getElementById('modalHoaDonContent').addEventListener('click', function(e) {
+        // Thanh toán VietQR
+        if (e.target.closest('.btn-thanh-toan-qr')) {
+            let btn = e.target.closest('.btn-thanh-toan-qr');
+            let mahd = btn.dataset.mahd;
+            let tongtien = btn.dataset.tongtien;
+            let bank = "Vietcombank";
+            let acc = "0123456789";
+            let name = "NGUYEN VAN A";
+            let amount = tongtien || 0;
+            let desc = "Thanh toan hoa don " + mahd;
+            let qr_api = `https://img.vietqr.io/image/VCB-0123456789-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(desc)}&accountName=${encodeURIComponent(name)}`;
+            let html = `
+              <div>
+                <img src="${qr_api}" class="img-fluid" alt="VietQR" style="max-width:250px"/>
+                <div class="mt-2">
+                    <strong>Ngân hàng:</strong> ${bank}<br>
+                    <strong>STK:</strong> ${acc}<br>
+                    <strong>Tên:</strong> ${name}<br>
+                    <strong>Số tiền:</strong> ${Number(amount).toLocaleString()} VND<br>
+                    <strong>Nội dung:</strong> ${desc}
+                </div>
+                <div class="alert alert-info mt-3">
+                    Quét mã bằng app ngân hàng để thanh toán
+                </div>
+              </div>
+            `;
+            document.getElementById('vietqrContent').innerHTML = html;
+            let popup = new bootstrap.Modal(document.getElementById('modalVietQR'));
+            popup.show();
+        }
+        // Thanh toán tiền mặt
+        if (e.target.closest('.btn-thanh-toan-tienmat')) {
+            let btn = e.target.closest('.btn-thanh-toan-tienmat');
+            let mahd = btn.dataset.mahd;
+            if(confirm('Xác nhận thanh toán tiền mặt cho hóa đơn ' + mahd + '?')) {
+                window.location = 'hoadon_pay.php?id=' + mahd;
+            }
+        }
+    });
 });
 </script>
