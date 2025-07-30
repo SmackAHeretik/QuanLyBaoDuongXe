@@ -59,7 +59,7 @@ function tenLoaiLichHen($phanLoai) {
                             <th>Ngày</th>
                             <th>Thời gian</th>
                             <th>Loại lịch hẹn</th>
-                            <th>Tên nhân viên đặt</th>
+                            <th>Thợ sửa xe</th>
                             <th>Tên xe</th>
                             <th>Biển số xe</th>
                             <th>Ghi chú</th>

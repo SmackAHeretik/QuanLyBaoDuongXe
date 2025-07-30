@@ -89,7 +89,7 @@ if ($makh) {
                 <th>STT</th>
                 <th>Ngày hẹn</th>
                 <th>Thời gian</th>
-                <th>Nhân viên</th>
+                <th>Thợ sửa xe</th>
                 <th>Loại xe</th>
                 <th>Lý do</th>
                 <th>Trạng thái</th>

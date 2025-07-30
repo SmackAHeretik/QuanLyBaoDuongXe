@@ -42,7 +42,7 @@ if ($user) {
                 <a href="khachhang.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Danh Sách Khách Hàng</a>
                 <a href="form.php" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Danh Sách Phụ Tùng</a>
                 <a href="table.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Danh Sách Xe Máy</a>
-                <a href="nhasanxuat.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Nhà Sản Xuất</a>
+                <a href="nhasanxuat.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Danh Sách Hãng Xe</a>
                 <a href="dichvu.php" class="nav-item nav-link"><i class="fa fa-concierge-bell me-2"></i>Danh Sách Dịch Vụ</a>
                 <!-- DÒNG LỊCH HẸN CHO ADMIN -->
                 <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>

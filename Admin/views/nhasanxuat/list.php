@@ -6,7 +6,7 @@
 <?php endif; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h3>Danh sách Nhà Sản Xuất</h3>
+  <h3>Danh sách Hãng xe</h3>
   <a href="nhasanxuat.php?action=add" class="btn btn-primary">Thêm mới</a>
 </div>
 
@@ -14,11 +14,11 @@
   <table class="table table-bordered table-hover align-middle">
     <thead class="table-light">
       <tr>
-        <th>MaNSX</th>
-        <th>TenNhaSX</th>
-        <th>XuatXu</th>
-        <th>MoTa</th>
-        <th>Hành động</th>
+        <th>Mã hãng xe</th>
+        <th>Tên hãng xe</th>
+        <th>Xuất xứ</th>
+        <th>Mô tả</th>
+        <th>Thao tác</th>
       </tr>
     </thead>
     <tbody>

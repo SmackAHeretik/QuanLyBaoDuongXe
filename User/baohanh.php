@@ -175,9 +175,9 @@ if (isset($_SESSION['error'])) {
                             <div class="col-lg-12 col-12 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" id="nhanvienTen" name="nhanvienTen" readonly
-                                        placeholder="Nhân viên phục vụ"
+                                        placeholder="Thợ sửa xe"
                                         value="<?= htmlspecialchars($nhanvien_TenNV) ?>">
-                                    <label for="nhanvienTen">Nhân viên phục vụ</label>
+                                    <label for="nhanvienTen">Thợ sửa xe</label>
                                     <input type="hidden" name="nhanvien_MaNV" id="nhanvien_MaNV">
                                 </div>
                             </div>
@@ -200,7 +200,7 @@ if (isset($_SESSION['error'])) {
                         <div class="alert alert-success mt-2">
                             <?= $success; ?>
                             <?php if (!empty($nhanvien_TenNV)): ?>
-                                <br>Nhân viên phục vụ: <strong><?= htmlspecialchars($nhanvien_TenNV); ?></strong>
+                                <br>Thợ sửa xe: <strong><?= htmlspecialchars($nhanvien_TenNV); ?></strong>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>

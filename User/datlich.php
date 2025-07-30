@@ -195,13 +195,13 @@ if (isset($_SESSION['error'])) {
                                 <div id="ThoiGianCaBlocks" class="d-flex flex-wrap gap-2"></div>
                                 <input type="hidden" name="ThoiGianCa" id="ThoiGianCa" required>
                             </div>
-                            <!-- Nhân viên phục vụ (readonly) -->
+                            <!-- Chọn thợ sửa xe -->
                             <div class="col-lg-12 col-12 mb-3">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="nhanvienTen" name="nhanvienTen" readonly
-                                        placeholder="Nhân viên phục vụ"
-                                        value="<?= htmlspecialchars($nhanvien_TenNV) ?>">
-                                    <label for="nhanvienTen">Nhân viên phục vụ</label>
+                                    <select class="form-select" id="nhanvien_MaNV" name="nhanvien_MaNV" required>
+                                        <option value="" selected>Chọn thợ sửa xe</option>
+                                    </select>
+                                    <label for="nhanvien_MaNV">Thợ sửa xe</label>
                                 </div>
                             </div>
                             <!-- Lý do hẹn -->
@@ -223,7 +223,7 @@ if (isset($_SESSION['error'])) {
                         <div class="alert alert-success mt-2">
                             <?= $success; ?>
                             <?php if (!empty($nhanvien_TenNV)): ?>
-                                <br>Nhân viên phục vụ: <strong><?= htmlspecialchars($nhanvien_TenNV); ?></strong>
+                                <br>Thợ sửa xe: <strong><?= htmlspecialchars($nhanvien_TenNV); ?></strong>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
@@ -236,10 +236,9 @@ if (isset($_SESSION['error'])) {
                     var selected = this.options[this.selectedIndex];
                     document.getElementById('loaixe').value = selected.getAttribute('data-loaixe') || '';
                     document.getElementById('phankhuc').value = selected.getAttribute('data-phankhuc') || '';
-                    // Reset lựa chọn ca và nhân viên khi đổi xe
                     $('#ThoiGianCaBlocks').html('');
                     $('#ThoiGianCa').val('');
-                    $('#nhanvienTen').val('');
+                    $('#nhanvien_MaNV').html('<option value="">Chọn thợ sửa xe</option>');
                     $('#NgayHen').val('');
                 });
 
@@ -248,10 +247,9 @@ if (isset($_SESSION['error'])) {
                     var ngay = $(this).val();
                     $('#ThoiGianCaBlocks').html("Đang tải ca...");
                     $('#ThoiGianCa').val("");
-                    $('#nhanvienTen').val("");
+                    $('#nhanvien_MaNV').html('<option value="">Chọn thợ sửa xe</option>');
                     $.get('api/get_ca.php', { ngay: ngay }, function (data) {
-                        var cas = data;
-                        if (typeof data === "string") cas = JSON.parse(data);
+                        var cas = typeof data === "string" ? JSON.parse(data) : data;
                         var html = '';
                         cas.forEach(function (ca) {
                             let disabled = ca.disabled ? 'disabled' : '';
@@ -263,29 +261,34 @@ if (isset($_SESSION['error'])) {
                     });
                 });
 
-                // Khi chọn ca, đổi màu, set value và random nhân viên phục vụ
+                // Khi chọn ca, lấy danh sách thợ còn trống và render dropdown, random mặc định
                 $(document).on('click', '.block-ca', function () {
                     if ($(this).prop('disabled')) return;
                     $('.block-ca').removeClass('active');
                     $(this).addClass('active');
                     $('#ThoiGianCa').val($(this).data('ca'));
 
-                    // Random nhân viên phục vụ qua AJAX
                     var ngay = $('#NgayHen').val();
                     var ca = $(this).data('ca');
-                    $.get('api/random_nhanvien.php', { ngay: ngay, ca: ca }, function (data) {
-                        if (typeof data === "string") data = JSON.parse(data);
-                        if (data && data.TenNV) {
-                            $('#nhanvienTen').val(data.TenNV);
-                        } else {
-                            $('#nhanvienTen').val("Không có nhân viên!");
+                    $.get('api/list_nhanvien_trongca.php', { ngay: ngay, ca: ca }, function(data){
+                        var nhanviens = typeof data === 'string' ? JSON.parse(data) : data;
+                        var html = '<option value="">Chọn thợ sửa xe</option>';
+                        nhanviens.forEach(function(nv){
+                            html += `<option value="${nv.MaNV}">${nv.TenNV}</option>`;
+                        });
+                        $('#nhanvien_MaNV').html(html);
+
+                        // Tự động random chọn 1 thợ, khách vẫn có thể chọn lại
+                        if(nhanviens.length > 0){
+                            var idx = Math.floor(Math.random() * nhanviens.length);
+                            $('#nhanvien_MaNV').val(nhanviens[idx].MaNV);
                         }
-                    }, 'json');
+                    });
                 });
             </script>
         </section>
+        <?php include('./layouts/footer/footer.php') ?>
     </main>
-    <?php include('./layouts/footer/footer.php') ?>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/jquery.sticky.js"></script>
     <script src="js/click-scroll.js"></script>

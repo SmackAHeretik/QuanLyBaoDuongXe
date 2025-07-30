@@ -5,37 +5,38 @@
   <div class="alert alert-danger"><?= $error ?></div>
 <?php endif; ?>
 
+<!-- Tiêu đề căn giữa, nút bên phải -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h3>Danh sách Phụ Tùng Xe Máy</h3>
+  <h3 class="flex-grow-1 mb-0">Danh sách Phụ Tùng Xe Máy</h3>
   <a href="form.php?action=add" class="btn btn-primary">Thêm mới</a>
 </div>
 <div class="table-responsive">
   <table class="table table-bordered table-hover align-middle">
     <thead class="table-light">
       <tr>
-        <th>MaSP</th>
-        <th>TenSP</th>
-        <th>Hình ảnh</th>
-        <th>SoSeriesSP</th>
-        <th>MieuTaSP</th>
-        <th>NamSX</th>
-        <th>XuatXu</th>
-        <th>ThoiGianBaoHanhDinhKy</th>
-        <th>Đơn giá</th>
-        <th>loaiphutung</th>
-        <th>nhasanxuat_MaNSX</th>
-        <th>SoLanBaoHanhToiDa</th>
-        <th>Trạng thái</th>
-        <th>Hành động</th>
+        <th class="text-center" style="vertical-align: middle;">Mã<br>sản phẩm</th>
+        <th class="text-center" style="vertical-align: middle;">Tên<br>sản phẩm</th>
+        <th class="text-center" style="vertical-align: middle;">Hình ảnh</th>
+        <th class="text-center" style="vertical-align: middle;">Số Serial</th>
+        <th class="text-center" style="vertical-align: middle;">Miêu tả</th>
+        <th class="text-center" style="vertical-align: middle;">Năm<br>sản xuất</th>
+        <th class="text-center" style="vertical-align: middle;">Xuất xứ</th>
+        <th class="text-center" style="vertical-align: middle;">Thời gian<br>bảo hành<br>định kỳ</th>
+        <th class="text-center" style="vertical-align: middle;">Đơn giá</th>
+        <th class="text-center" style="vertical-align: middle;">Loại<br>phụ tùng</th>
+        <th class="text-center" style="vertical-align: middle;">Mã<br>hãng xe</th>
+        <th class="text-center" style="vertical-align: middle;">Số lần<br>bảo hành<br>tối đa</th>
+        <th class="text-center" style="vertical-align: middle;">Trạng thái</th>
+        <th class="text-center" style="vertical-align: middle;">Thao tác</th>
       </tr>
     </thead>
     <tbody>
       <?php if (!empty($phutungxemay)): ?>
         <?php foreach ($phutungxemay as $row): ?>
           <tr>
-            <td><?= htmlspecialchars($row['MaSP']) ?></td>
-            <td><?= htmlspecialchars($row['TenSP']) ?></td>
-            <td>
+            <td class="text-center"><?= htmlspecialchars($row['MaSP']) ?></td>
+            <td class="text-center"><?= htmlspecialchars($row['TenSP']) ?></td>
+            <td class="text-center">
               <?php if (!empty($row['HinhAnh'])): ?>
                 <img src="<?= htmlspecialchars($row['HinhAnh']) ?>" alt="Hình ảnh"
                   style="width: 80px; height: auto;max-height:80px;">
@@ -43,7 +44,7 @@
                 <span class="text-muted">Không có</span>
               <?php endif; ?>
             </td>
-            <td><?= htmlspecialchars($row['SoSeriesSP']) ?></td>
+            <td class="text-center"><?= htmlspecialchars($row['SoSeriesSP']) ?></td>
             <td>
               <?php
                 $desc = $row['MieuTaSP'];
@@ -74,20 +75,20 @@
                 </div>
               <?php endif; ?>
             </td>
-            <td><?= htmlspecialchars($row['NamSX']) ?></td>
-            <td><?= htmlspecialchars($row['XuatXu']) ?></td>
-            <td><?= htmlspecialchars($row['ThoiGianBaoHanhDinhKy']) ?></td>
-            <td><?= number_format($row['DonGia'], 0, ',', '.') ?> VND</td>
-            <td><?= htmlspecialchars($row['loaiphutung']) ?></td>
-            <td><?= htmlspecialchars($row['nhasanxuat_MaNSX']) ?></td>
-            <td><?= htmlspecialchars($row['SoLanBaoHanhToiDa']) ?></td>
-            <td>
+            <td class="text-center"><?= htmlspecialchars($row['NamSX']) ?></td>
+            <td class="text-center"><?= htmlspecialchars($row['XuatXu']) ?></td>
+            <td class="text-center"><?= htmlspecialchars($row['ThoiGianBaoHanhDinhKy']) ?></td>
+            <td class="text-center"><?= number_format($row['DonGia'], 0, ',', '.') ?> VND</td>
+            <td class="text-center"><?= htmlspecialchars($row['loaiphutung']) ?></td>
+            <td class="text-center"><?= htmlspecialchars($row['nhasanxuat_MaNSX']) ?></td>
+            <td class="text-center"><?= htmlspecialchars($row['SoLanBaoHanhToiDa']) ?></td>
+            <td class="text-center">
               <button class="btn btn-sm <?= $row['TrangThai'] == 1 ? 'btn-success' : 'btn-secondary' ?> btn-toggle-status"
                 data-id="<?= $row['MaSP'] ?>" data-status="<?= $row['TrangThai'] ?>">
                 <?= $row['TrangThai'] == 1 ? 'Hiển thị' : 'Ẩn' ?>
               </button>
             </td>
-            <td>
+            <td class="text-center">
               <a href="form.php?action=edit&id=<?= urlencode($row['MaSP']) ?>" class="btn btn-sm btn-warning">Sửa</a>
               <a href="form.php?action=delete&id=<?= urlencode($row['MaSP']) ?>" class="btn btn-sm btn-danger"
                 onclick="return confirm('Bạn chắc chắn muốn xóa?')">Xóa</a>
