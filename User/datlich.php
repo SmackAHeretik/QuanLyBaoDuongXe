@@ -28,10 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $NgayHen = $_POST['NgayHen'] ?? '';
     $ThoiGianCa = $_POST['ThoiGianCa'] ?? '';
     $MoTaLyDo = $_POST['MoTaLyDo'] ?? '';
+    $nhanvien_MaNV = $_POST['nhanvien_MaNV'] ?? ''; // Lấy thợ từ POST
     $PhanLoai = 0;
     $TrangThai = 'cho duyet';
 
-    if (!$MaXE || !$NgayHen || !$ThoiGianCa || !$MoTaLyDo) {
+    if (!$MaXE || !$NgayHen || !$ThoiGianCa || !$MoTaLyDo || !$nhanvien_MaNV) {
         $_SESSION['error'] = 'Vui lòng nhập đầy đủ thông tin!';
         header('Location: datlich.php');
         exit;
@@ -49,15 +50,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $MaLLV = $ca['MaLLV'];
 
+        // Lấy danh sách thợ còn trống ca này
         $nhanviens = $nvModel->getNhanVienConTrong($NgayHen, $ThoiGianCa);
-        $nhanvien_MaNV = null;
-        if ($nhanviens && count($nhanviens) > 0) {
-            // Chọn random 1 nhân viên còn trống ca
-            $randomIdx = array_rand($nhanviens);
-            $nhanvien_MaNV = $nhanviens[$randomIdx]['MaNV'];
-            $nhanvien_TenNV = $nhanviens[$randomIdx]['TenNV'];
-        } else {
-            $_SESSION['error'] = 'Tất cả nhân viên trong ca này đã kín lịch!';
+        $nhanvien_TenNV = '';
+        $validMaNV = false;
+        foreach ($nhanviens as $nv) {
+            if ($nv['MaNV'] == $nhanvien_MaNV) {
+                $nhanvien_TenNV = $nv['TenNV'];
+                $validMaNV = true;
+                break;
+            }
+        }
+        if (!$validMaNV) {
+            $_SESSION['error'] = 'Thợ sửa xe không hợp lệ!';
             header('Location: datlich.php');
             exit;
         }
@@ -78,7 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
         $model = new LichHenModel($db);
         $ok = $model->insertLichHen($data);
-        if ($ok) {
+
+        // Sửa đoạn này để hiển thị đúng thông báo khi trùng lịch
+        if ($ok === 'duplicate_khachhang') {
+            $_SESSION['error'] = 'Bạn đã đặt lịch cho xe này trong ca này rồi!';
+        } elseif ($ok) {
             $_SESSION['success'] = 'Đặt lịch hẹn thành công!';
             $_SESSION['nhanvien_TenNV'] = $nhanvien_TenNV;
         } else {

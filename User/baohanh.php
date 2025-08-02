@@ -5,6 +5,7 @@ include_once './utils/ConnectDb.php';
 include_once './model/BikeProfileModel.php';
 include_once './model/NhanVienModel.php';
 include_once './model/LichHenModel.php';
+include_once './model/LichLamViecModel.php';
 
 $bikeList = [];
 if (isset($_SESSION['MaKH'])) {
@@ -34,8 +35,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $xeInfo = $bikeModel->getBikeById($MaXE);
         $nvModel = new NhanVienModel($db);
-        $nvInfo = $nvModel->getNhanVienById($nhanvien_MaNV);
-        $nhanvien_TenNV = $nvInfo['TenNV'];
+
+        // Lấy MaLLV ứng với ngày và ca từ bảng lichlamviec
+        $lichLamViecModel = new LichLamViecModel($db);
+        $ca = $lichLamViecModel->getCaLamViecByNgayVaCa($NgayHen, $ThoiGianCa);
+        if (!$ca) {
+            $_SESSION['error'] = 'Không tìm thấy ca làm việc!';
+            header('Location: baohanh.php');
+            exit;
+        }
+        $MaLLV = $ca['MaLLV'];
+
+        // Kiểm tra thợ hợp lệ: phải còn trống ca
+        $nhanviens = $nvModel->getNhanVienConTrong($NgayHen, $ThoiGianCa);
+        $nhanvien_TenNV = '';
+        $validMaNV = false;
+        foreach ($nhanviens as $nv) {
+            if ($nv['MaNV'] == $nhanvien_MaNV) {
+                $nhanvien_TenNV = $nv['TenNV'];
+                $validMaNV = true;
+                break;
+            }
+        }
+        if (!$validMaNV) {
+            $_SESSION['error'] = 'Thợ sửa xe không hợp lệ!';
+            header('Location: baohanh.php');
+            exit;
+        }
 
         $data = [
             'TenXe' => $xeInfo['TenXe'] ?? '',
@@ -49,10 +75,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'TrangThai' => $TrangThai,
             'xemay_MaXE' => $MaXE,
             'khachhang_MaKH' => $_SESSION['MaKH'],
+            'MaLLV' => $MaLLV, // BẮT BUỘC phải có dòng này
         ];
         $model = new LichHenModel($db);
         $ok = $model->insertLichHen($data);
-        if ($ok) {
+
+        // Sửa đoạn này để hiển thị đúng thông báo khi trùng lịch
+        if ($ok === 'duplicate_khachhang') {
+            $_SESSION['error'] = 'Bạn đã đặt lịch bảo hành cho xe này trong ca này rồi!';
+        } elseif ($ok) {
             $_SESSION['success'] = 'Đặt lịch bảo hành thành công!';
             $_SESSION['nhanvien_TenNV'] = $nhanvien_TenNV;
         } else {
@@ -103,7 +134,6 @@ if (isset($_SESSION['error'])) {
             background: #fff;
             transition: background 0.2s, color 0.2s;
         }
-
         .block-ca.active,
         .block-ca:focus {
             background-color: #f4b860 !important;
@@ -171,14 +201,13 @@ if (isset($_SESSION['error'])) {
                                 <div id="ThoiGianCaBlocks" class="d-flex flex-wrap gap-2"></div>
                                 <input type="hidden" name="ThoiGianCa" id="ThoiGianCa" required>
                             </div>
-                            <!-- Nhân viên phục vụ (readonly + hidden id) -->
+                            <!-- Chọn thợ sửa xe -->
                             <div class="col-lg-12 col-12 mb-3">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="nhanvienTen" name="nhanvienTen" readonly
-                                        placeholder="Thợ sửa xe"
-                                        value="<?= htmlspecialchars($nhanvien_TenNV) ?>">
-                                    <label for="nhanvienTen">Thợ sửa xe</label>
-                                    <input type="hidden" name="nhanvien_MaNV" id="nhanvien_MaNV">
+                                    <select class="form-select" id="nhanvien_MaNV" name="nhanvien_MaNV" required>
+                                        <option value="" selected>Chọn thợ sửa xe</option>
+                                    </select>
+                                    <label for="nhanvien_MaNV">Thợ sửa xe</label>
                                 </div>
                             </div>
                             <!-- Lý do bảo hành -->
@@ -213,17 +242,20 @@ if (isset($_SESSION['error'])) {
                     var selected = this.options[this.selectedIndex];
                     document.getElementById('loaixe').value = selected.getAttribute('data-loaixe') || '';
                     document.getElementById('phankhuc').value = selected.getAttribute('data-phankhuc') || '';
+                    $('#ThoiGianCaBlocks').html('');
+                    $('#ThoiGianCa').val('');
+                    $('#nhanvien_MaNV').html('<option value="">Chọn thợ sửa xe</option>');
+                    $('#NgayHen').val('');
                 });
 
                 // Khi chọn ngày, load ca làm việc qua AJAX và hiển thị dạng block
                 $('#NgayHen').on('change', function () {
                     var ngay = $(this).val();
                     $('#ThoiGianCaBlocks').html("Đang tải ca...");
-                    $('#nhanvienTen').val(""); // reset nhân viên
-                    $('#nhanvien_MaNV').val("");
+                    $('#ThoiGianCa').val("");
+                    $('#nhanvien_MaNV').html('<option value="">Chọn thợ sửa xe</option>');
                     $.get('api/get_ca.php', { ngay: ngay }, function (data) {
-                        var cas = data;
-                        if (typeof data === "string") cas = JSON.parse(data);
+                        var cas = typeof data === "string" ? JSON.parse(data) : data;
                         var html = '';
                         cas.forEach(function (ca) {
                             let disabled = ca.disabled ? 'disabled' : '';
@@ -232,29 +264,32 @@ if (isset($_SESSION['error'])) {
                                     </button>`;
                         });
                         $('#ThoiGianCaBlocks').html(html);
-                        $('#ThoiGianCa').val(""); // reset chọn cũ
                     });
                 });
 
-                // Khi chọn ca, đổi màu, set value và random nhân viên phục vụ
+                // Khi chọn ca, lấy danh sách thợ còn trống và render dropdown, random mặc định
                 $(document).on('click', '.block-ca', function () {
                     if ($(this).prop('disabled')) return;
                     $('.block-ca').removeClass('active');
                     $(this).addClass('active');
                     $('#ThoiGianCa').val($(this).data('ca'));
 
-                    // Random nhân viên phục vụ qua AJAX
                     var ngay = $('#NgayHen').val();
                     var ca = $(this).data('ca');
-                    $.get('api/random_nhanvien.php', { ngay: ngay, ca: ca }, function (data) {
-                        if (data && data.TenNV && data.MaNV) {
-                            $('#nhanvienTen').val(data.TenNV);
-                            $('#nhanvien_MaNV').val(data.MaNV); // gửi cả mã NV về server
-                        } else {
-                            $('#nhanvienTen').val("Không có nhân viên!");
-                            $('#nhanvien_MaNV').val("");
+                    $.get('api/list_nhanvien_trongca.php', { ngay: ngay, ca: ca }, function(data){
+                        var nhanviens = typeof data === 'string' ? JSON.parse(data) : data;
+                        var html = '<option value="">Chọn thợ sửa xe</option>';
+                        nhanviens.forEach(function(nv){
+                            html += `<option value="${nv.MaNV}">${nv.TenNV}</option>`;
+                        });
+                        $('#nhanvien_MaNV').html(html);
+
+                        // Tự động random chọn 1 thợ, khách vẫn có thể chọn lại
+                        if(nhanviens.length > 0){
+                            var idx = Math.floor(Math.random() * nhanviens.length);
+                            $('#nhanvien_MaNV').val(nhanviens[idx].MaNV);
                         }
-                    }, 'json');
+                    });
                 });
             </script>
         </section>
@@ -290,5 +325,4 @@ if (isset($_SESSION['error'])) {
     </script>
     <script src="js/custom.js"></script>
 </body>
-
 </html>

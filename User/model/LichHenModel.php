@@ -7,9 +7,28 @@ class LichHenModel
         $this->conn = $conn;
     }
     
+    // Thêm mới lịch hẹn/bảo hành, kiểm tra trùng lịch khách hàng và nhân viên
     public function insertLichHen($data)
     {
-        // Kiểm tra nhân viên này đã bị đặt lịch ca/ngày này chưa (theo MaLLV)
+        // 1. Kiểm tra trùng lịch của khách hàng: Không cho phép 1 khách hàng đặt nhiều lịch cho cùng 1 xe, cùng 1 ca (MaLLV)
+        $sqlCheckKH = "SELECT COUNT(*) FROM lichhen 
+            WHERE khachhang_MaKH = :khachhang_MaKH 
+              AND xemay_MaXE = :xemay_MaXE 
+              AND MaLLV = :MaLLV 
+              AND TrangThai IN ('cho duyet','da duyet')";
+        $stmtCheckKH = $this->conn->prepare($sqlCheckKH);
+        $stmtCheckKH->execute([
+            ':khachhang_MaKH' => $data['khachhang_MaKH'],
+            ':xemay_MaXE' => $data['xemay_MaXE'],
+            ':MaLLV' => $data['MaLLV'],
+        ]);
+        $countKH = $stmtCheckKH->fetchColumn();
+        if ($countKH > 0) {
+            // Khách đã đặt lịch cho xe này, ca này
+            return 'duplicate_khachhang';
+        }
+
+        // 2. Kiểm tra nhân viên này đã bị đặt lịch ca/ngày này chưa (theo MaLLV)
         $sqlCheck = "SELECT COUNT(*) FROM lichhen WHERE nhanvien_MaNV = :nhanvien_MaNV AND MaLLV = :MaLLV AND TrangThai IN ('cho duyet','da duyet')";
         $stmtCheck = $this->conn->prepare($sqlCheck);
         $stmtCheck->execute([
@@ -27,7 +46,20 @@ class LichHenModel
             VALUES 
             (:TenXe, :LoaiXe, :PhanKhuc, :MoTaLyDo, :nhanvien_MaNV, :NgayHen, :ThoiGianCa, :PhanLoai, :TrangThai, :xemay_MaXE, :khachhang_MaKH, :MaLLV)";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute($data);
+        return $stmt->execute([
+            ':TenXe' => $data['TenXe'],
+            ':LoaiXe' => $data['LoaiXe'],
+            ':PhanKhuc' => $data['PhanKhuc'],
+            ':MoTaLyDo' => $data['MoTaLyDo'],
+            ':nhanvien_MaNV' => $data['nhanvien_MaNV'],
+            ':NgayHen' => $data['NgayHen'],
+            ':ThoiGianCa' => $data['ThoiGianCa'],
+            ':PhanLoai' => $data['PhanLoai'],
+            ':TrangThai' => $data['TrangThai'],
+            ':xemay_MaXE' => $data['xemay_MaXE'],
+            ':khachhang_MaKH' => $data['khachhang_MaKH'],
+            ':MaLLV' => $data['MaLLV'],
+        ]);
     }
 
     public function getThoiGianCaDaDat($ngay)
