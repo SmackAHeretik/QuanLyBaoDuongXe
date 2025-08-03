@@ -44,14 +44,17 @@ else if (isset($_POST['login'])) {
         if ($result) {
             // Sử dụng password_verify để kiểm tra mật khẩu
             if (password_verify($MatKhau, $result['MatKhau'])) {
-                // Khởi tạo session nếu chưa có
                 if (session_status() === PHP_SESSION_NONE) {
                     session_start();
                 }
-
-                // Thiết lập session
+                // Thiết lập session cho cả file cũ và mới
                 $_SESSION['TenKH'] = $result['TenKH'];
                 $_SESSION['MaKH'] = $result['MaKH'];
+                $_SESSION['user'] = [
+                    'MaKH' => $result['MaKH'],
+                    'TenKH' => $result['TenKH'],
+                    'Email' => $result['Email'],
+                ];
                 echo "<script>alert('Đăng nhập thành công!'); window.location.href='../index.php';</script>";
                 exit();
             } else {
