@@ -1,7 +1,7 @@
 <?php
 class HoaDonModel
 {
-  private $conn;
+  public $conn;
   public function __construct($db)
   {
     $this->conn = $db;
@@ -49,12 +49,18 @@ class HoaDonModel
             INSERT INTO hoadon (TongTien, Ngay, TrangThai, xemay_MaXE)
             VALUES (?, ?, ?, ?)
         ");
-    return $stmt->execute([
+    $stmt->execute([
       $data['TongTien'],
       $data['Ngay'],
       $data['TrangThai'],
       $data['xemay_MaXE']
     ]);
+    return $stmt->rowCount() > 0;
+  }
+
+  // Lấy ID hóa đơn cuối
+  public function getLastInsertId() {
+    return $this->conn->lastInsertId();
   }
 
   // Sửa hóa đơn
@@ -95,12 +101,26 @@ class HoaDonModel
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  // Lấy hóa đơn theo mã xe
-  public function getHoaDonByMaXe($maxe) {
+  // Lấy danh sách phụ tùng xe máy
+  public function getAllPhuTung()
+  {
+    $stmt = $this->conn->query("SELECT * FROM phutungxemay WHERE TrangThai=1");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Lấy danh sách hóa đơn theo mã xe
+  public function getHoaDonByMaXe($maXe) {
     $stmt = $this->conn->prepare("
         SELECT * FROM hoadon WHERE xemay_MaXE = ? ORDER BY MaHD DESC
     ");
-    $stmt->execute([$maxe]);
+    $stmt->execute([$maXe]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  // Cập nhật trạng thái hóa đơn (dùng cho thanh toán tiền mặt)
+  public function updateTrangThai($mahd, $trangthai) {
+    $stmt = $this->conn->prepare("UPDATE hoadon SET TrangThai=? WHERE MaHD=?");
+    return $stmt->execute([$trangthai, $mahd]);
+  }
 }
+?>

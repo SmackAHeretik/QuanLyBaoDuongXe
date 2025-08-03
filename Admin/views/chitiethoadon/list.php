@@ -1,3 +1,6 @@
+<?php
+// $dsChiTietHD đã có từ controller, mỗi row có: hoadon_MaHD, phutungxemay_MaSP, TenSP, dichvu_MaDV, TenDV, GiaTien, SoLuong, NgayBDBH, NgayKTBH, SoLanDaBaoHanh, MaCTHD
+?>
 <div class="container-fluid pt-4 px-4">
   <div class="bg-light rounded p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -18,6 +21,7 @@
             <th>Mã HĐ</th>
             <th>Phụ tùng</th>
             <th>Mã DVu</th>
+            <th>Tên dịch vụ</th>
             <th>Giá tiền</th>
             <th>Số lượng</th>
             <th>Ngày bắt đầu BH</th>
@@ -39,6 +43,11 @@
                   <?php endif; ?>
                 </td>
                 <td><?= htmlspecialchars($row['dichvu_MaDV']) ?></td>
+                <td>
+                  <?php if (!empty($row['TenDV'])): ?>
+                    <?= htmlspecialchars($row['TenDV']) ?>
+                  <?php endif; ?>
+                </td>
                 <td><?= number_format($row['GiaTien'], 0, ',', '.') ?> VND</td>
                 <td><?= htmlspecialchars($row['SoLuong']) ?></td>
                 <td>
@@ -62,7 +71,7 @@
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="10" class="text-center text-muted">Không có chi tiết hóa đơn cho hóa đơn này.</td>
+              <td colspan="11" class="text-center text-muted">Không có chi tiết hóa đơn cho hóa đơn này.</td>
             </tr>
           <?php endif; ?>
         </tbody>

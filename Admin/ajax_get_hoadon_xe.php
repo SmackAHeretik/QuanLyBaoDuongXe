@@ -48,7 +48,7 @@ $ds = $model->getHoaDonByMaXe($maXe);
                   <a href="hoadon.php?controller=hoadon&action=delete&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-danger" title="Xóa" onclick="return confirm('Xóa hóa đơn?')"><i class="fa fa-trash"></i></a>
                   <a href="chitiethoadon.php?hoadon_MaHD=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-info" title="Chi tiết hóa đơn"><i class="fa fa-list"></i></a>
                   <?php if ($hd['TrangThai'] === 'cho_thanh_toan'): ?>
-                  <!-- Form thay thế cho button mã QR -->
+                  <!-- Form thanh toán QR -->
                   <form action="checkout.php" method="post" style="display:inline;">
                       <input type="hidden" name="mahd" value="<?= htmlspecialchars($hd['MaHD']) ?>">
                       <input type="hidden" name="tongtien" value="<?= htmlspecialchars($hd['TongTien']) ?>">
@@ -60,8 +60,10 @@ $ds = $model->getHoaDonByMaXe($maXe);
                           <i class="fa fa-qrcode"></i>
                       </button>
                   </form>
+                  <!-- Form thanh toán tiền mặt -->
                   <form action="checkout.php" method="post" style="display:inline;">
                       <input type="hidden" name="mahd" value="<?= htmlspecialchars($hd['MaHD']) ?>">
+                      <input type="hidden" name="tongtien" value="<?= htmlspecialchars($hd['TongTien']) ?>">
                       <input type="hidden" name="tienmat" value="1">
                       <button
                           class="btn btn-sm btn-warning"
@@ -71,6 +73,13 @@ $ds = $model->getHoaDonByMaXe($maXe);
                           <b>₫</b>
                       </button>
                   </form>
+                  <?php endif; ?>
+                  <?php if ($hd['TrangThai'] === 'da_thanh_toan'): ?>
+                  <a href="inhoadon.php?mahd=<?= $hd['MaHD'] ?>" 
+                     class="btn btn-sm btn-secondary btn-inhoadon" 
+                     title="In hóa đơn" target="_blank">
+                     <i class="fa fa-print"></i> In hóa đơn
+                  </a>
                   <?php endif; ?>
                 </td>
             </tr>
@@ -86,3 +95,5 @@ $ds = $model->getHoaDonByMaXe($maXe);
         </tbody>
     </table>
 </div>
+<!-- Thêm font-awesome nếu cần cho icon print -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

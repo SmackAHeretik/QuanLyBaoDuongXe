@@ -8,13 +8,14 @@ class ChiTietHoaDonModel
     $this->conn = $pdo;
   }
 
-  // Lấy tất cả chi tiết của 1 hóa đơn, kèm tên phụ tùng
+  // Lấy tất cả chi tiết của 1 hóa đơn, kèm tên phụ tùng và tên dịch vụ
   public function getAllByHoaDon($mahd)
   {
     $stmt = $this->conn->prepare("
-        SELECT cthd.*, pt.TenSP, pt.DonGia
+        SELECT cthd.*, pt.TenSP, dv.TenDV
         FROM chitiethoadon cthd
         LEFT JOIN phutungxemay pt ON cthd.phutungxemay_MaSP = pt.MaSP
+        LEFT JOIN dichvu dv ON cthd.dichvu_MaDV = dv.MaDV
         WHERE cthd.hoadon_MaHD = ?
         ORDER BY cthd.MaCTHD DESC
     ");
