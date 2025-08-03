@@ -13,6 +13,24 @@
     <form method="post">
       <div class="row g-3">
         <div class="col-md-4">
+          <label class="form-label">Mã xe máy</label>
+          <select name="xemay_MaXE" id="xemay_MaXE" class="form-select" required>
+            <option value="">-- Chọn xe máy --</option>
+            <?php foreach($xemays as $xe): ?>
+              <option
+                value="<?=$xe['MaXE']?>"
+                <?=$lichhen['xemay_MaXE']==$xe['MaXE']?'selected':''?>
+                data-tenxe="<?=htmlspecialchars($xe['TenXe'])?>"
+                data-loaixe="<?=htmlspecialchars($xe['LoaiXe'])?>"
+                data-phankhuc="<?=htmlspecialchars($xe['PhanKhuc'])?>"
+                data-makh="<?=$xe['khachhang_MaKH']?>"
+              >
+                <?=$xe['MaXE']?> - <?=htmlspecialchars($xe['TenXe'])?> (<?=htmlspecialchars($xe['BienSoXe'])?>)
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="col-md-4">
           <label class="form-label">Tên xe</label>
           <input required name="TenXe" class="form-control" value="<?=htmlspecialchars($lichhen['TenXe'])?>" placeholder="Tên xe" readonly>
         </div>
@@ -24,7 +42,6 @@
           <label class="form-label">Phân khúc</label>
           <input required name="PhanKhuc" class="form-control" value="<?=htmlspecialchars($lichhen['PhanKhuc'])?>" placeholder="Phân khúc" readonly>
         </div>
-
         <div class="col-md-4">
           <label class="form-label">Ngày hẹn</label>
           <input required type="date" name="NgayHen" class="form-control"
@@ -43,12 +60,10 @@
             <option value="huy" <?=$lichhen['TrangThai']=='huy'?'selected':''?>>Đã hủy</option>
           </select>
         </div>
-
         <div class="col-12">
           <label class="form-label">Mô tả lý do</label>
           <textarea name="MoTaLyDo" class="form-control" placeholder="Mô tả lý do"><?=htmlspecialchars($lichhen['MoTaLyDo'])?></textarea>
         </div>
-
         <div class="col-md-4">
           <label class="form-label">Nhân viên (Mã NV)</label>
           <select name="nhanvien_MaNV" class="form-select" required>
@@ -71,15 +86,14 @@
             <?php endforeach; ?>
           </select>
         </div>
-        
       </div>
       <div class="mt-3">
         <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Lưu</button>
         <a href="?controller=lichhen" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Quay lại</a>
       </div>
     </form>
-    <!-- Nút tạo hóa đơn góc phải dưới -->
-    <a href="views/hoadon/add.php" 
+    <!-- Nút tạo hóa đơn góc phải dưới, truyền đúng mã xe vào link -->
+    <a href="/QuanLyBaoDuongXe/Admin/hoadon.php?controller=hoadon&action=add&xemay_MaXE=<?=urlencode($lichhen['xemay_MaXE'])?>"
        class="btn btn-primary"
        style="position: absolute; bottom: 16px; right: 16px; z-index: 10;">
       <i class="fa fa-file-invoice"></i> Tạo hóa đơn

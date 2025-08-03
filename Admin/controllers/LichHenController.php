@@ -48,6 +48,14 @@ class LichHenController {
         $id = $_GET['id'] ?? null;
         if (!$id) { header('Location: ?controller=lichhen'); exit; }
         $lichhen = $this->model->getById($id);
+    
+        // Lấy danh sách xe của khách hàng tương ứng với lịch hẹn
+        $xemays = [];
+        if ($lichhen && !empty($lichhen['khachhang_MaKH'])) {
+            $xemays = $this->xeModel->getByKhachHang($lichhen['khachhang_MaKH']);
+        }
+        // Nếu muốn hiển thị toàn bộ xe (không chỉ của khách), dùng: $xemays = $this->xeModel->getAll();
+    
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = $_POST;
             $this->model->update($id, $data);
