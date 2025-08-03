@@ -47,8 +47,14 @@ $ds = $model->getHoaDonByMaXe($maXe);
                   <a href="hoadon.php?controller=hoadon&action=edit&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-primary" title="Sửa"><i class="fa fa-edit"></i></a>
                   <a href="hoadon.php?controller=hoadon&action=delete&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-danger" title="Xóa" onclick="return confirm('Xóa hóa đơn?')"><i class="fa fa-trash"></i></a>
                   <a href="chitiethoadon.php?hoadon_MaHD=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-info" title="Chi tiết hóa đơn"><i class="fa fa-list"></i></a>
+                  <!-- Nút lịch sử bảo hành -->
+                  <a href="#"
+                     class="btn btn-sm btn-warning btn-lichsu-bh"
+                     data-maxe="<?= htmlspecialchars($hd['xemay_MaXE']) ?>"
+                     title="Lịch sử bảo hành">
+                    <i class="fa fa-history"></i>
+                  </a>
                   <?php if ($hd['TrangThai'] === 'cho_thanh_toan'): ?>
-                  <!-- Form thay thế cho button mã QR -->
                   <form action="checkout.php" method="post" style="display:inline;">
                       <input type="hidden" name="mahd" value="<?= htmlspecialchars($hd['MaHD']) ?>">
                       <input type="hidden" name="tongtien" value="<?= htmlspecialchars($hd['TongTien']) ?>">
@@ -86,3 +92,35 @@ $ds = $model->getHoaDonByMaXe($maXe);
         </tbody>
     </table>
 </div>
+
+<!-- Modal hiển thị lịch sử bảo hành -->
+<div class="modal fade" id="modalLichSuBH" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Lịch sử bảo hành của xe</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="contentLichSuBH">
+        <div class="text-center text-muted">Đang tải...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Nhúng jQuery và Bootstrap JS ở cuối file -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Đảm bảo đã nhúng jQuery và Bootstrap JS
+$(document).on('click', '.btn-lichsu-bh', function(e){
+    e.preventDefault();
+    var maXe = $(this).data('maxe');
+    $('#contentLichSuBH').html('<div class="text-center text-muted">Đang tải...</div>');
+    $('#modalLichSuBH').modal('show');
+    $.get('ajax_lichsu_baohanh.php', { xemay_MaXE: maXe }, function(data){
+        $('#contentLichSuBH').html(data);
+    });
+});
+</script>
