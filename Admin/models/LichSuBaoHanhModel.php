@@ -55,11 +55,11 @@ class LichSuBaoHanhModel
             $data['TenBHDK'],
             $data['Ngay'],
             $data['LoaiBaoHanh'],
-            $data['MaSeriesSP'],
-            $data['ThongTinTruocBaoHanh'],
-            $data['ThongTinSauBaoHanh'],
+            $data['MaSeriesSP'] ?? null,
+            $data['ThongTinTruocBaoHanh'] ?? '',
+            $data['ThongTinSauBaoHanh'] ?? '',
             $data['xemay_MaXE'],
-            $data['chitiethoadon_MaCTHD'],
+            $data['chitiethoadon_MaCTHD'] ?? null,
         ]);
     }
 
@@ -82,11 +82,11 @@ class LichSuBaoHanhModel
             $data['TenBHDK'],
             $data['Ngay'],
             $data['LoaiBaoHanh'],
-            $data['MaSeriesSP'],
-            $data['ThongTinTruocBaoHanh'],
-            $data['ThongTinSauBaoHanh'],
+            $data['MaSeriesSP'] ?? null,
+            $data['ThongTinTruocBaoHanh'] ?? '',
+            $data['ThongTinSauBaoHanh'] ?? '',
             $data['xemay_MaXE'],
-            $data['chitiethoadon_MaCTHD'],
+            $data['chitiethoadon_MaCTHD'] ?? null,
             $maBHDK
         ]);
     }

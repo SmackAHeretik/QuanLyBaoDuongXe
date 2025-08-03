@@ -46,16 +46,21 @@ if ($user) {
                 <a href="dichvu.php" class="nav-item nav-link"><i class="fa fa-concierge-bell me-2"></i>Danh Sách Dịch Vụ</a>
                 <!-- DÒNG LỊCH HẸN CHO ADMIN -->
                 <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>
-                                    <a href="danhsachlichlamviec.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Lịch làm việc</a>
+                <a href="danhsachlichlamviec.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Lịch làm việc</a>
+                <!-- LỊCH SỬ BẢO HÀNH CHO ADMIN -->
+                <!-- <a href="lichsubaohanh.php" class="nav-item nav-link"><i class="fa fa-history me-2"></i>Lịch sử bảo hành</a> -->
 
             <?php elseif ($role === 'staff'): ?>
                 <?php if ($roleLabel === 'Thợ sửa xe'): ?>
                     <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>
+                    <!-- LỊCH SỬ BẢO HÀNH CHO THỢ SỬA XE -->
+                    <a href="lichsubaohanh.php" class="nav-item nav-link"><i class="fa fa-history me-2"></i>Lịch sử bảo hành</a>
                 <?php elseif ($roleLabel === 'Nhân viên kế toán'): ?>
                     <a href="NVmanagement.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Danh Sách Nhân Viên</a>
                     <a href="khachhang.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Danh Sách Khách Hàng</a>
                     <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>
-
+                    <!-- LỊCH SỬ BẢO HÀNH CHO NHÂN VIÊN KẾ TOÁN -->
+                    <!-- <a href="lichsubaohanh.php" class="nav-item nav-link"><i class="fa fa-history me-2"></i>Lịch sử bảo hành</a> -->
                 <?php endif; ?>
             <?php endif; ?>
         </div>
