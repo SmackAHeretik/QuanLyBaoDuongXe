@@ -8,7 +8,6 @@ class ChiTietHoaDonModel
         $this->conn = $pdo;
     }
 
-<<<<<<< HEAD
   // Lấy tất cả chi tiết của 1 hóa đơn, kèm tên phụ tùng và tên dịch vụ
   public function getAllByHoaDon($mahd)
   {
@@ -23,21 +22,6 @@ class ChiTietHoaDonModel
     $stmt->execute([$mahd]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
-=======
-    // Lấy tất cả chi tiết của 1 hóa đơn, kèm tên phụ tùng
-    public function getAllByHoaDon($mahd)
-    {
-        $stmt = $this->conn->prepare("
-            SELECT cthd.*, pt.TenSP, pt.DonGia, pt.SoSeriesSP
-            FROM chitiethoadon cthd
-            LEFT JOIN phutungxemay pt ON cthd.phutungxemay_MaSP = pt.MaSP
-            WHERE cthd.hoadon_MaHD = ?
-            ORDER BY cthd.MaCTHD DESC
-        ");
-        $stmt->execute([$mahd]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
->>>>>>> 6ad244fccc7f055f20f8525a2d112617b2d574da
 
     // Lấy 1 chi tiết hóa đơn theo ID
     public function getById($id)

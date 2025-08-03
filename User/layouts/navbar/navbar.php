@@ -168,6 +168,8 @@ if ($conn) {
                             </li>
                             <li><a class="dropdown-item" href="lichhen_cuatoi.php">Danh sách lịch hẹn</a></li>
                             <li><a class="dropdown-item" href="listbaohanh.php">Danh sách lịch bảo hành</a></li>
+                            <li><a class="dropdown-item" href="user_lichsu_baohanh.php">Lịch Sử Bảo Hành</a></li>
+
                             <li><a class="dropdown-item" href="listphutungdamua.php">Danh sách phụ tùng đã đặt</a></li>
                             <li><a class="dropdown-item" href="logout.php">Đăng xuất</a></li>
                         </ul>

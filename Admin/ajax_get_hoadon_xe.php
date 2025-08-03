@@ -55,10 +55,7 @@ $ds = $model->getHoaDonByMaXe($maXe);
                     <i class="fa fa-history"></i>
                   </a>
                   <?php if ($hd['TrangThai'] === 'cho_thanh_toan'): ?>
-<<<<<<< HEAD
                   <!-- Form thanh toán QR -->
-=======
->>>>>>> 6ad244fccc7f055f20f8525a2d112617b2d574da
                   <form action="checkout.php" method="post" style="display:inline;">
                       <input type="hidden" name="mahd" value="<?= htmlspecialchars($hd['MaHD']) ?>">
                       <input type="hidden" name="tongtien" value="<?= htmlspecialchars($hd['TongTien']) ?>">
