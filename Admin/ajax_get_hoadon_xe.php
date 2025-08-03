@@ -47,8 +47,18 @@ $ds = $model->getHoaDonByMaXe($maXe);
                   <a href="hoadon.php?controller=hoadon&action=edit&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-primary" title="Sửa"><i class="fa fa-edit"></i></a>
                   <a href="hoadon.php?controller=hoadon&action=delete&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-danger" title="Xóa" onclick="return confirm('Xóa hóa đơn?')"><i class="fa fa-trash"></i></a>
                   <a href="chitiethoadon.php?hoadon_MaHD=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-info" title="Chi tiết hóa đơn"><i class="fa fa-list"></i></a>
+                  <!-- Nút lịch sử bảo hành -->
+                  <a href="#"
+                     class="btn btn-sm btn-warning btn-lichsu-bh"
+                     data-maxe="<?= htmlspecialchars($hd['xemay_MaXE']) ?>"
+                     title="Lịch sử bảo hành">
+                    <i class="fa fa-history"></i>
+                  </a>
                   <?php if ($hd['TrangThai'] === 'cho_thanh_toan'): ?>
+<<<<<<< HEAD
                   <!-- Form thanh toán QR -->
+=======
+>>>>>>> 6ad244fccc7f055f20f8525a2d112617b2d574da
                   <form action="checkout.php" method="post" style="display:inline;">
                       <input type="hidden" name="mahd" value="<?= htmlspecialchars($hd['MaHD']) ?>">
                       <input type="hidden" name="tongtien" value="<?= htmlspecialchars($hd['TongTien']) ?>">

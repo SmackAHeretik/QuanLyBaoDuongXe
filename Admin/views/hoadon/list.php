@@ -40,12 +40,19 @@
                   <span class="badge bg-<?= $color ?>"><?= $label ?></span>
                 </td>
                 <td class="text-center">
-                  <a href="?controller=hoadon&action=edit&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-primary">
+                  <a href="?controller=hoadon&action=edit&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-primary" title="Sửa">
                     <i class="fa fa-edit"></i>
                   </a>
                   <a href="?controller=hoadon&action=delete&id=<?= $hd['MaHD'] ?>" class="btn btn-sm btn-danger"
-                    onclick="return confirm('Bạn chắc chắn muốn xóa?')">
+                    onclick="return confirm('Bạn chắc chắn muốn xóa?')" title="Xóa">
                     <i class="fa fa-trash"></i>
+                  </a>
+                  <!-- Nút lịch sử bảo hành -->
+                  <a href="#" 
+                     class="btn btn-sm btn-warning btn-lichsu-bh" 
+                     data-maxe="<?= htmlspecialchars($hd['xemay_MaXE']) ?>" 
+                     title="Lịch sử bảo hành">
+                    <i class="fa fa-history"></i>
                   </a>
                 </td>
               </tr>
@@ -60,3 +67,4 @@
     </div>
   </div>
 </div>
+
