@@ -54,10 +54,12 @@ if ($user) {
                 <?php if ($roleLabel === 'Thợ sửa xe'): ?>
                     <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>
                     <!-- LỊCH SỬ BẢO HÀNH CHO THỢ SỬA XE -->
-                    <a href="lichsubaohanh.php" class="nav-item nav-link"><i class="fa fa-history me-2"></i>Lịch sử bảo hành</a>
+                    <!-- <a href="lichsubaohanh.php" class="nav-item nav-link"><i class="fa fa-history me-2"></i>Lịch sử bảo hành</a> -->
                 <?php elseif ($roleLabel === 'Nhân viên kế toán'): ?>
                     <a href="NVmanagement.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Danh Sách Nhân Viên</a>
                     <a href="khachhang.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Danh Sách Khách Hàng</a>
+                    <a href="table.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Danh Sách Xe Máy</a>
+
                     <a href="danhsachlichhen.php" class="nav-item nav-link"><i class="fa fa-calendar-check me-2"></i>Danh sách Lịch Hẹn</a>
                     <!-- LỊCH SỬ BẢO HÀNH CHO NHÂN VIÊN KẾ TOÁN -->
                     <!-- <a href="lichsubaohanh.php" class="nav-item nav-link"><i class="fa fa-history me-2"></i>Lịch sử bảo hành</a> -->

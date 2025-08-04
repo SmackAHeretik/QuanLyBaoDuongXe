@@ -1,21 +1,26 @@
 <?php
 require_once '../model/userModel.php';
 
+// ĐỒNG BỘ SESSION: Luôn sử dụng USERSESSID cho session user!
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
+
 $userModel = new UserModel();
 
 // Đăng ký
 if (isset($_POST['register'])) {
-    $TenKH = htmlspecialchars($_POST['TenKH'] ?? '');
-    $Email = htmlspecialchars($_POST['Email'] ?? '');
+    $TenKH  = htmlspecialchars($_POST['TenKH'] ?? '');
+    $Email  = htmlspecialchars($_POST['Email'] ?? '');
     $MatKhau = htmlspecialchars($_POST['MatKhau'] ?? '');
-    $SDT = htmlspecialchars($_POST['SDT'] ?? '');
+    $SDT    = htmlspecialchars($_POST['SDT'] ?? '');
 
     try {
         if ($userModel->existsByTenKH($TenKH)) {
             echo "<script>alert('Tên khách hàng đã tồn tại!'); window.location.href='../login.php';</script>";
             exit();
         }
-
         if ($userModel->existsByEmail($Email)) {
             echo "<script>alert('Email đã tồn tại!'); window.location.href='../login.php';</script>";
             exit();
@@ -35,25 +40,23 @@ if (isset($_POST['register'])) {
 }
 
 // Đăng nhập
-else if (isset($_POST['login'])) {
-    $Email = htmlspecialchars($_POST['Email'] ?? '');
+elseif (isset($_POST['login'])) {
+    $Email   = htmlspecialchars($_POST['Email'] ?? '');
     $MatKhau = htmlspecialchars($_POST['MatKhau'] ?? '');
 
     try {
         $result = $userModel->findByEmail($Email);
         if ($result) {
-            // Sử dụng password_verify để kiểm tra mật khẩu
+            // Kiểm tra mật khẩu đã mã hóa
             if (password_verify($MatKhau, $result['MatKhau'])) {
-                if (session_status() === PHP_SESSION_NONE) {
-                    session_start();
-                }
-                // Thiết lập session cho cả file cũ và mới
+                // Cập nhật session, đầy đủ thông tin user cho các trang khác dùng
                 $_SESSION['TenKH'] = $result['TenKH'];
-                $_SESSION['MaKH'] = $result['MaKH'];
+                $_SESSION['MaKH']  = $result['MaKH'];
                 $_SESSION['user'] = [
-                    'MaKH' => $result['MaKH'],
-                    'TenKH' => $result['TenKH'],
-                    'Email' => $result['Email'],
+                    'MaKH'   => $result['MaKH'],
+                    'TenKH'  => $result['TenKH'],
+                    'Email'  => $result['Email'],
+                    'SDT'    => $result['SDT'] ?? '', // ĐẢM BẢO LƯU THÊM SĐT để form checkout auto điền!
                 ];
                 echo "<script>alert('Đăng nhập thành công!'); window.location.href='../index.php';</script>";
                 exit();

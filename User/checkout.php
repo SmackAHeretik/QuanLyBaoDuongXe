@@ -1,7 +1,15 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
 $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 $total = 0;
+
+// Lấy thông tin KH nếu có
+$hoTen = $_SESSION['user']['TenKH'] ?? ($_SESSION['TenKH'] ?? '');
+$soDienThoai = $_SESSION['user']['SDT'] ?? '';
+
 ?>
 <!doctype html>
 <html lang="vi">
@@ -70,11 +78,11 @@ $total = 0;
                         <h5 class="mt-4 mb-3">Thông tin khách hàng</h5>
                         <div class="mb-3">
                             <label for="fullname" class="form-label">Họ tên</label>
-                            <input type="text" class="form-control" id="fullname" name="fullname" required>
+                            <input type="text" class="form-control" id="fullname" name="fullname" required value="<?php echo htmlspecialchars($hoTen); ?>">
                         </div>
                         <div class="mb-3">
                             <label for="phone" class="form-label">Số điện thoại</label>
-                            <input type="text" class="form-control" id="phone" name="phone" required>
+                            <input type="text" class="form-control" id="phone" name="phone" required value="<?php echo htmlspecialchars($soDienThoai); ?>">
                         </div>
                         <div class="mb-3">
                             <label for="note" class="form-label">Ghi chú (không bắt buộc)</label>

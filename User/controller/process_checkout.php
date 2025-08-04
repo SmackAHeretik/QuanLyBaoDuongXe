@@ -1,5 +1,9 @@
 <?php
-session_start();
+// Đảm bảo đồng bộ session_name cho USER
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
 $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 
 date_default_timezone_set('Asia/Ho_Chi_Minh'); // Đảm bảo giờ đúng với Việt Nam
@@ -83,38 +87,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($cart)) {
         mysqli_stmt_execute($stmt_ct);
     }
 
+    // Lưu đầy đủ đơn hàng vào session (nếu muốn show lại thông tin đơn hàng sau khi đặt)
+    $order = [
+        'cart' => $cart,
+        'fullname' => $fullname,
+        'phone' => $phone,
+        'note' => $note,
+        'total' => $tongtien,
+        'date' => date('Y-m-d H:i:s'),
+        'mahd' => $inserted_mahd
+    ];
+    $_SESSION['order'] = $order;
+
     unset($_SESSION['cart']);
     mysqli_close($conn);
 
-    echo "<script>
-        alert('Đặt hàng thành công!');
-        window.location.href = '../index.php';
-    </script>";
+    // Chuyển hướng về trang danh sách đơn đã mua hoặc cảm ơn
+    header('Location: ../listphutungdamua.php');
     exit;
 
 } else {
     header('Location: ../checkout.php');
     exit;
 }
-?>
-<?php
-session_start();
-$total = 0;
-foreach ($_SESSION['cart'] as $item) {
-    $total += $item['DonGia'] * $item['qty'];
-}
-
-// Lưu đầy đủ đơn hàng vào session
-$_SESSION['order'] = [
-    'cart' => $_SESSION['cart'],
-    'fullname' => $_POST['fullname'],
-    'phone' => $_POST['phone'],
-    'note' => $_POST['note'],
-    'total' => $total,
-    'date' => date('Y-m-d H:i:s'),
-];
-
-// Sau khi lưu, chuyển về listphutungdamua.php hoặc trang cảm ơn
-header('Location: ../listphutungdamua.php');
-exit;
 ?>

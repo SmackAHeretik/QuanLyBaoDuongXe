@@ -1,3 +1,9 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
+?>
 <!doctype html>
 <html lang="en">
 <head>

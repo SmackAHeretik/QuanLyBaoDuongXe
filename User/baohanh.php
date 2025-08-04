@@ -1,5 +1,9 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
+
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 include_once './utils/ConnectDb.php';
 include_once './model/BikeProfileModel.php';

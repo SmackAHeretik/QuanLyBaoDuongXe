@@ -1,7 +1,9 @@
 <?php
 // Bắt đầu session nếu chưa có (đề phòng trường hợp auth_check không start)
-if (session_status() === PHP_SESSION_NONE) 
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('ADMINSESSID');
     session_start();
+}
 $user = $_SESSION['user'] ?? null;
 $displayName = '';
 $roleLabel = '';

@@ -1,8 +1,8 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
     session_start();
 }
-
 // Lấy phụ tùng nổi bật
 $phutung_list = [];
 $bike_list = [];
@@ -168,7 +168,7 @@ if ($conn) {
                             </li>
                             <li><a class="dropdown-item" href="lichhen_cuatoi.php">Danh sách lịch hẹn</a></li>
                             <li><a class="dropdown-item" href="listbaohanh.php">Danh sách lịch bảo hành</a></li>
-                            <li><a class="dropdown-item" href="lichsu_baohanh.php">Lịch Sử Bảo Hành</a></li>
+                            <li><a class="dropdown-item" href="lichsu_baohanh.php">Lịch Sử Bảo Hành Phụ Tùng</a></li>
 
                             <li><a class="dropdown-item" href="listphutungdamua.php">Danh sách phụ tùng đã đặt</a></li>
                             <li><a class="dropdown-item" href="logout.php">Đăng xuất</a></li>

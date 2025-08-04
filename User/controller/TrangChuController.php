@@ -1,10 +1,10 @@
 <?php
+// File này KHÔNG dùng session, chỉ include view, KHÔNG cần session_name
+
 class TrangChuController
 {
   public function index()
   {
-    // Gọi giao diện trang chủ (có thể là layouts/hero/hero.php hoặc gì đó)
-    // Bạn có thể include các layout hoặc 1 file view tổng hợp
     include __DIR__ . '/../layouts/hero/hero.php';
     include __DIR__ . '/../layouts/about/about.php';
     include __DIR__ . '/../layouts/product-tabs/product-tabs.php';

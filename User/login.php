@@ -1,3 +1,9 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
+?>
 <!doctype html>
 <html lang="en">
     <head>
@@ -108,7 +114,7 @@
         <script src="js/modernizr.js"></script>
         <script src="js/custom.js"></script>
         <script>
-        document.querySelector('form[action="./controller/user_controller.php"][method="POST"]:nth-of-type(2)').addEventListener('submit', function(e) {
+        document.querySelectorAll('form[action="./controller/user_controller.php"][method="POST"]')[1].addEventListener('submit', function(e) {
         const ten = document.getElementById('TenKH').value.trim();
         const email = document.getElementById('Email').value.trim();
         const sdt = document.getElementById('SDT').value.trim();

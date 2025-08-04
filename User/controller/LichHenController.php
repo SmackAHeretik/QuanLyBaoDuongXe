@@ -1,5 +1,8 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
 include_once './utils/ConnectDb.php';
 include_once './model/LichHenModel.php';
 include_once './model/BikeProfileModel.php';
@@ -89,3 +92,4 @@ class LichHenController
         include './views/lichhen/add.php';
     }
 }
+?>

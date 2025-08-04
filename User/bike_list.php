@@ -1,5 +1,8 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
 include './utils/ConnectDb.php';
 include './model/BikeProfileModel.php';
 
@@ -47,6 +50,8 @@ $bikes = $bikeModel->getBikesByCustomerId($customerId);
                                 <th>Loại xe</th>
                                 <th>Phân khúc</th>
                                 <th>Biển số xe</th>
+                                <th>Số khung</th>
+                                <th>Số máy</th>
                                 <th>Hình mặt trước</th>
                                 <th>Hình mặt sau</th>
                                 <th>Sửa</th>
@@ -61,6 +66,8 @@ $bikes = $bikeModel->getBikesByCustomerId($customerId);
                                 <td><?php echo htmlspecialchars($bike['LoaiXe']); ?></td>
                                 <td><?php echo htmlspecialchars($bike['PhanKhuc']); ?></td>
                                 <td><?php echo htmlspecialchars($bike['BienSoXe']); ?></td>
+                                <td><?php echo htmlspecialchars($bike['SoKhung'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($bike['SoMay'] ?? ''); ?></td>
                                 <td>
                                     <?php if (!empty($bike['HinhAnhMatTruocXe'])): ?>
                                         <img src="<?php echo htmlspecialchars($bike['HinhAnhMatTruocXe']); ?>" alt="Mặt trước" style="max-width:80px;max-height:60px;">

@@ -1,4 +1,8 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
 $controllerName = isset($_GET['controller']) ? $_GET['controller'] : 'TrangChu';
 $actionName = isset($_GET['action']) ? $_GET['action'] : 'index';
 

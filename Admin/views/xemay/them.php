@@ -2,6 +2,8 @@
     <h2>Thêm xe máy mới</h2>
     <?php if (!empty($msg) && $msg == 'add_fail'): ?>
         <div class="alert alert-danger">Thêm xe máy thất bại!</div>
+    <?php elseif (!empty($msg) && $msg == 'duplicate'): ?>
+        <div class="alert alert-danger">Số khung hoặc số máy đã tồn tại!</div>
     <?php endif; ?>
     <form method="post" action="" enctype="multipart/form-data">
         <div class="mb-3">
@@ -19,6 +21,14 @@
         <div class="mb-3">
             <label>Biển số</label>
             <input type="text" name="BienSoXe" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Số khung</label>
+            <input type="text" name="SoKhung" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Số máy</label>
+            <input type="text" name="SoMay" class="form-control">
         </div>
         <div class="mb-3">
             <label>Ảnh mặt trước</label>

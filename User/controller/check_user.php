@@ -1,6 +1,8 @@
 <?php
-include '../model/userModel.php'; // Include the UserModel for database interactions
-include '../utils/ConnectDb.php'; // Include the database connection file
+// File này KHÔNG dùng session, chỉ kiểm tra DB nên KHÔNG cần session_name
+
+include '../model/userModel.php';
+include '../utils/ConnectDb.php';
 
 if (isset($_POST['TenKH'])) {
     $TenKH = $_POST['TenKH'];

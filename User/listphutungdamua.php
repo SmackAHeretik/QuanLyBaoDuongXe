@@ -1,40 +1,16 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 include_once './utils/ConnectDb.php';
 
-// Lấy danh sách phụ tùng đã mua từ bảng hoadon (chỉ trạng thái đã thanh toán hoặc chờ thanh toán)
+// Kết nối DB
 $db = new ConnectDb();
 $pdo = $db->connect();
 
-if (isset($_SESSION['MaKH'])) {
-    // Nếu là khách hàng, chỉ lấy hoá đơn của mình thông qua mã xe của họ
-    $maKH = $_SESSION['MaKH'];
-    $sql = "SELECT h.MaHD, h.Ngay, h.TongTien, h.TrangThai, h.xemay_MaXE, h.phutungxemay_MaSP, 
-                   xe.TenXe, xe.BienSoXe, pt.TenSP, pt.DonGia
-            FROM hoadon h
-            LEFT JOIN xemay xe ON h.xemay_MaXE = xe.MaXE
-            LEFT JOIN phutungxemay pt ON h.phutungxemay_MaSP = pt.MaSP
-            WHERE xe.khachhang_MaKH = ?
-            ORDER BY h.Ngay DESC, h.MaHD DESC";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$maKH]);
-    $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} else {
-    // Nếu là admin, lấy tất cả
-    $sql = "SELECT h.MaHD, h.Ngay, h.TongTien, h.TrangThai, h.xemay_MaXE, h.phutungxemay_MaSP, 
-                   xe.TenXe, xe.BienSoXe, pt.TenSP, pt.DonGia
-            FROM hoadon h
-            LEFT JOIN xemay xe ON h.xemay_MaXE = xe.MaXE
-            LEFT JOIN phutungxemay pt ON h.phutungxemay_MaSP = pt.MaSP
-            ORDER BY h.Ngay DESC, h.MaHD DESC";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-// Hàm chuyển trạng thái thành chữ
 function tenTrangThaiHD($tt) {
     switch ($tt) {
         case 'cho_thanh_toan': return 'Chờ thanh toán';
@@ -42,6 +18,39 @@ function tenTrangThaiHD($tt) {
         case 'huy': return 'Đã huỷ';
         default: return 'Không rõ';
     }
+}
+
+// Lấy danh sách hóa đơn của user (hoặc tất cả nếu là admin)
+if (isset($_SESSION['MaKH'])) {
+    $maKH = $_SESSION['MaKH'];
+    $sql = "SELECT h.MaHD, h.Ngay, h.TongTien, h.TrangThai, h.xemay_MaXE, xe.TenXe, xe.BienSoXe
+            FROM hoadon h
+            LEFT JOIN xemay xe ON h.xemay_MaXE = xe.MaXE
+            WHERE xe.khachhang_MaKH = ?
+            ORDER BY h.Ngay DESC, h.MaHD DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$maKH]);
+    $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $sql = "SELECT h.MaHD, h.Ngay, h.TongTien, h.TrangThai, h.xemay_MaXE, xe.TenXe, xe.BienSoXe
+            FROM hoadon h
+            LEFT JOIN xemay xe ON h.xemay_MaXE = xe.MaXE
+            ORDER BY h.Ngay DESC, h.MaHD DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Lấy chi tiết hóa đơn theo MaHD
+function getChiTietHoaDon($pdo, $maHD) {
+    $sql = "SELECT cthd.*, pt.TenSP, dv.TenDV
+            FROM chitiethoadon cthd
+            LEFT JOIN phutungxemay pt ON cthd.phutungxemay_MaSP = pt.MaSP
+            LEFT JOIN dichvu dv ON cthd.dichvu_MaDV = dv.MaDV
+            WHERE cthd.hoadon_MaHD = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$maHD]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 
@@ -56,6 +65,10 @@ function tenTrangThaiHD($tt) {
     <link href="css/templatemo-tiya-golf-club.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+    <style>
+        .modal-xl { max-width: 90vw; }
+        .table th, .table td { vertical-align: middle; }
+    </style>
 </head>
 <body>
 <main>
@@ -63,19 +76,18 @@ function tenTrangThaiHD($tt) {
     <?php include('./layouts/hero/hero.php') ?>   
     <section class="section-padding">
         <div class="container">
-            <h2 class="mb-4">Danh Sách Phụ Tùng Đã Mua</h2>
+            <h2 class="mb-4">Danh Sách Hóa Đơn Đã Mua</h2>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped align-middle">
                     <thead class="table-dark">
                         <tr>
                             <th>#</th>
                             <th>Ngày mua</th>
-                            <th>Tên phụ tùng</th>
-                            <th>Đơn giá</th>
                             <th>Xe</th>
                             <th>Biển số xe</th>
-                            <th>Trạng thái đơn</th>
-                            <th></th><!-- Thêm cột nút chi tiết -->
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th></th><!-- Nút chi tiết -->
                         </tr>
                     </thead>
                     <tbody>
@@ -84,10 +96,9 @@ function tenTrangThaiHD($tt) {
                                 <tr>
                                     <td><?= $i + 1 ?></td>
                                     <td><?= htmlspecialchars($item['Ngay']) ?></td>
-                                    <td><?= htmlspecialchars($item['TenSP'] ?? '---') ?></td>
-                                    <td><?= number_format($item['DonGia'] ?? $item['TongTien'], 0, ',', '.') ?> VNĐ</td>
                                     <td><?= htmlspecialchars($item['TenXe'] ?? '---') ?></td>
                                     <td><?= htmlspecialchars($item['BienSoXe'] ?? '---') ?></td>
+                                    <td><?= number_format($item['TongTien'], 0, ',', '.') ?> VNĐ</td>
                                     <td>
                                         <?php
                                         $tt = $item['TrangThai'];
@@ -107,39 +118,59 @@ function tenTrangThaiHD($tt) {
                                             data-bs-target="#orderDetailModal<?= $item['MaHD'] ?>">
                                             <i class="fa fa-info-circle"></i> Chi tiết
                                         </button>
-                                        <!-- Modal chi tiết đơn hàng -->
+                                        <!-- Modal chi tiết hóa đơn -->
                                         <div class="modal fade" id="orderDetailModal<?= $item['MaHD'] ?>" tabindex="-1" aria-labelledby="orderDetailLabel<?= $item['MaHD'] ?>" aria-hidden="true">
-                                            <div class="modal-dialog modal-lg">
+                                            <div class="modal-dialog modal-xl">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="orderDetailLabel<?= $item['MaHD'] ?>">Chi tiết đơn hàng #<?= $item['MaHD'] ?></h5>
+                                                        <h5 class="modal-title" id="orderDetailLabel<?= $item['MaHD'] ?>">Chi tiết hóa đơn #<?= $item['MaHD'] ?></h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <p><b>Ngày mua:</b> <?= htmlspecialchars($item['Ngay']) ?></p>
+                                                        <p><b>Tổng tiền:</b> <?= number_format($item['TongTien'], 0, ',', '.') ?> VNĐ</p>
                                                         <p><b>Trạng thái:</b> <?= tenTrangThaiHD($item['TrangThai']) ?></p>
                                                         <hr>
-                                                        <table class="table table-bordered">
+                                                        <table class="table table-bordered table-hover">
                                                             <thead>
                                                                 <tr>
+                                                                    <th>MaCTHD</th>
+                                                                    <th>Mã SP</th>
                                                                     <th>Tên phụ tùng</th>
-                                                                    <th>Đơn giá</th>
-                                                                    <th>Xe</th>
-                                                                    <th>Biển số xe</th>
-                                                                    <th>Thành tiền</th>
+                                                                    <th>Giá tiền</th>
+                                                                    <th>Số lượng</th>
+                                                                    <th>Ngày BD bảo hành</th>
+                                                                    <th>Ngày KT bảo hành</th>
+                                                                    <th>Số lần còn bảo hành</th>
+                                                                    <th>Mã DV</th>
+                                                                    <th>Tên dịch vụ</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr>
-                                                                    <td><?= htmlspecialchars($item['TenSP'] ?? '---') ?></td>
-                                                                    <td><?= number_format($item['DonGia'] ?? $item['TongTien'], 0, ',', '.') ?> VNĐ</td>
-                                                                    <td><?= htmlspecialchars($item['TenXe'] ?? '---') ?></td>
-                                                                    <td><?= htmlspecialchars($item['BienSoXe'] ?? '---') ?></td>
-                                                                    <td><?= number_format($item['DonGia'] ?? $item['TongTien'], 0, ',', '.') ?> VNĐ</td>
-                                                                </tr>
+                                                                <?php
+                                                                $ctList = getChiTietHoaDon($pdo, $item['MaHD']);
+                                                                if (!empty($ctList)):
+                                                                    foreach ($ctList as $ct): ?>
+                                                                        <tr>
+                                                                            <td><?= htmlspecialchars($ct['MaCTHD']) ?></td>
+                                                                            <td><?= htmlspecialchars($ct['MaSP'] ?? $ct['phutungxemay_MaSP']) ?></td>
+                                                                            <td><?= htmlspecialchars($ct['TenSP'] ?? '---') ?></td>
+                                                                            <td><?= number_format($ct['GiaTien'], 0, ',', '.') ?></td>
+                                                                            <td><?= htmlspecialchars($ct['SoLuong']) ?></td>
+                                                                            <td><?= htmlspecialchars($ct['NgayBDBH']) ?></td>
+                                                                            <td><?= htmlspecialchars($ct['NgayKTBH']) ?></td>
+                                                                            <td><?= htmlspecialchars($ct['SoLanDaBaoHanh']) ?></td>
+                                                                            <td><?= htmlspecialchars($ct['dichvu_MaDV']) ?></td>
+                                                                            <td><?= htmlspecialchars($ct['TenDV'] ?? '---') ?></td>
+                                                                        </tr>
+                                                                    <?php endforeach;
+                                                                else: ?>
+                                                                    <tr>
+                                                                        <td colspan="10" class="text-center">Không có chi tiết hóa đơn.</td>
+                                                                    </tr>
+                                                                <?php endif; ?>
                                                             </tbody>
                                                         </table>
-                                                        <p class="text-end"><b>Tổng tiền: <?= number_format($item['TongTien'], 0, ',', '.') ?> VNĐ</b></p>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -152,7 +183,7 @@ function tenTrangThaiHD($tt) {
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="8" class="text-center">Không có phụ tùng nào đã mua.</td>
+                                <td colspan="7" class="text-center">Không có hóa đơn nào.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -177,34 +208,3 @@ function tenTrangThaiHD($tt) {
 <script src="js/custom.js"></script>
 </body>
 </html>
-<?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qty'])) {
-    foreach ($_POST['qty'] as $MaSP => $qty) {
-        foreach ($_SESSION['cart'] as &$item) {
-            if ($item['MaSP'] == $MaSP) {
-                $item['qty'] = max(1, intval($qty));
-            }
-        }
-    }
-    // Đảm bảo reference giữ lại
-    unset($item);
-}
-
-exit;
-?>
-
-<?php
-$total = 0;
-foreach ($_SESSION['cart'] as $item) {
-    $total += $item['DonGia'] * $item['qty'];
-}
-
-$_SESSION['order'] = [
-    'cart' => $_SESSION['cart'],
-    'fullname' => $_POST['fullname'],
-    'phone' => $_POST['phone'],
-    'note' => $_POST['note'],
-    'total' => $total,
-    'date' => date('Y-m-d H:i:s'),
-];
-?>

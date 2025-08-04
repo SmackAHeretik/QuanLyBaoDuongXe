@@ -13,7 +13,6 @@ class XeMayController
     public function index()
     {
         $xemays = $this->model->getAll();
-        // Đọc thông báo nếu có
         $msg = $_GET['msg'] ?? '';
         include __DIR__ . '/../views/xemay/danhsach.php';
     }
@@ -21,40 +20,59 @@ class XeMayController
     public function them()
     {
         $khachhangs = $this->model->getAllKhachHang();
-        $msg = '';
+        $msg = $_GET['msg'] ?? '';
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'TenXe' => $_POST['TenXe'] ?? '',
                 'LoaiXe' => $_POST['LoaiXe'] ?? '',
                 'PhanKhuc' => $_POST['PhanKhuc'] ?? '',
                 'BienSoXe' => $_POST['BienSoXe'] ?? '',
+                'SoKhung' => $_POST['SoKhung'] ?? '',
+                'SoMay' => $_POST['SoMay'] ?? '',
                 'khachhang_MaKH' => $_POST['khachhang_MaKH'] ?? '',
             ];
 
-            // Đảm bảo thư mục upload tồn tại
-            $uploadDir = __DIR__ . '/../User/uploads/';
+            // Đảm bảo User/uploads là đúng ở gốc project
+            $uploadDir = dirname(__DIR__, 2) . '/User/uploads/';
             if (!file_exists($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
 
-            // Xử lý upload ảnh mặt trước vào User/uploads
-            if (isset($_FILES['HinhAnhMatTruocXe']) && $_FILES['HinhAnhMatTruocXe']['error'] == 0) {
+            // Ảnh mặt trước
+            if (
+                isset($_FILES['HinhAnhMatTruocXe']) &&
+                $_FILES['HinhAnhMatTruocXe']['error'] == 0 &&
+                is_uploaded_file($_FILES['HinhAnhMatTruocXe']['tmp_name']) &&
+                !empty($_FILES['HinhAnhMatTruocXe']['name'])
+            ) {
                 $name = time() . '_' . basename($_FILES['HinhAnhMatTruocXe']['name']);
-                $targetPath = $uploadDir . $name;
-                move_uploaded_file($_FILES['HinhAnhMatTruocXe']['tmp_name'], $targetPath);
-                $data['HinhAnhMatTruocXe'] = $name;
+                $uploadResult = move_uploaded_file($_FILES['HinhAnhMatTruocXe']['tmp_name'], $uploadDir . $name);
+                $data['HinhAnhMatTruocXe'] = $uploadResult ? ('uploads/' . $name) : null;
             } else {
                 $data['HinhAnhMatTruocXe'] = null;
             }
 
-            // Xử lý upload ảnh mặt sau vào User/uploads
-            if (isset($_FILES['HinhAnhMatSauXe']) && $_FILES['HinhAnhMatSauXe']['error'] == 0) {
+            // Ảnh mặt sau
+            if (
+                isset($_FILES['HinhAnhMatSauXe']) &&
+                $_FILES['HinhAnhMatSauXe']['error'] == 0 &&
+                is_uploaded_file($_FILES['HinhAnhMatSauXe']['tmp_name']) &&
+                !empty($_FILES['HinhAnhMatSauXe']['name'])
+            ) {
                 $name = time() . '_' . basename($_FILES['HinhAnhMatSauXe']['name']);
-                $targetPath = $uploadDir . $name;
-                move_uploaded_file($_FILES['HinhAnhMatSauXe']['tmp_name'], $targetPath);
-                $data['HinhAnhMatSauXe'] = $name;
+                $uploadResult = move_uploaded_file($_FILES['HinhAnhMatSauXe']['tmp_name'], $uploadDir . $name);
+                $data['HinhAnhMatSauXe'] = $uploadResult ? ('uploads/' . $name) : null;
             } else {
                 $data['HinhAnhMatSauXe'] = null;
+            }
+
+            // Check duplicate SoKhung/SoMay
+            if (
+                (!empty($data['SoKhung']) || !empty($data['SoMay'])) &&
+                $this->model->isExistedSoKhungOrSoMay($data['SoKhung'], $data['SoMay'])
+            ) {
+                header('Location: table.php?controller=xemay&action=them&msg=duplicate');
+                exit;
             }
 
             $success = $this->model->add($data);
@@ -66,7 +84,6 @@ class XeMayController
             }
             exit;
         }
-        $msg = $_GET['msg'] ?? '';
         include __DIR__ . '/../views/xemay/them.php';
     }
 
@@ -79,7 +96,7 @@ class XeMayController
         }
 
         $khachhangs = $this->model->getAllKhachHang();
-        $msg = '';
+        $msg = $_GET['msg'] ?? '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
@@ -87,33 +104,55 @@ class XeMayController
                 'LoaiXe' => $_POST['LoaiXe'] ?? '',
                 'PhanKhuc' => $_POST['PhanKhuc'] ?? '',
                 'BienSoXe' => $_POST['BienSoXe'] ?? '',
+                'SoKhung' => $_POST['SoKhung'] ?? '',
+                'SoMay' => $_POST['SoMay'] ?? '',
                 'khachhang_MaKH' => $_POST['khachhang_MaKH'] ?? '',
             ];
 
-            // Đảm bảo thư mục upload tồn tại
-            $uploadDir = __DIR__ . '/../User/uploads/';
+            $uploadDir = dirname(__DIR__, 2) . '/User/uploads/';
             if (!file_exists($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
 
-            // Xử lý upload ảnh mặt trước vào User/uploads
-            if (isset($_FILES['HinhAnhMatTruocXe']) && $_FILES['HinhAnhMatTruocXe']['error'] == 0 && $_FILES['HinhAnhMatTruocXe']['name'] != "") {
+            // Ảnh mặt trước
+            if (
+                isset($_FILES['HinhAnhMatTruocXe']) &&
+                $_FILES['HinhAnhMatTruocXe']['error'] == 0 &&
+                is_uploaded_file($_FILES['HinhAnhMatTruocXe']['tmp_name']) &&
+                !empty($_FILES['HinhAnhMatTruocXe']['name'])
+            ) {
                 $name = time() . '_' . basename($_FILES['HinhAnhMatTruocXe']['name']);
-                $targetPath = $uploadDir . $name;
-                move_uploaded_file($_FILES['HinhAnhMatTruocXe']['tmp_name'], $targetPath);
-                $data['HinhAnhMatTruocXe'] = $name;
+                $uploadResult = move_uploaded_file($_FILES['HinhAnhMatTruocXe']['tmp_name'], $uploadDir . $name);
+                $data['HinhAnhMatTruocXe'] = $uploadResult ? ('uploads/' . $name) : $_POST['HinhAnhMatTruocXe_current'];
             } else {
                 $data['HinhAnhMatTruocXe'] = $_POST['HinhAnhMatTruocXe_current'] ?? null;
             }
 
-            // Xử lý upload ảnh mặt sau vào User/uploads
-            if (isset($_FILES['HinhAnhMatSauXe']) && $_FILES['HinhAnhMatSauXe']['error'] == 0 && $_FILES['HinhAnhMatSauXe']['name'] != "") {
+            // Ảnh mặt sau
+            if (
+                isset($_FILES['HinhAnhMatSauXe']) &&
+                $_FILES['HinhAnhMatSauXe']['error'] == 0 &&
+                is_uploaded_file($_FILES['HinhAnhMatSauXe']['tmp_name']) &&
+                !empty($_FILES['HinhAnhMatSauXe']['name'])
+            ) {
                 $name = time() . '_' . basename($_FILES['HinhAnhMatSauXe']['name']);
-                $targetPath = $uploadDir . $name;
-                move_uploaded_file($_FILES['HinhAnhMatSauXe']['tmp_name'], $targetPath);
-                $data['HinhAnhMatSauXe'] = $name;
+                $uploadResult = move_uploaded_file($_FILES['HinhAnhMatSauXe']['tmp_name'], $uploadDir . $name);
+                $data['HinhAnhMatSauXe'] = $uploadResult ? ('uploads/' . $name) : $_POST['HinhAnhMatSauXe_current'];
             } else {
                 $data['HinhAnhMatSauXe'] = $_POST['HinhAnhMatSauXe_current'] ?? null;
+            }
+
+            // Check duplicate SoKhung/SoMay, trừ chính xe đang sửa
+            $oldXe = $this->model->getById($MaXE);
+            if (
+                (!empty($data['SoKhung']) || !empty($data['SoMay'])) &&
+                (
+                    ($data['SoKhung'] != $oldXe['SoKhung'] && $this->model->isExistedSoKhungOrSoMay($data['SoKhung'], '')) ||
+                    ($data['SoMay'] != $oldXe['SoMay'] && $this->model->isExistedSoKhungOrSoMay('', $data['SoMay']))
+                )
+            ) {
+                header('Location: table.php?controller=xemay&action=sua&MaXE='.$MaXE.'&msg=duplicate');
+                exit;
             }
 
             $success = $this->model->update($MaXE, $data);
@@ -126,7 +165,6 @@ class XeMayController
             exit;
         }
         $xemay = $this->model->getById($MaXE);
-        $msg = $_GET['msg'] ?? '';
         include __DIR__ . '/../views/xemay/sua.php';
     }
 

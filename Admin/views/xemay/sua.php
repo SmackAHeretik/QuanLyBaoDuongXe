@@ -2,6 +2,8 @@
     <h2>Cập nhật xe máy</h2>
     <?php if (!empty($msg) && $msg == 'edit_fail'): ?>
         <div class="alert alert-danger">Sửa xe máy thất bại!</div>
+    <?php elseif (!empty($msg) && $msg == 'duplicate'): ?>
+        <div class="alert alert-danger">Số khung hoặc số máy đã tồn tại!</div>
     <?php endif; ?>
     <form method="post" action="" enctype="multipart/form-data">
         <div class="mb-3">
@@ -21,10 +23,18 @@
             <input type="text" name="BienSoXe" class="form-control" value="<?= htmlspecialchars($xemay['BienSoXe']) ?>">
         </div>
         <div class="mb-3">
+            <label>Số khung</label>
+            <input type="text" name="SoKhung" class="form-control" value="<?= htmlspecialchars($xemay['SoKhung']) ?>">
+        </div>
+        <div class="mb-3">
+            <label>Số máy</label>
+            <input type="text" name="SoMay" class="form-control" value="<?= htmlspecialchars($xemay['SoMay']) ?>">
+        </div>
+        <div class="mb-3">
             <label>Ảnh mặt trước</label>
             <?php if ($xemay['HinhAnhMatTruocXe']): ?>
                 <div>
-                    <img src="uploads/<?= htmlspecialchars($xemay['HinhAnhMatTruocXe']) ?>" style="max-width:100px;">
+                    <img src="/QuanLyBaoDuongXe/User/<?= htmlspecialchars($xemay['HinhAnhMatTruocXe']) ?>" style="max-width:100px;">
                 </div>
             <?php endif; ?>
             <input type="file" name="HinhAnhMatTruocXe" class="form-control">
@@ -34,7 +44,7 @@
             <label>Ảnh mặt sau</label>
             <?php if ($xemay['HinhAnhMatSauXe']): ?>
                 <div>
-                    <img src="uploads/<?= htmlspecialchars($xemay['HinhAnhMatSauXe']) ?>" style="max-width:100px;">
+                    <img src="/QuanLyBaoDuongXe/User/<?= htmlspecialchars($xemay['HinhAnhMatSauXe']) ?>" style="max-width:100px;">
                 </div>
             <?php endif; ?>
             <input type="file" name="HinhAnhMatSauXe" class="form-control">

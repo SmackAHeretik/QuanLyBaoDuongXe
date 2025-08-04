@@ -11,7 +11,7 @@
             }
         }
         $defaultImg = "uploads/noimage.png";
-        $baseImgPath = "/QuanLyBaoDuongXe/User/";   // Đường dẫn tuyệt đối đến thư mục uploads
+        $baseImgPath = "/QuanLyBaoDuongXe/User/";
     ?>
     <a href="table.php?controller=xemay&action=them" class="btn btn-primary mb-3">Thêm xe máy</a>
     <table class="table table-bordered">
@@ -22,6 +22,8 @@
                 <th>Loại xe</th>
                 <th>Phân khúc</th>
                 <th>Biển số</th>
+                <th>Số khung</th>
+                <th>Số máy</th>
                 <th>Ảnh mặt trước</th>
                 <th>Ảnh mặt sau</th>
                 <th>Tên khách hàng</th>
@@ -36,17 +38,25 @@
                 <td><?= htmlspecialchars($xe['LoaiXe']) ?></td>
                 <td><?= htmlspecialchars($xe['PhanKhuc']) ?></td>
                 <td><?= htmlspecialchars($xe['BienSoXe']) ?></td>
+                <td><?= htmlspecialchars($xe['SoKhung']) ?></td>
+                <td><?= htmlspecialchars($xe['SoMay']) ?></td>
                 <td>
                     <?php
-                        $imgTruoc = $xe['HinhAnhMatTruocXe'];
-                        $srcTruoc = (!empty($imgTruoc)) ? $baseImgPath . $imgTruoc : $baseImgPath . $defaultImg;
+                        $imgTruoc = ltrim($xe['HinhAnhMatTruocXe'], '/\\');
+                        $imgPathTruoc = $_SERVER['DOCUMENT_ROOT'] . '/QuanLyBaoDuongXe/User/' . $imgTruoc;
+                        $srcTruoc = (!empty($imgTruoc) && file_exists($imgPathTruoc))
+                                    ? $baseImgPath . $imgTruoc
+                                    : $baseImgPath . $defaultImg;
                         echo '<img src="' . htmlspecialchars($srcTruoc) . '" style="max-width:80px;">';
                     ?>
                 </td>
                 <td>
                     <?php
-                        $imgSau = $xe['HinhAnhMatSauXe'];
-                        $srcSau = (!empty($imgSau)) ? $baseImgPath . $imgSau : $baseImgPath . $defaultImg;
+                        $imgSau = ltrim($xe['HinhAnhMatSauXe'], '/\\');
+                        $imgPathSau = $_SERVER['DOCUMENT_ROOT'] . '/QuanLyBaoDuongXe/User/' . $imgSau;
+                        $srcSau = (!empty($imgSau) && file_exists($imgPathSau))
+                                    ? $baseImgPath . $imgSau
+                                    : $baseImgPath . $defaultImg;
                         echo '<img src="' . htmlspecialchars($srcSau) . '" style="max-width:80px;">';
                     ?>
                 </td>

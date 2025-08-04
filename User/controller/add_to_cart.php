@@ -1,5 +1,8 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
 
 $maSP    = $_GET['MaSP']    ?? $_POST['MaSP']    ?? null;
 $maXE    = $_GET['MaXE']    ?? $_POST['MaXE']    ?? null;
@@ -30,7 +33,6 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// Sửa chỗ này: chỉ lấy tên file ảnh
 $hinhAnh = !empty($product['HinhAnh']) ? $product['HinhAnh'] : 'no-image.png';
 
 if (isset($_SESSION['cart'][$maSP])) {

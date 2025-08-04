@@ -1,5 +1,8 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_name('USERSESSID');
+    session_start();
+}
 include '../utils/ConnectDb.php';
 include '../model/BikeProfileModel.php';
 
@@ -16,3 +19,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['MaXe'])) {
 
 header("Location: ../bike_list.php");
 exit();
+?>
