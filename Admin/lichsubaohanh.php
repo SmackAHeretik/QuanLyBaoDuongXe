@@ -1,5 +1,5 @@
 <?php
-$requiredRole = 'admin';
+$requiredRole = ['admin', 'ketoan'];
 include __DIR__ . '/auth_check.php';
 
 require_once __DIR__ . '/db.php';

@@ -2,11 +2,11 @@
 require_once __DIR__ . '/../models/HoaDonModel.php';
 require_once __DIR__ . '/../models/ChiTietHoaDonModel.php';
 require_once __DIR__ . '/../models/DichVuModel.php';
+require_once __DIR__ . '/../models/PhuTungXeMayModel.php';
 
 class HoaDonController
 {
-  private $model;
-
+  public $model;
   public function __construct($db)
   {
     $this->model = new HoaDonModel($db);
@@ -25,6 +25,7 @@ class HoaDonController
     $phutungxemay = $this->model->getAllPhuTung();
     $dichvuModel = new DichVuModel($this->model->conn);
     $dichvus = $dichvuModel->getAll();
+    $phutungModel = new PhuTungXeMayModel($this->model->conn);
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $TongTien = floatval($_POST['TongTien']);
@@ -45,20 +46,40 @@ class HoaDonController
             $dv_arr = $_POST['dichvu_MaDV'];
             $gia_arr = $_POST['phutung_GiaTien'];
             $sl_arr  = $_POST['phutung_SoLuong'];
-            $count = count($pt_arr);
+            $count = max(count($pt_arr), count($dv_arr));
             for ($i = 0; $i < $count; $i++) {
               $masp = $pt_arr[$i] ?: null;
               $madichvu = $dv_arr[$i] ?: null;
               if (empty($masp) && empty($madichvu)) continue;
+              $NgayBDBH = null;
+              $NgayKTBH = null;
+              $SoLanDaBaoHanh = 0;
+              if (!empty($masp)) {
+                $pt = $phutungModel->getById($masp);
+                // Ngày bắt đầu bảo hành là ngày tạo hóa đơn (lấy theo ngày nhập trên form, giờ thực tế)
+                $NgayBDBH = date('Y-m-d H:i:s', strtotime($_POST['Ngay'] . ' ' . date('H:i:s')));
+                // Xử lý số ngày bảo hành từ chuỗi "xxx ngày"
+                $soNgay = 0;
+                if (!empty($pt['ThoiGianBaoHanhDinhKy'])) {
+                  if (preg_match('/(\d+)\s*ngày/i', $pt['ThoiGianBaoHanhDinhKy'], $matches)) {
+                    $soNgay = intval($matches[1]);
+                  }
+                }
+                if ($soNgay > 0) {
+                  $NgayKTBH = date('Y-m-d H:i:s', strtotime("+$soNgay days", strtotime($NgayBDBH)));
+                }
+                // Số lần bảo hành tối đa lấy từ bảng phụ tùng
+                $SoLanDaBaoHanh = intval($pt['SoLanBaoHanhToiDa']);
+              }
               $cthdModel->add([
                 'hoadon_MaHD' => $mahd,
                 'phutungxemay_MaSP' => $masp,
                 'dichvu_MaDV' => $madichvu,
                 'GiaTien' => $gia_arr[$i],
                 'SoLuong' => $sl_arr[$i],
-                'NgayBDBH' => null,
-                'NgayKTBH' => null,
-                'SoLanDaBaoHanh' => 0
+                'NgayBDBH' => $NgayBDBH,
+                'NgayKTBH' => $NgayKTBH,
+                'SoLanDaBaoHanh' => $SoLanDaBaoHanh
               ]);
             }
           }
@@ -74,47 +95,49 @@ class HoaDonController
 
   public function edit()
   {
-    $error = "";
     $id = $_GET['id'] ?? null;
-    $hoadon = $this->model->getById($id);
-    $xemays = $this->model->getAllXeMayWithKhachHang();
-    $phutungxemay = $this->model->getAllPhuTung();
-    $dichvuModel = new DichVuModel($this->model->conn);
-    $dichvus = $dichvuModel->getAll();
-    if (!$hoadon) {
-      echo "Không tìm thấy hóa đơn!";
-      exit;
-    }
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $TongTien = floatval($_POST['TongTien']);
-      if ($TongTien <= 0) {
-        $error = "Tổng tiền phải lớn hơn 0!";
-      } else {
-        $data = [
-          'TongTien' => $TongTien,
-          'Ngay' => $_POST['Ngay'],
-          'TrangThai' => $_POST['TrangThai'],
-          'xemay_MaXE' => $_POST['xemay_MaXE'],
-        ];
-        if ($this->model->update($id, $data)) {
-          header("Location: khachhang.php");
-          exit;
+    $error = "";
+    if ($id) {
+      $hoadon = $this->model->getById($id);
+      $xemays = $this->model->getAllXeMayWithKhachHang();
+      $phutungxemay = $this->model->getAllPhuTung();
+      $dichvuModel = new DichVuModel($this->model->conn);
+      $dichvus = $dichvuModel->getAll();
+      $phutungModel = new PhuTungXeMayModel($this->model->conn);
+      if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $TongTien = floatval($_POST['TongTien']);
+        if ($TongTien <= 0) {
+          $error = "Tổng tiền phải lớn hơn 0!";
         } else {
-          $error = "Cập nhật hóa đơn thất bại!";
+          $data = [
+            'TongTien' => $TongTien,
+            'Ngay' => $_POST['Ngay'],
+            'TrangThai' => $_POST['TrangThai'],
+            'xemay_MaXE' => $_POST['xemay_MaXE'],
+          ];
+          if ($this->model->update($id, $data)) {
+            header("Location: hoadon.php");
+            exit;
+          } else {
+            $error = "Cập nhật hóa đơn thất bại!";
+          }
         }
       }
+      include __DIR__ . '/../views/hoadon/edit.php';
+    } else {
+      echo "<div class='alert alert-danger'>Không tìm thấy hóa đơn!</div>";
     }
-    include __DIR__ . '/../views/hoadon/edit.php';
   }
 
   public function delete()
   {
     $id = $_GET['id'] ?? null;
-    if ($id && $this->model->delete($id)) {
-      header("Location: khachhang.php");
+    if ($id) {
+      $this->model->delete($id);
+      header("Location: hoadon.php");
       exit;
     } else {
-      echo "Xóa hóa đơn thất bại!";
+      echo "<div class='alert alert-danger'>Không tìm thấy hóa đơn cần xóa!</div>";
     }
   }
 }

@@ -53,9 +53,16 @@ class ChiTietHoaDonController
         $error = "Số lượng phải >= 0";
       }
 
-      // Lấy giá tiền từ hóa đơn, không cho nhập tay
-      $hd = $this->hoadonModel->getById($data['hoadon_MaHD']);
-      $data['GiaTien'] = $hd['TienSauKhiGiam'] ?? 0;
+      // Xác định giá tiền theo loại: dịch vụ hoặc phụ tùng
+      if (!empty($data['phutungxemay_MaSP'])) {
+        $pt = $this->phutungModel->getById($data['phutungxemay_MaSP']);
+        $data['GiaTien'] = $pt['DonGia'] ?? 0;
+      } elseif (!empty($data['dichvu_MaDV'])) {
+        $dv = $this->dichvuModel->getById($data['dichvu_MaDV']);
+        $data['GiaTien'] = $dv['DonGia'] ?? 0;
+      } else {
+        $data['GiaTien'] = 0;
+      }
 
       if (!$error) {
         $this->model->add($data);
@@ -94,9 +101,16 @@ class ChiTietHoaDonController
         $error = "Số lượng phải >= 0";
       }
 
-      // Lấy giá tiền từ hóa đơn, không cho nhập tay
-      $hd = $this->hoadonModel->getById($data['hoadon_MaHD']);
-      $data['GiaTien'] = $hd['TienSauKhiGiam'] ?? 0;
+      // Xác định giá tiền theo loại: dịch vụ hoặc phụ tùng
+      if (!empty($data['phutungxemay_MaSP'])) {
+        $pt = $this->phutungModel->getById($data['phutungxemay_MaSP']);
+        $data['GiaTien'] = $pt['DonGia'] ?? 0;
+      } elseif (!empty($data['dichvu_MaDV'])) {
+        $dv = $this->dichvuModel->getById($data['dichvu_MaDV']);
+        $data['GiaTien'] = $dv['DonGia'] ?? 0;
+      } else {
+        $data['GiaTien'] = 0;
+      }
 
       if (!$error) {
         $this->model->update($id, $data);

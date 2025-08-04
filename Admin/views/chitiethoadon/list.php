@@ -37,15 +37,27 @@
                 <td><?= $key + 1 ?></td>
                 <td><?= htmlspecialchars($row['hoadon_MaHD']) ?></td>
                 <td>
-                  <?= htmlspecialchars($row['phutungxemay_MaSP']) ?>
-                  <?php if (!empty($row['TenSP'])): ?>
-                    <br><span class="text-muted small"><?= htmlspecialchars($row['TenSP']) ?></span>
+                  <?php if (!empty($row['phutungxemay_MaSP'])): ?>
+                    <?= htmlspecialchars($row['phutungxemay_MaSP']) ?>
+                    <?php if (!empty($row['TenSP'])): ?>
+                      <br><span class="text-muted small"><?= htmlspecialchars($row['TenSP']) ?></span>
+                    <?php endif; ?>
+                  <?php else: ?>
+                    <span class="text-muted">--</span>
                   <?php endif; ?>
                 </td>
-                <td><?= htmlspecialchars($row['dichvu_MaDV']) ?></td>
+                <td>
+                  <?php if (!empty($row['dichvu_MaDV'])): ?>
+                    <?= htmlspecialchars($row['dichvu_MaDV']) ?>
+                  <?php else: ?>
+                    <span class="text-muted">--</span>
+                  <?php endif; ?>
+                </td>
                 <td>
                   <?php if (!empty($row['TenDV'])): ?>
                     <?= htmlspecialchars($row['TenDV']) ?>
+                  <?php else: ?>
+                    <span class="text-muted">--</span>
                   <?php endif; ?>
                 </td>
                 <td><?= number_format($row['GiaTien'], 0, ',', '.') ?> VND</td>

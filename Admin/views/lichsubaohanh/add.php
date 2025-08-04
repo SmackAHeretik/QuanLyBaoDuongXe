@@ -59,7 +59,7 @@
                 <?php endif; ?>
                 <div class="mb-3 text-end">
                     <button type="submit" class="btn btn-success px-4">Lưu</button>
-                    <a href="?controller=lichsubaohanh&action=index" class="btn btn-secondary px-4">Quay lại</a>
+                    <a href="khachhang.php" class="btn btn-secondary px-4">Quay lại</a>
                 </div>
             </form>
         </div>

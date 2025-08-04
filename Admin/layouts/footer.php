@@ -1,16 +1,16 @@
 <div class="container-fluid pt-4 px-4">
-        <div class="bg-light rounded-top p-4">
-          <div class="row">
-            <div class="col-12 col-sm-6 text-center text-sm-start">
-              &copy; <a href="#">67 Performance Admin Page</a> .
-            </div>
-            <div class="col-12 col-sm-6 text-center text-sm-end">
-              Thiết Kế : <a href="https://htmlcodex.com">Quang Huy | Vĩnh Khang</a>
-            </div>
-          </div>
+    <div class="bg-light rounded-top p-4">
+      <div class="row">
+        <div class="col-12 col-sm-6 text-center text-sm-start" style="margin-top:20px;">
+          &copy; <a href="#">67 Performance Admin Page</a> .
+        </div>
+        <div class="col-12 col-sm-6 text-center text-sm-end">
+          Thiết Kế : <a href="https://htmlcodex.com">Quang Huy | Vĩnh Khang</a>
         </div>
       </div>
-      <!-- Modal lịch sử bảo hành (luôn có mặt ở DOM) -->
+    </div>
+</div>
+<!-- Modal lịch sử bảo hành (luôn có mặt ở DOM) -->
 <div class="modal fade" id="modalLichSuBH" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -103,5 +103,4 @@ $(document).on('click', '.btn-add-bh', function(){
       </form>
     </div>
   </div>
-  
 </div>

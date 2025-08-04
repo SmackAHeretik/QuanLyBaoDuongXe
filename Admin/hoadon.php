@@ -2,7 +2,7 @@
 // ===============================
 // PHÂN QUYỀN: CHỈ ADMIN ĐƯỢC XEM DANH SÁCH HÓA ĐƠN
 // ===============================
-$requiredRole = 'admin';
+$requiredRole = ['admin', 'ketoan'];
 include __DIR__ . '/auth_check.php';
 
 // ===============================

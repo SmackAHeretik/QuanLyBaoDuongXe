@@ -67,8 +67,8 @@ if ($tongtien && !isset($_POST['tienmat'])) {
                 'quantity' => 1
             ]
         ],
-        "returnUrl" => $YOUR_DOMAIN . "/success.html",
-        "cancelUrl" => $YOUR_DOMAIN . "/cancel.html",
+        "returnUrl" => $YOUR_DOMAIN . "/payos_success.php?mahd=$mahd",
+        "cancelUrl" => $YOUR_DOMAIN . "/payos_cancel.php?mahd=$mahd",
     ];
 
     try {
