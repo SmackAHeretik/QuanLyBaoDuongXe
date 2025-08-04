@@ -1,5 +1,17 @@
 <?php
 // $dsChiTietHD đã có từ controller, mỗi row có: hoadon_MaHD, phutungxemay_MaSP, TenSP, dichvu_MaDV, TenDV, GiaTien, SoLuong, NgayBDBH, NgayKTBH, SoLanDaBaoHanh, MaCTHD
+// $trangThaiHoaDon đã được truyền từ controller
+// Tính tổng tiền phụ tùng & tổng tiền dịch vụ
+$tongPhuTung = 0;
+$tongDichVu = 0;
+foreach ($dsChiTietHD as $row) {
+  $thanhTien = $row['GiaTien'] * $row['SoLuong'];
+  if (!empty($row['phutungxemay_MaSP'])) {
+    $tongPhuTung += $thanhTien;
+  } elseif (!empty($row['dichvu_MaDV'])) {
+    $tongDichVu += $thanhTien;
+  }
+}
 ?>
 <div class="container-fluid pt-4 px-4">
   <div class="bg-light rounded p-4">
@@ -9,9 +21,20 @@
           <span class="badge bg-info">Mã HĐ: <?= htmlspecialchars($_GET['hoadon_MaHD']) ?></span>
         <?php endif; ?>
       </h5>
-      <a href="?controller=chitiethoadon&action=add<?= isset($_GET['hoadon_MaHD']) ? '&hoadon_MaHD='.intval($_GET['hoadon_MaHD']) : '' ?>" class="btn btn-success">
-        <i class="fa fa-plus"></i> Thêm mới
-      </a>
+      <div class="d-flex align-items-center gap-2">
+        <?php if ($trangThaiHoaDon === 'da_thanh_toan'): ?>
+          <a href="inhoadon.php?mahd=<?= intval($_GET['hoadon_MaHD']) ?>" class="btn btn-dark" target="_blank">
+            <i class="fa fa-print"></i> In hóa đơn
+          </a>
+        <?php endif; ?>
+        <a href="?controller=chitiethoadon&action=add<?= isset($_GET['hoadon_MaHD']) ? '&hoadon_MaHD='.intval($_GET['hoadon_MaHD']) : '' ?>" class="btn btn-success">
+          <i class="fa fa-plus"></i> Thêm mới
+        </a>
+      </div>
+    </div>
+    <div class="mb-3">
+      <span class="fw-bold">Tổng tiền phụ tùng:</span> <span class="text-primary"><?= number_format($tongPhuTung, 0, ',', '.') ?> VND</span> &nbsp; | &nbsp;
+      <span class="fw-bold">Tổng tiền dịch vụ:</span> <span class="text-success"><?= number_format($tongDichVu, 0, ',', '.') ?> VND</span>
     </div>
     <div class="table-responsive">
       <table class="table table-hover align-middle">

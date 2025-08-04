@@ -100,6 +100,8 @@ $html = '
 
 // In tối đa 10 dòng chi tiết hóa đơn
 $tongCong = 0;
+$tongDV = 0;
+$tongPT = 0;
 for ($i = 0; $i < 10; $i++) {
     if (isset($chiTietList[$i])) {
         $item = $chiTietList[$i];
@@ -109,6 +111,14 @@ for ($i = 0; $i < 10; $i++) {
         $dg = (float)$item['GiaTien'];
         $tt = $sl * $dg;
         $tongCong += $tt;
+
+        // Phân loại cộng tiền dịch vụ/phụ tùng
+        if (!empty($item['TenDV'])) {
+            $tongDV += $tt;
+        } elseif (!empty($item['TenSP'])) {
+            $tongPT += $tt;
+        }
+
         $dgShow = number_format($dg, 0, ',', '.');
         $ttShow = number_format($tt, 0, ',', '.');
     } else {
@@ -124,9 +134,18 @@ for ($i = 0; $i < 10; $i++) {
     </tr>";
 }
 
+// Thêm dòng tổng phụ tùng và dịch vụ
 $html .= '
     <tr>
-        <td colspan="4" class="right"><b>CỘNG</b></td>
+        <td colspan="4" class="right"><b>TỔNG TIỀN DỊCH VỤ</b></td>
+        <td class="right"><b>'.number_format($tongDV,0,',','.').'</b></td>
+    </tr>
+    <tr>
+        <td colspan="4" class="right"><b>TỔNG TIỀN PHỤ TÙNG</b></td>
+        <td class="right"><b>'.number_format($tongPT,0,',','.').'</b></td>
+    </tr>
+    <tr>
+        <td colspan="4" class="right"><b>TỔNG</b></td>
         <td class="right"><b>'.number_format($tongCong,0,',','.').'</b></td>
     </tr>
 </table>

@@ -54,8 +54,11 @@ class HoaDonController
               $NgayBDBH = null;
               $NgayKTBH = null;
               $SoLanDaBaoHanh = 0;
+              $giaTien = 0;
+              $soLuong = $sl_arr[$i] ?? 1;
               if (!empty($masp)) {
                 $pt = $phutungModel->getById($masp);
+                $giaTien = $pt['DonGia'] ?? 0;
                 // Ngày bắt đầu bảo hành là ngày tạo hóa đơn (lấy theo ngày nhập trên form, giờ thực tế)
                 $NgayBDBH = date('Y-m-d H:i:s', strtotime($_POST['Ngay'] . ' ' . date('H:i:s')));
                 // Xử lý số ngày bảo hành từ chuỗi "xxx ngày"
@@ -71,12 +74,17 @@ class HoaDonController
                 // Số lần bảo hành tối đa lấy từ bảng phụ tùng
                 $SoLanDaBaoHanh = intval($pt['SoLanBaoHanhToiDa']);
               }
+              if (!empty($madichvu)) {
+                $dv = $dichvuModel->getById($madichvu);
+                $giaTien = $dv['DonGia'] ?? 0;
+                $soLuong = 1; // Dịch vụ mặc định số lượng 1
+              }
               $cthdModel->add([
                 'hoadon_MaHD' => $mahd,
                 'phutungxemay_MaSP' => $masp,
                 'dichvu_MaDV' => $madichvu,
-                'GiaTien' => $gia_arr[$i],
-                'SoLuong' => $sl_arr[$i],
+                'GiaTien' => $giaTien,
+                'SoLuong' => $soLuong,
                 'NgayBDBH' => $NgayBDBH,
                 'NgayKTBH' => $NgayKTBH,
                 'SoLanDaBaoHanh' => $SoLanDaBaoHanh

@@ -23,8 +23,12 @@ class ChiTietHoaDonController
   public function list()
   {
     $mahd = $_GET['hoadon_MaHD'] ?? null;
+    $trangThaiHoaDon = '';
     if ($mahd) {
         $dsChiTietHD = $this->model->getAllByHoaDon($mahd);
+        // Lấy trạng thái hóa đơn từ bảng hoadon
+        $hoaDon = $this->hoadonModel->getById($mahd);
+        $trangThaiHoaDon = $hoaDon['TrangThai'] ?? '';
     } else {
         $dsChiTietHD = [];
     }
